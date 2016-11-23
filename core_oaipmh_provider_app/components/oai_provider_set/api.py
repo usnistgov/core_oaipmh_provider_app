@@ -3,69 +3,73 @@ OaiProviderSet API
 """
 
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_main_app.commons import exceptions
 
 
 def upsert(oai_provider_set):
+    """ Create or update an OaiProviderSet.
+
+    Args:
+        oai_provider_set:
+
+    Returns:
+        The OaiProviderSet instance.
+
     """
-    Create or update an OaiProviderSet
-    :param oai_provider_set:
-    :return:
-    """
-    try:
-        return oai_provider_set.save()
-    except:
-        raise exceptions.ApiError('Save OaiProviderSet failed.')
+    return oai_provider_set.save()
 
 
 def delete(oai_provider_set):
+    """ Delete an OaiProviderSet.
+
+    Args:
+        oai_provider_set: The OaiProviderSet to delete.
+
     """
-    Delete an OaiProviderSet
-    :param oai_provider_set:
-    :return:
-    """
-    try:
-        oai_provider_set.delete()
-    except:
-        raise exceptions.ApiError('Impossible to delete OaiProviderSet.')
+    oai_provider_set.delete()
 
 
 def get_by_id(oai_provider_set_id):
+    """ Get an OaiProviderSet by its id.
+
+    Args:
+        oai_provider_set_id: The OaiProviderSet id.
+
+    Returns:
+        The OaiProviderSet instance.
+
     """
-    Get an OaiProviderSet by its id
-    :param oai_provider_set_id:
-    :return:
-    """
-    try:
-        return OaiProviderSet.get_by_id(oai_set_id=oai_provider_set_id)
-    except:
-        raise exceptions.ApiError('No OaiProviderSet could be found with the given id.')
+    return OaiProviderSet.get_by_id(oai_set_id=oai_provider_set_id)
 
 
 def get_by_set_spec(set_spec):
+    """ Get an OaiProviderSet by its set_spec.
+
+    Args:
+        set_spec: The OaiProviderSet set_spec.
+
+    Returns:
+        The OaiProviderSet instance.
     """
-    Get an OaiProviderSet by its setSpec
-    :param set_spec:
-    :return:
-    """
-    try:
-        return OaiProviderSet.get_by_set_spec(set_spec=set_spec)
-    except:
-        raise exceptions.ApiError('No OaiProviderSet could be found with the given setSpec.')
+    return OaiProviderSet.get_by_set_spec(set_spec=set_spec)
 
 
 def get_all():
-    """
-    Get all OaiProviderSet
-    :return:
+    """ Get all OaiProviderSet.
+
+    Returns:
+        List of OaiProviderSet.
     """
     return OaiProviderSet.get_all()
 
 
 def get_all_by_templates(templates):
-    """
-    Get all OaiProviderSet used by a list of templates
-    :param templates:
-    :return:
+    """ Get all OaiProviderSet used by a list of templates.
+
+    Args:
+        templates: List of templates.
+
+    Returns:
+        List of OaiProviderSet.
+
     """
     return OaiProviderSet.get_all_by_templates(templates=templates)

@@ -10,7 +10,7 @@ class TestOaiProviderSetUpsert(TestCase):
     def setUp(self):
         self.mock_oai_provider_set = _create_oai_provider_set()
 
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.save')
+    @patch.object(OaiProviderSet, 'save')
     def test_oai_provider_set_upsert_return_object(self, mock_save):
         # Arrange
         mock_save.return_value = self.mock_oai_provider_set
@@ -21,18 +21,18 @@ class TestOaiProviderSetUpsert(TestCase):
         # Assert
         self.assertIsInstance(result, OaiProviderSet)
 
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.save')
-    def test_oai_provider_set_upsert_throws_error_if_save_failed(self, mock_save):
+    @patch.object(OaiProviderSet, 'save')
+    def test_oai_provider_set_upsert_raises_error_if_save_failed(self, mock_save):
         # Arrange
         mock_save.side_effect = Exception()
 
         # Act # Assert
-        with self.assertRaises(exceptions.ApiError):
+        with self.assertRaises(Exception):
             provider_set_api.upsert(self.mock_oai_provider_set)
 
 
 class TestOaiProviderSetGetById(TestCase):
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_by_id')
+    @patch.object(OaiProviderSet, 'get_by_id')
     def test_get_by_id_return_object(self, mock_get_by_id):
         # Arrange
         mock_oai_provider_set = _create_mock_oai_provider_set()
@@ -46,20 +46,31 @@ class TestOaiProviderSetGetById(TestCase):
         # Assert
         self.assertIsInstance(result, OaiProviderSet)
 
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_by_id')
-    def test_get_by_id_throws_exception_if_object_does_not_exist(self, mock_get_by_id):
+    @patch.object(OaiProviderSet, 'get_by_id')
+    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
         mock_absent_id = ObjectId()
 
-        mock_get_by_id.side_effect = Exception()
+        mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
         # Act + Assert
-        with self.assertRaises(exceptions.ApiError):
+        with self.assertRaises(exceptions.DoesNotExist):
+            provider_set_api.get_by_id(mock_absent_id)
+
+    @patch.object(OaiProviderSet, 'get_by_id')
+    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+        # Arrange
+        mock_absent_id = ObjectId()
+
+        mock_get_by_id.side_effect = exceptions.ModelError("Error.")
+
+        # Act + Assert
+        with self.assertRaises(exceptions.ModelError):
             provider_set_api.get_by_id(mock_absent_id)
 
 
 class TestOaiProviderSetGetBySetSpec(TestCase):
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_by_set_spec')
+    @patch.object(OaiProviderSet, 'get_by_set_spec')
     def test_get_by_set_spec_return_object(self, mock_get):
         # Arrange
         mock_oai_provider_set = _create_mock_oai_provider_set()
@@ -67,25 +78,36 @@ class TestOaiProviderSetGetBySetSpec(TestCase):
         mock_get.return_value = mock_oai_provider_set
 
         # Act
-        result = provider_set_api.get_by_set_spec(mock_oai_provider_set.setSpec)
+        result = provider_set_api.get_by_set_spec(mock_oai_provider_set.set_spec)
 
         # Assert
         self.assertIsInstance(result, OaiProviderSet)
 
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_by_set_spec')
-    def test_get_by_set_spec_throws_exception_if_object_does_not_exist(self, mock_get):
+    @patch.object(OaiProviderSet, 'get_by_set_spec')
+    def test_get_by_set_spec_raises_exception_if_object_does_not_exist(self, mock_get):
         # Arrange
         mock_absent_set_spec = ObjectId()
 
-        mock_get.side_effect = Exception()
+        mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
         # Act + Assert
-        with self.assertRaises(exceptions.ApiError):
+        with self.assertRaises(exceptions.DoesNotExist):
+            provider_set_api.get_by_set_spec(mock_absent_set_spec)
+
+    @patch.object(OaiProviderSet, 'get_by_set_spec')
+    def test_get_by_set_spec_raises_exception_if_internal_error(self, mock_get):
+        # Arrange
+        mock_absent_set_spec = ObjectId()
+
+        mock_get.side_effect = exceptions.ModelError("Error.")
+
+        # Act + Assert
+        with self.assertRaises(exceptions.ModelError):
             provider_set_api.get_by_set_spec(mock_absent_set_spec)
 
 
 class TestOaiProviderSetGetAll(TestCase):
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_all')
+    @patch.object(OaiProviderSet, 'get_all')
     def test_list_contains_only_oai_provider_set(self, mock_get_all):
         # Arrange
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
@@ -101,7 +123,7 @@ class TestOaiProviderSetGetAll(TestCase):
 
 
 class TestOaiProviderSetGetAllByTemplates(TestCase):
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.get_all_by_templates')
+    @patch.object(OaiProviderSet, 'get_all_by_templates')
     def test_get_all_by_templates_return_object(self, mock_get):
         # Arrange
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
@@ -117,22 +139,25 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
 
 
 class TestOaiProviderSetDelete(TestCase):
-    @patch('core_oaipmh_provider_app.components.oai_provider_set.models.OaiProviderSet.delete')
-    def test_delete_oai_provider_set_throws_exception_if_object_does_not_exist(self, mock_delete):
+    @patch.object(OaiProviderSet, 'delete')
+    def test_delete_oai_provider_set_raises_exception_if_object_does_not_exist(self, mock_delete):
         # Arrange
         oai_provider_set = _create_oai_provider_set()
         mock_delete.side_effect = Exception()
 
         # Act # Assert
-        with self.assertRaises(exceptions.ApiError):
+        with self.assertRaises(Exception):
             provider_set_api.delete(oai_provider_set)
 
 
 def _create_oai_provider_set():
+    """ Get an OaiProviderSet object
+
+    Returns:
+        OaiProviderSet instance.
+
     """
-    Get an OaiProviderSet object
-    :return:
-    """
+
     oai_provider_set = OaiProviderSet()
     _set_oai_provider_set_fields(oai_provider_set)
 
@@ -140,9 +165,11 @@ def _create_oai_provider_set():
 
 
 def _create_mock_oai_provider_set():
-    """
-    Mock an OaiProviderSet object
-    :return:
+    """ Mock an OaiProviderSet.
+
+    Returns:
+        OaiProviderSet mock.
+
     """
     mock_oai_provider_set = Mock(spec=OaiProviderSet)
     _set_oai_provider_set_fields(mock_oai_provider_set)
@@ -151,12 +178,17 @@ def _create_mock_oai_provider_set():
 
 
 def _set_oai_provider_set_fields(oai_provider_set):
+    """ Set OaiProviderSet fields.
+
+    Args:
+        oai_provider_set:
+
+    Returns:
+        OaiProviderSet with assigned fields.
+
     """
-    Set OaiProviderSet fields
-    :return:
-    """
-    oai_provider_set.setSpec = "oai_test"
-    oai_provider_set.setName = "test"
+    oai_provider_set.set_spec = "oai_test"
+    oai_provider_set.set_name = "test"
     oai_provider_set.templates = [ObjectId(), ObjectId()]
     oai_provider_set.description = "OaiSet description"
 

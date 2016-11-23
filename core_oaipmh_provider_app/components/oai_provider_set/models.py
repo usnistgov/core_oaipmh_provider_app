@@ -15,9 +15,13 @@ class OaiProviderSet(OaiSet):
 
     @staticmethod
     def get_all_by_templates(templates):
-        """
-        Get all OaiProviderSet used by a list of templates
-        :param templates:
-        :return:
+        """ Get all OaiProviderSet used by a list of templates
+
+        Args:
+            templates: List of template
+
+        Returns:
+            List of OaiProviderSet.
+
         """
         return OaiProviderSet.objects(templates__in=templates).all()
