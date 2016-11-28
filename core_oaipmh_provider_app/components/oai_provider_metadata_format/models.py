@@ -10,56 +10,59 @@ from core_main_app.components.template.models import Template
 
 class OaiProviderMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Provider"""
-    isDefault = fields.BooleanField(blank=True)
-    isTemplate = fields.BooleanField(blank=True)
+    is_default = fields.BooleanField(blank=True)
+    is_template = fields.BooleanField(blank=True)
     template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE)
 
     @staticmethod
     def get_all_custom_metadata_format():
         """ Get all custom OaiProviderMetadataFormat.
 
-            Returns:
-                List of metadata format.
+        Returns:
+            List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(isDefault=False, isTemplate=False or None).all()
+        return OaiProviderMetadataFormat.objects(is_default=False, is_template=False or None).all()
 
     @staticmethod
     def get_all_default_metadata_format():
         """ Get all default OaiProviderMetadataFormat.
 
-            Returns:
-                List of metadata format.
+        Returns:
+            List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(isDefault=True).all()
+        return OaiProviderMetadataFormat.objects(is_default=True).all()
 
     @staticmethod
     def get_all_template_metadata_format():
         """ Get all OaiProviderMetadataFormat based on a template.
 
-            Returns:
-                List of metadata format.
+        Returns:
+            List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(isTemplate=True).all()
+        return OaiProviderMetadataFormat.objects(is_template=True).all()
 
     @staticmethod
     def get_all_no_template_metadata_format():
         """ Get all OaiProviderMetadataFormat except the metadata formats based on a template.
 
-            Returns:
-                List of metadata format.
+        Returns:
+            List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(isTemplate=False or None).all()
+        return OaiProviderMetadataFormat.objects(is_template=False or None).all()
 
     @staticmethod
     def get_all_by_templates(templates):
         """ Get all OaiProviderMetadataFormat used by a list of templates.
 
-            Returns:
-                List of metadata format.
+        Args:
+            The list of templates.
+
+        Returns:
+            List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(template__in=templates, isTemplate=True).all()
+        return OaiProviderMetadataFormat.objects(template__in=templates, is_template=True).all()
