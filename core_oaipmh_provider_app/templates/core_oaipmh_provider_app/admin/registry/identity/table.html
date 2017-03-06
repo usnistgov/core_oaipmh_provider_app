@@ -1,0 +1,112 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}Identity{% endblock %}
+
+{% block box_tools %}
+<div class="btn-group pull-right">
+    <a href="#" class="btn btn-default edit-identity-btn">
+        <i class="fa fa-cogs"></i> Edit my Server’s Identity
+    </a>
+    <a href="#" class="btn btn-default check-status-btn">
+        <i class="fa fa-check-circle"></i> Check status
+    </a>
+</div>
+{% endblock %}
+
+{% block box_body %}
+<table class="data-table">
+    <tr>
+        <td>Status</td>
+        <td class="text-center" url="{{ data.data_provider.baseURL }}" id="Status">---</td>
+    </tr>
+    <tr class="invisible"><td colspan="2"/></tr>
+    <tr>
+        <td>Name</td>
+        <td>
+            <span>
+               {{ data.data_provider.name }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Admin Email</td>
+        <td>
+            <span>
+                {% for admin in data.data_provider.admins %}
+                    {{ admin }}
+                {% endfor %}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Base URL</td>
+        <td>
+            <span>
+               {{ data.data_provider.baseURL }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Has Deleted Record</td>
+        <td>
+            <span>
+               {{ data.data_provider.deleted }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Granularity</td>
+        <td>
+            <span>
+               {{ data.data_provider.granularity }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Protocol Version</td>
+        <td>
+            <span>
+               {{ data.data_provider.protocol_version }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Delimiter</td>
+        <td>
+            <span>
+               {{ data.data_provider.identifier_delimiter }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Scheme</td>
+        <td>
+            <span>
+               {{ data.data_provider.identifier_scheme }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Repository Identifier</td>
+        <td>
+            <span>
+               {{ data.data_provider.repository_identifier }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Sample Identifier</td>
+        <td>
+            <span>
+               {{ data.data_provider.sample_identifier }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>Enable Harvesting</td>
+        <td>
+            {{ data.data_provider.enable_harvesting }}
+        </td>
+    </tr>
+</table>
+{% endblock %}

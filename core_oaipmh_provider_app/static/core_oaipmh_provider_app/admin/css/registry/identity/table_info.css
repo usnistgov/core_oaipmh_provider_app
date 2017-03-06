@@ -1,0 +1,27 @@
+table.data-table {
+	border: 1px solid #EEE;
+	margin-bottom: 2em;
+	width: 100%;
+}
+table.data-table th {
+	background: #EEE;
+	border: 1px solid #DDD;
+	color: #555;
+	text-align: left;
+}
+table.data-table tr {border-bottom: 1px solid #EEE;}
+table.data-table td, table th {padding: 8px 10px;}
+table.data-table td {
+	background: #F6F6F6;
+	border: 1px solid #E6E6E6;
+}
+table.data-table tr.even td {background: #FCFCFC;}
+table.data-table td:first-child {
+    font-weight: bold;
+    text-transform: capitalize;
+    color: black;
+}
+table.data-table {
+    font-style: italic;
+    color: gray;
+}
