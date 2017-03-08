@@ -1,0 +1,42 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}Other Metadata Formats{% endblock %}
+{% block box_tools %}
+<div class="btn-group pull-right">
+    <a href="#" class="btn btn-default add-metadata_format-btn">
+        <i class="fa fa-plus-circle"></i> Add Metadata Format
+    </a>
+</div>
+{% endblock %}
+{% block box_body %}
+<p>
+    Add other metadata formats by providing a URL.
+    You will need to configure an XSLT file for each Template under the Template configuration to perform the mapping between the templates and those metadata formats.
+</p>
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+        <th width="10%;">Metadata Prefix</th>
+        <th width="30%;">Schema</th>
+        <th width="40%;">Namespace</th>
+        <th width="20%;">Actions</th>
+    </tr>
+    {% for metadata_format in data.metadata_formats %}
+        <tr objectid="{{ metadata_format.id }}">
+            <td>{{ metadata_format.metadata_prefix }}</td>
+            <td>{{ metadata_format.schema }}</td>
+            <td>{{ metadata_format.metadata_namespace }}</td>
+            <td>
+                <a class="btn btn-default edit-metadata_format-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
+                <a class="btn btn-danger delete-metadata_format-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td class="empty" colspan="4">
+                There are currently no Metadata Formats. Please
+                <a href="#" class="add-metadata_format-btn">add a new one</a>.
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

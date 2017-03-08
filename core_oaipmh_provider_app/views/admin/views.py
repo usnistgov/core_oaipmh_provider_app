@@ -1,6 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from core_main_app.utils.rendering import admin_render
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
 from core_oaipmh_provider_app import settings
 
 
@@ -47,4 +48,47 @@ def identity_view(request):
     }
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/identity.html", assets=assets,
+                        context=context, modals=modals)
+
+
+@staff_member_required
+def metadata_formats_view(request):
+    assets = {
+        "js": [
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/add_metadata_format.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/delete_metadata_format.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/edit_metadata_format.js",
+                "is_raw": False
+            }
+        ],
+        "css": [
+            "core_oaipmh_provider_app/admin/css/registry/metadata_formats/page.css"
+        ]
+    }
+
+    modals = [
+        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/add_metadata_format.html",
+        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/delete_metadata_format.html",
+        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/edit_metadata_format.html"
+    ]
+
+    order_field = 'metadata_prefix'
+    default_metadata_formats = oai_metadata_format_api.get_all_default_metadata_format(order_by_field=order_field)
+    metadata_formats = oai_metadata_format_api.get_all_custom_metadata_format(order_by_field=order_field)
+    template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(order_by_field=order_field)
+
+    context = {
+        'default_metadata_formats': default_metadata_formats,
+        'metadata_formats': metadata_formats,
+        'template_metadata_formats': template_metadata_formats
+    }
+
+    return admin_render(request, "core_oaipmh_provider_app/admin/registry/metadata_formats.html", assets=assets,
                         context=context, modals=modals)

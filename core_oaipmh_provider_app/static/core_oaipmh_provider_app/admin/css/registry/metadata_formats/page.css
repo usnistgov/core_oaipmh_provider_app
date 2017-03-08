@@ -1,0 +1,14 @@
+.tpl-title {
+	text-align: center;
+	font-size: 18px;
+	margin-bottom: 0.5em;
+}
+
+table td {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.btn-group{
+    margin-bottom: 2em;
+}

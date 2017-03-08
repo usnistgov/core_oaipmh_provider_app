@@ -1,0 +1,16 @@
+<div class="alert alert-warning" id="banner_add_wait" style="display: none;">
+    <h4><i class='fa fa-circle-o-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Please wait ...</h4>
+</div>
+<div class="alert alert-error" id="banner_add_errors" style="display: none;">
+    <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
+    <div id="form_add_errors">
+    </div>
+</div>
+
+<form id="add-metadata_format-form" method="post">
+    {% csrf_token %}
+    {{ add_metadata_format_form }}
+    <div id="add-metadata_format-errors" style="color:red;">
+        {{ errors | safe}}
+    </div>
+</form>

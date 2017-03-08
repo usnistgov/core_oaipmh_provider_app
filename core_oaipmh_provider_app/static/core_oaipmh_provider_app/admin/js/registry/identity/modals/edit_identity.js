@@ -58,7 +58,7 @@ var editIdentity = function(event) {
             processData: false,
             async:true,
             success: function(data){
-                window.location = indexIdentityUrl
+                location.reload();
             },
             error:function(data){
                 $("#form_edit_errors").html(data.responseText);

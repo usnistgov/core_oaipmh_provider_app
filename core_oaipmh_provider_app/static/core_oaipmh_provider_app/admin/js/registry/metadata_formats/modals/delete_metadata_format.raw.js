@@ -1,0 +1,1 @@
+var deleteMetadataFormatGetUrl = "{% url 'admin:core_oaipmh_provider_app_delete_metadata_format' %}";

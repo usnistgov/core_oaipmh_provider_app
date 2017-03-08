@@ -12,37 +12,56 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Provider"""
     is_default = fields.BooleanField(blank=True)
     is_template = fields.BooleanField(blank=True)
-    template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE)
+    template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE, blank=True)
 
     @staticmethod
-    def get_all_custom_metadata_format():
+    def get_all():
+        """ Return all OaiProviderMetadataFormat.
+
+        Returns:
+            List of OaiProviderMetadataFormat.
+
+        """
+        return OaiProviderMetadataFormat.objects().all()
+
+    @staticmethod
+    def get_all_custom_metadata_format(order_by_field=None):
         """ Get all custom OaiProviderMetadataFormat.
 
+        Args:
+        order_by_field: Order by field.
+
         Returns:
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_default=False, is_template=False or None).all()
+        return OaiProviderMetadataFormat.objects(is_default=False, is_template=False).order_by(order_by_field)
 
     @staticmethod
-    def get_all_default_metadata_format():
+    def get_all_default_metadata_format(order_by_field=None):
         """ Get all default OaiProviderMetadataFormat.
 
+        Args:
+        order_by_field: Order by field.
+
         Returns:
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_default=True).all()
+        return OaiProviderMetadataFormat.objects(is_default=True).order_by(order_by_field)
 
     @staticmethod
-    def get_all_template_metadata_format():
+    def get_all_template_metadata_format(order_by_field=None):
         """ Get all OaiProviderMetadataFormat based on a template.
+
+        Args:
+        order_by_field: Order by field.
 
         Returns:
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_template=True).all()
+        return OaiProviderMetadataFormat.objects(is_template=True).order_by(order_by_field)
 
     @staticmethod
     def get_all_no_template_metadata_format():

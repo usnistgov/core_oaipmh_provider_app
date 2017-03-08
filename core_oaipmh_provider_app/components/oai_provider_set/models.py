@@ -14,6 +14,16 @@ class OaiProviderSet(OaiSet):
     description = fields.StringField(blank=True)
 
     @staticmethod
+    def get_all():
+        """ Return all OaiProviderSet.
+
+        Returns:
+            List of OaiProviderSet.
+
+        """
+        return OaiProviderSet.objects().all()
+
+    @staticmethod
     def get_all_by_templates(templates):
         """ Get all OaiProviderSet used by a list of templates
 
