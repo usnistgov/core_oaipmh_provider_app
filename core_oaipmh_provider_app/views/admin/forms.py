@@ -47,10 +47,40 @@ class TemplateMetadataFormatForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(TemplateMetadataFormatForm, self).__init__(*args, **kwargs)
-        templates = []
+        self.fields['template'].choices = _get_current_templates()
+
+
+class SetForm(forms.Form):
+    """
+        A set form.
+    """
+    id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    set_spec = forms.CharField(label='Set spec', required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    set_name = forms.CharField(label='Set name', required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    templates = forms.MultipleChoiceField(label='Templates', widget=forms.SelectMultiple())
+    description = forms.CharField(label='Description', required=True,
+                                  widget=forms.Textarea(attrs={'cols': '60', 'rows': '5', 'class': 'form-control',
+                                                               'style': 'height:14em;width:100%;'}))
+
+    def __init__(self, *args, **kwargs):
+        super(SetForm, self).__init__(*args, **kwargs)
+        self.fields['templates'].choices = _get_current_templates()
+
+
+def _get_current_templates():
+    """ Get current templates.
+
+    Returns:
+        List of current templates.
+
+    """
+    templates = []
+    try:
         list_ = template_version_manager_api.get_active_global_version_manager()
         for elt in list_:
             template = template_api.get(elt.current)
             templates.append((template.id, template.filename))
+    except Exception:
+        pass
 
-        self.fields['template'].choices = templates
+    return templates

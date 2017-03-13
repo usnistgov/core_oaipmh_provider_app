@@ -1,7 +1,6 @@
 """
 OaiProviderSet API
 """
-
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
 
@@ -53,13 +52,15 @@ def get_by_set_spec(set_spec):
     return OaiProviderSet.get_by_set_spec(set_spec=set_spec)
 
 
-def get_all():
+def get_all(order_by_field=None):
     """ Get all OaiProviderSet.
+    Args:
+        order_by_field: Order by field.
 
     Returns:
         List of OaiProviderSet.
     """
-    return OaiProviderSet.get_all()
+    return OaiProviderSet.get_all(order_by_field)
 
 
 def get_all_by_templates(templates):

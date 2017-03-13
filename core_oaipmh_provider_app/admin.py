@@ -22,7 +22,11 @@ admin_urls = [
     url(r'^provider/metadata_formats/edit', admin_ajax.edit_metadata_format,
         name='core_oaipmh_provider_app_edit_metadata_format'),
     url(r'^provider/metadata_formats/template/add', admin_ajax.add_template_metadata_format,
-        name='core_oaipmh_provider_app_add_template_metadata_format')
+        name='core_oaipmh_provider_app_add_template_metadata_format'),
+    url(r'^provider/sets/config', admin_views.sets_view, name='core_oaipmh_provider_app_sets'),
+    url(r'^provider/sets/add', admin_ajax.add_set, name='core_oaipmh_provider_app_add_set'),
+    url(r'^provider/sets/delete', admin_ajax.delete_set, name='core_oaipmh_provider_app_delete_set'),
+    url(r'^provider/sets/edit', admin_ajax.edit_set, name='core_oaipmh_provider_app_edit_set'),
 ]
 
 urls = admin.site.get_urls()

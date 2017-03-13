@@ -1,7 +1,6 @@
 """
 OaiProviderSet model
 """
-
 from django_mongoengine import fields
 from mongoengine.queryset.base import PULL
 from core_oaipmh_common_app.components.oai_set.models import OaiSet
@@ -14,14 +13,15 @@ class OaiProviderSet(OaiSet):
     description = fields.StringField(blank=True)
 
     @staticmethod
-    def get_all():
+    def get_all(order_by_field=None):
         """ Return all OaiProviderSet.
-
+        Args:
+            order_by_field: Order by field.
         Returns:
             List of OaiProviderSet.
 
         """
-        return OaiProviderSet.objects().all()
+        return OaiProviderSet.objects().order_by(order_by_field)
 
     @staticmethod
     def get_all_by_templates(templates):

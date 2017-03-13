@@ -1,0 +1,1 @@
+var addSetPostUrl = "{% url 'admin:core_oaipmh_provider_app_add_set' %}";

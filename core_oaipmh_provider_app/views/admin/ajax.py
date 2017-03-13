@@ -1,10 +1,13 @@
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from rest_framework import status
 from core_oaipmh_provider_app.views.admin.forms import EditIdentityForm, MetadataFormatForm, EditMetadataFormatForm,\
-    TemplateMetadataFormatForm
+    TemplateMetadataFormatForm, SetForm
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_main_app.components.template import api as template_api
 from django.contrib import messages
 from django.template import loader
 import requests
@@ -188,6 +191,89 @@ def add_template_metadata_format(request):
                             'add_metadata_format_form.html'
             context = {
                 "add_metadata_format_form": add_metadata_format_form
+            }
+
+            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
+                                'application/javascript')
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+
+def add_set(request):
+    """ Add a set.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        if request.method == 'POST':
+            form = SetForm(request.POST)
+            if form.is_valid():
+                set_spec = request.POST.get('set_spec')
+                set_name = request.POST.get('set_name')
+                templates = request.POST.getlist('templates', [])
+                description = request.POST.get('description', '')
+                obj = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates=templates, description=description)
+                oai_provider_set_api.upsert(obj)
+                messages.add_message(request, messages.SUCCESS, 'Set added with success.')
+
+                return HttpResponse(json.dumps({}), content_type='application/javascript')
+            else:
+                return HttpResponseBadRequest('Bad entries. Please check your entries')
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+
+def delete_set(request):
+    """ Delete a set.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        set_ = oai_provider_set_api.get_by_id(request.GET['id'])
+        oai_provider_metadata_format_api.delete(set_)
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+    return HttpResponse(json.dumps({}), content_type='application/javascript')
+
+
+def edit_set(request):
+    """ Edit a set.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        if request.method == 'POST':
+            form = SetForm(request.POST)
+            if form.is_valid():
+                set_ = oai_provider_set_api.get_by_id(request.POST['id'])
+                set_.set_spec = request.POST.get('set_spec')
+                set_.set_name = request.POST.get('set_name')
+                set_.templates = [template_api.get(x) for x in request.POST.getlist('templates', [])]
+                set_.description = request.POST.get('description', [])
+                oai_provider_set_api.upsert(set_)
+                messages.add_message(request, messages.SUCCESS, 'Set edited with success.')
+
+                return HttpResponse(json.dumps({}), content_type='application/javascript')
+            else:
+                return HttpResponseBadRequest('Bad entries. Please check your entries')
+        elif request.method == 'GET':
+            set_ = oai_provider_set_api.get_by_id(request.GET['id'])
+            data = {'id': set_.id, 'set_spec': set_.set_spec, 'set_name': set_.set_name,
+                    'description': set_.description, "templates": [x.id for x in set_.templates]}
+            edit_set_form = SetForm(data)
+            template_name = 'core_oaipmh_provider_app/admin/registry/sets/modals/edit_set_form.html'
+            context = {
+                "edit_set_form": edit_set_form
             }
 
             return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),

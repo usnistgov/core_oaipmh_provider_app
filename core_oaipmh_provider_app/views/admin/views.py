@@ -2,6 +2,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from core_main_app.utils.rendering import admin_render
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+from core_oaipmh_provider_app.views.admin.forms import SetForm
 from core_oaipmh_provider_app import settings
 
 
@@ -91,4 +93,50 @@ def metadata_formats_view(request):
     }
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/metadata_formats.html", assets=assets,
+                        context=context, modals=modals)
+
+
+@staff_member_required
+def sets_view(request):
+    assets = {
+        "js": [
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/init_select.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/libs/fSelect/js/fSelect.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/add_set.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/delete_set.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/edit_set.js",
+                "is_raw": False
+            }
+        ],
+        "css": [
+            "core_oaipmh_provider_app/admin/libs/fSelect/css/fSelect.css",
+            "core_oaipmh_provider_app/admin/css/registry/sets/add_set.css"
+        ]
+    }
+
+    modals = [
+        "core_oaipmh_provider_app/admin/registry/sets/modals/add_set.html",
+        "core_oaipmh_provider_app/admin/registry/sets/modals/delete_set.html",
+        "core_oaipmh_provider_app/admin/registry/sets/modals/edit_set.html"
+    ]
+
+    context = {
+        'sets': oai_provider_set_api.get_all(order_by_field='set_spec'),
+        'add_set_form': SetForm()
+    }
+
+    return admin_render(request, "core_oaipmh_provider_app/admin/registry/sets.html", assets=assets,
                         context=context, modals=modals)

@@ -1,0 +1,46 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}Sets{% endblock %}
+{% block box_tools %}
+<div class="btn-group pull-right">
+    <a href="#" class="btn btn-default add-set-btn">
+        <i class="fa fa-plus-circle"></i> Add Set
+    </a>
+</div>
+{% endblock %}
+{% block box_body %}
+<p>
+   Add sets to your server by associating templates to them.
+</p>
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+        <th width="15%;">Set Spec</th>
+        <th width="15%;">Set Name</th>
+        <th width="20%;">Associate Templates</th>
+        <th width="30%;">Description</th>
+        <th width="20%;">Actions</th>
+    </tr>
+    {% for set in data.sets %}
+        <tr objectid="{{ set.id }}">
+            <td>{{ set.set_spec }}</td>
+            <td>{{ set.set_name }}</td>
+            <td>
+                {% for template in set.templates %}
+                    {{ template.filename }} -
+                {% endfor %}
+            </td>
+            <td>{{ set.description }}</td>
+            <td>
+                <a class="btn btn-default edit-set-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
+                <a class="btn btn-danger delete-set-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+        </tr>
+    {% empty %}
+        <tr>
+            <td class="empty" colspan="5">
+                There are currently no Sets. Please
+                <a href="#" class="add-set-btn">add a new one</a>.
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
