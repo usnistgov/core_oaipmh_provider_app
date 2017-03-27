@@ -3,6 +3,7 @@ from core_main_app.utils.rendering import admin_render
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+from core_main_app.components.version_manager import api as version_manager_api
 from core_oaipmh_provider_app.views.admin.forms import SetForm
 from core_oaipmh_provider_app import settings
 
@@ -84,7 +85,7 @@ def metadata_formats_view(request):
     order_field = 'metadata_prefix'
     default_metadata_formats = oai_metadata_format_api.get_all_default_metadata_format(order_by_field=order_field)
     metadata_formats = oai_metadata_format_api.get_all_custom_metadata_format(order_by_field=order_field)
-    template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(order_by_field=order_field)
+    template_metadata_formats = _get_template_metadata_format(order_field=order_field)
 
     context = {
         'default_metadata_formats': default_metadata_formats,
@@ -140,3 +141,29 @@ def sets_view(request):
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/sets.html", assets=assets,
                         context=context, modals=modals)
+
+
+def _get_template_metadata_format(order_field=None):
+    """ Get template metadata format information.
+    Args:
+        order_field: Possibility to order by field.
+
+    Returns:
+        Template metadata format information.
+
+    """
+    items_template_metadata_format = []
+    template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(order_by_field=order_field)
+    for template_item in template_metadata_formats:
+        version_manager = version_manager_api.get_from_version(template_item.template)
+        item_info = {
+            'id': template_item.id,
+            'metadata_prefix': template_item.metadata_prefix,
+            'schema': oai_metadata_format_api.get_metadata_format_schema_url(template_item),
+            'title': version_manager.title,
+            'metadata_namespace': template_item.metadata_namespace,
+            'version': version_manager_api.get_version_number(version_manager, template_item.template.id)
+        }
+        items_template_metadata_format.append(item_info)
+
+    return items_template_metadata_format

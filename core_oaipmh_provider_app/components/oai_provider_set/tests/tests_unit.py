@@ -2,6 +2,7 @@ from unittest.case import TestCase
 from bson.objectid import ObjectId
 from mock.mock import Mock, patch
 import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
+import core_main_app.components.template_version_manager.api as template_version_manager_api
 from core_main_app.commons import exceptions
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
@@ -122,9 +123,9 @@ class TestOaiProviderSetGetAll(TestCase):
         self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
 
 
-class TestOaiProviderSetGetAllByTemplates(TestCase):
-    @patch.object(OaiProviderSet, 'get_all_by_templates')
-    def test_get_all_by_templates_return_object(self, mock_get):
+class TestOaiProviderSetGetAllByTemplatesManager(TestCase):
+    @patch.object(OaiProviderSet, 'get_all_by_templates_manager')
+    def test_get_all_by_templates_manager_return_object(self, mock_get):
         # Arrange
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
         mock_oai_provider_set2 = _create_mock_oai_provider_set()
@@ -132,7 +133,27 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
         mock_get.return_value = [mock_oai_provider_set1, mock_oai_provider_set2]
 
         # Act
-        result = provider_set_api.get_all_by_templates(mock_oai_provider_set1.templates)
+        result = provider_set_api.get_all_by_templates_manager(mock_oai_provider_set1.templates_manager)
+
+        # Assert
+        self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
+
+
+class TestOaiProviderSetGetAllByTemplates(TestCase):
+    @patch.object(template_version_manager_api, 'get_all_by_version_ids')
+    @patch.object(OaiProviderSet, 'get_all_by_templates_manager')
+    def test_get_all_by_templates_return_object(self, mock_get_all_by_templates, mock_get_all_by_version_ids):
+        # Arrange
+        template_id = ObjectId()
+        mock_oai_provider_set1 = _create_mock_oai_provider_set()
+        mock_oai_provider_set2 = _create_mock_oai_provider_set()
+
+        mock_get_all_by_version_ids.return_value = [mock_oai_provider_set1.templates_manager,
+                                                    mock_oai_provider_set2.templates_manager]
+        mock_get_all_by_templates.return_value = [mock_oai_provider_set1, mock_oai_provider_set2]
+
+        # Act
+        result = provider_set_api.get_all_by_templates([template_id])
 
         # Assert
         self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
@@ -189,7 +210,7 @@ def _set_oai_provider_set_fields(oai_provider_set):
     """
     oai_provider_set.set_spec = "oai_test"
     oai_provider_set.set_name = "test"
-    oai_provider_set.templates = [ObjectId(), ObjectId()]
+    oai_provider_set.templates_manager = [ObjectId(), ObjectId()]
     oai_provider_set.description = "OaiSet description"
 
     return oai_provider_set

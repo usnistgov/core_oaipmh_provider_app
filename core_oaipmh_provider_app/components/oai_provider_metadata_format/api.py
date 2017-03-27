@@ -2,14 +2,17 @@
 OaiProviderMetadataFormat API
 """
 from core_main_app.components.template import api as template_api
+from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.commons.exceptions import DoesNotExist
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-import xml_utils.commons.exceptions as exceptions
 from rest_framework.response import Response
 from rest_framework import status
+from core_oaipmh_provider_app import settings
+from django.core.urlresolvers import reverse
+import xml_utils.commons.exceptions as exceptions
 import requests
 
 
@@ -175,10 +178,11 @@ def add_template_metadata_format(metadata_prefix, template_id):
     """
     try:
         template = template_api.get(template_id)
+        version_manager = version_manager_api.get_from_version(template)
         xml_schema = template.content
         target_namespace = _get_target_namespace(xml_schema)
-        # FIXME: Once the server is developed
-        schema_url = ""  # OAI_HOST_URI + reverse('getXSD', args=[template.filename])
+        version_number = version_manager_api.get_version_number(version_manager, template_id)
+        schema_url = _get_simple_template_metadata_format_schema_url(version_manager.title, version_number)
         obj = OaiProviderMetadataFormat(metadata_prefix=metadata_prefix, schema=schema_url, xml_schema=xml_schema,
                                         metadata_namespace=target_namespace, is_default=False, is_template=True,
                                         template=template)
@@ -199,6 +203,37 @@ def add_template_metadata_format(metadata_prefix, template_id):
     except Exception as e:
         raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def get_metadata_format_schema_url(metadata_format):
+    """ Get the Schema URL.
+    Args:
+        metadata_format: OaiProviderMetadataFormat
+
+    Returns:
+        Schema URL.
+
+    """
+    if metadata_format.is_template:
+        split_url = metadata_format.schema.split("/")
+        title = split_url[0]
+        version_number = split_url[1]
+        return settings.OAI_HOST_URI + reverse('core_oaipmh_harvester_app_get_xsd', args=[title, version_number])
+    else:
+        return metadata_format.schema
+
+
+def _get_simple_template_metadata_format_schema_url(title, version_number):
+    """ Get the simple Schema URL for a template metadata format.
+    Args:
+        title: Title of the template.
+        version_number: Version of the template
+
+    Returns:
+        Simple Schema URL.
+
+    """
+    return "{0}/{1}".format(title, version_number)
 
 
 def _get_target_namespace(xml_schema):

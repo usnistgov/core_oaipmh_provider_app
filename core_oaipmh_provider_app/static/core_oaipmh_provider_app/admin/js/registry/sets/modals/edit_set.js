@@ -21,7 +21,7 @@ load_edit_set_form = function(objectID){
         },
         success: function(data){
             $("#edit-set-modal-form").html(data.template);
-            InitSelectMultipleTemplates("#edit-set-form #id_templates");
+            InitSelectMultipleTemplates("#edit-set-form #id_templates_manager");
         }
     });
 }

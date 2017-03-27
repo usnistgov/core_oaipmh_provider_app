@@ -1,0 +1,8 @@
+<header{% if i.deleted %} status="deleted"{% endif %}>
+    <identifier>{{ i.identifier }}</identifier>
+    <datestamp>{{ i.last_modified }}</datestamp>
+    {% for set in i.sets %}
+        <setSpec>{{ set.set_spec }}</setSpec>
+    {% endfor %}
+</header>
+

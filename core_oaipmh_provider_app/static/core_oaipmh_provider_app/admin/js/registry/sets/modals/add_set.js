@@ -64,4 +64,4 @@ var saveSet = function(event) {
 }
 
 $(document).on("click", ".add-set-btn", openAddSetModal);
-InitSelectMultipleTemplates("#add-set-form #id_templates");
+InitSelectMultipleTemplates("#add-set-form #id_templates_manager");

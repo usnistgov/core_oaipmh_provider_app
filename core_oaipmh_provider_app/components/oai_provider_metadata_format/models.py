@@ -6,6 +6,8 @@ from django_mongoengine import fields
 from mongoengine.queryset.base import CASCADE
 from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
 from core_main_app.components.template.models import Template
+from core_main_app.commons import exceptions as exceptions
+from mongoengine import errors as mongoengine_errors
 
 
 class OaiProviderMetadataFormat(OaiMetadataFormat):
@@ -85,3 +87,24 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
         """
         return OaiProviderMetadataFormat.objects(template__in=templates, is_template=True).all()
+
+    @staticmethod
+    def get_by_metadata_prefix(metadata_prefix):
+        """ Get an OaiProviderMetadataFormat by its metadata prefix.
+
+        Args:
+            metadata_prefix: OaiProviderMetadataFormat metadata prefix.
+
+        Returns: The OaiProviderMetadataFormat instance.
+
+        Raises:
+            DoesNotExist: The metadata format doesn't exist.
+            ModelError: Internal error during the process.
+
+        """
+        try:
+            return OaiProviderMetadataFormat.objects().get(metadata_prefix=metadata_prefix)
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(e.message)
+        except Exception as e:
+            raise exceptions.ModelError(e.message)

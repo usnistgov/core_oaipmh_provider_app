@@ -47,7 +47,7 @@ class TemplateMetadataFormatForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(TemplateMetadataFormatForm, self).__init__(*args, **kwargs)
-        self.fields['template'].choices = _get_current_templates()
+        self.fields['template'].choices = _get_templates_versions()
 
 
 class SetForm(forms.Form):
@@ -57,30 +57,50 @@ class SetForm(forms.Form):
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
     set_spec = forms.CharField(label='Set spec', required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     set_name = forms.CharField(label='Set name', required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    templates = forms.MultipleChoiceField(label='Templates', widget=forms.SelectMultiple())
+    templates_manager = forms.MultipleChoiceField(label='Templates', widget=forms.SelectMultiple())
     description = forms.CharField(label='Description', required=True,
                                   widget=forms.Textarea(attrs={'cols': '60', 'rows': '5', 'class': 'form-control',
                                                                'style': 'height:14em;width:100%;'}))
 
     def __init__(self, *args, **kwargs):
         super(SetForm, self).__init__(*args, **kwargs)
-        self.fields['templates'].choices = _get_current_templates()
+        self.fields['templates_manager'].choices = _get_templates_manager()
 
 
-def _get_current_templates():
-    """ Get current templates.
+def _get_templates_versions():
+    """ Get templates versions.
 
     Returns:
-        List of current templates.
+        List of templates versions.
 
     """
     templates = []
     try:
         list_ = template_version_manager_api.get_active_global_version_manager()
         for elt in list_:
-            template = template_api.get(elt.current)
-            templates.append((template.id, template.filename))
+            for version in elt.versions:
+                version_name = "{0} (Version {1})".format(elt.title,
+                                                          template_version_manager_api.get_version_number(elt, version))
+                templates.append((version, version_name))
     except Exception:
         pass
 
     return templates
+
+
+def _get_templates_manager():
+    """ Get templates manager.
+
+    Returns:
+        List of templates manager.
+
+    """
+    templates_manager = []
+    try:
+        list_ = template_version_manager_api.get_active_global_version_manager()
+        for elt in list_:
+            templates_manager.append((elt.id, elt.title))
+    except Exception:
+        pass
+
+    return templates_manager

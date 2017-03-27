@@ -1,0 +1,22 @@
+{% extends "core_oaipmh_provider_app/user/xml/base.html" %}
+
+{% block content %}
+  <GetRecord>
+    <record>
+        <header{% if deleted %} status="deleted"{% endif %}>
+            <identifier>{{ identifier }}</identifier>
+            <datestamp>{{ last_modified }}</datestamp>
+            {% for set in sets %}
+                <setSpec>{{ set.set_spec }}</setSpec>
+            {% endfor %}
+        </header>
+        {% if not deleted %}
+        <metadata>
+            {% autoescape off %}
+            {{ XML|safe }}
+            {% endautoescape %}
+        </metadata>
+        {% endif %}
+    </record>
+  </GetRecord>
+{% endblock %}

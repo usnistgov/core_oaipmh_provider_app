@@ -25,8 +25,8 @@
             <td>{{ set.set_spec }}</td>
             <td>{{ set.set_name }}</td>
             <td>
-                {% for template in set.templates %}
-                    {{ template.filename }} -
+                {% for manager in set.templates_manager %}
+                    {{ manager.title }} -
                 {% endfor %}
             </td>
             <td>{{ set.description }}</td>

@@ -1,0 +1,13 @@
+{% extends "core_oaipmh_provider_app/user/xml/base.html" %}
+
+{% block content %}
+  <ListMetadataFormats>
+    {% for i in items %}
+    <metadataFormat>
+        <metadataNamespace>{{ i.metadataNamespace }}</metadataNamespace>
+        <metadataPrefix>{{ i.metadataPrefix }}</metadataPrefix>
+        <schema>{{ i.schema }}</schema>
+    </metadataFormat>
+    {% endfor %}
+  </ListMetadataFormats>
+{% endblock %}

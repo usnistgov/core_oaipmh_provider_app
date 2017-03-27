@@ -165,6 +165,32 @@ class TestOaiProviderMetadataFormatDelete(TestCase):
             provider_metadata_format_api.delete(oai_provider_metadata_format)
 
 
+class TestOaiProviderMetadataFormatGetMetadataFormatSchemaUrl(TestCase):
+    def test_get_metadata_format_schema_url_returns(self):
+        # Arrange
+        schema = ""
+        mock_oai_provider_metadata_format1 = _create_mock_oai_provider_metadata_format(is_template=False)
+
+        # Act
+        result = provider_metadata_format_api.get_metadata_format_schema_url(mock_oai_provider_metadata_format1)
+
+        # Assert
+        self.assertEquals(mock_oai_provider_metadata_format1.schema, result)
+
+
+class TestOaiProviderMetadataFormatGetSimpleTemplateMetadataFormatSchemaUrl(TestCase):
+    def test_get_simple_template_metadata_format_schema_url_returns(self):
+        # Arrange
+        title = "Schema"
+        version = 1
+
+        # Act
+        result = provider_metadata_format_api._get_simple_template_metadata_format_schema_url(title, version)
+
+        # Assert
+        self.assertEquals("Schema/1", result)
+
+
 def _generic_get_all_test(self, mock_get_all, act_function):
     # Arrange
     mock_oai_provider_metadata_format1 = _create_mock_oai_provider_metadata_format()
@@ -192,7 +218,7 @@ def _create_oai_provider_metadata_format():
     return oai_provider_metadata_format
 
 
-def _create_mock_oai_provider_metadata_format():
+def _create_mock_oai_provider_metadata_format(is_template=False):
     """ Mock an OaiProviderMetadataFormat.
 
     Returns:
@@ -200,12 +226,13 @@ def _create_mock_oai_provider_metadata_format():
 
     """
     mock_oai_provider_metadata_format = Mock(spec=OaiProviderMetadataFormat)
-    _set_oai_provider_metadata_format_fields(mock_oai_provider_metadata_format)
+    _set_oai_provider_metadata_format_fields(mock_oai_provider_metadata_format, is_template)
 
     return mock_oai_provider_metadata_format
 
 
-def _set_oai_provider_metadata_format_fields(oai_provider_metadata_format):
+def _set_oai_provider_metadata_format_fields(oai_provider_metadata_format, is_template=False,
+                                             schema="http://test.com/test.xsd"):
     """ Set OaiProviderMetadataFormat fields.
 
     Returns:
@@ -213,11 +240,11 @@ def _set_oai_provider_metadata_format_fields(oai_provider_metadata_format):
 
     """
     oai_provider_metadata_format.metadata_prefix = "test"
-    oai_provider_metadata_format.schema = "http://test.com/test.xsd"
+    oai_provider_metadata_format.schema = schema
     oai_provider_metadata_format.xml_schema = "<root><test>Hello</test></root>"
     oai_provider_metadata_format.metadata_namespace = 'http://test.com/meta'
     oai_provider_metadata_format.is_default = True
-    oai_provider_metadata_format.is_template = False
+    oai_provider_metadata_format.is_template = is_template
     oai_provider_metadata_format.template = None
 
     return oai_provider_metadata_format

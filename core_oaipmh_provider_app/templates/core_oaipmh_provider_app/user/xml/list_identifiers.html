@@ -1,0 +1,9 @@
+{% extends "core_oaipmh_provider_app/user/xml/base.html" %}
+
+{% block content %}
+  <ListIdentifiers>
+    {% for i in items %}
+        {% include 'core_oaipmh_provider_app/user/xml/header.html' %}
+    {% endfor %}
+  </ListIdentifiers>
+{% endblock %}

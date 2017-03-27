@@ -7,7 +7,7 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import api as template_version_manager_api
 from django.contrib import messages
 from django.template import loader
 import requests
@@ -213,9 +213,10 @@ def add_set(request):
             if form.is_valid():
                 set_spec = request.POST.get('set_spec')
                 set_name = request.POST.get('set_name')
-                templates = request.POST.getlist('templates', [])
+                templates_manager = request.POST.getlist('templates_manager', [])
                 description = request.POST.get('description', '')
-                obj = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates=templates, description=description)
+                obj = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates_manager=templates_manager,
+                                     description=description)
                 oai_provider_set_api.upsert(obj)
                 messages.add_message(request, messages.SUCCESS, 'Set added with success.')
 
@@ -258,7 +259,8 @@ def edit_set(request):
                 set_ = oai_provider_set_api.get_by_id(request.POST['id'])
                 set_.set_spec = request.POST.get('set_spec')
                 set_.set_name = request.POST.get('set_name')
-                set_.templates = [template_api.get(x) for x in request.POST.getlist('templates', [])]
+                templates_manager = request.POST.getlist('templates_manager', [])
+                set_.templates_manager = [template_version_manager_api.get_by_id(x) for x in templates_manager]
                 set_.description = request.POST.get('description', [])
                 oai_provider_set_api.upsert(set_)
                 messages.add_message(request, messages.SUCCESS, 'Set edited with success.')
@@ -269,7 +271,7 @@ def edit_set(request):
         elif request.method == 'GET':
             set_ = oai_provider_set_api.get_by_id(request.GET['id'])
             data = {'id': set_.id, 'set_spec': set_.set_spec, 'set_name': set_.set_name,
-                    'description': set_.description, "templates": [x.id for x in set_.templates]}
+                    'description': set_.description, "templates_manager": [x.id for x in set_.templates_manager]}
             edit_set_form = SetForm(data)
             template_name = 'core_oaipmh_provider_app/admin/registry/sets/modals/edit_set_form.html'
             context = {
