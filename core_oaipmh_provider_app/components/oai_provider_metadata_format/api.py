@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from core_oaipmh_provider_app import settings
 from django.core.urlresolvers import reverse
+from urlparse import urljoin
 import xml_utils.commons.exceptions as exceptions
 import requests
 
@@ -205,10 +206,11 @@ def add_template_metadata_format(metadata_prefix, template_id):
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def get_metadata_format_schema_url(metadata_format):
+def get_metadata_format_schema_url(metadata_format, host_uri=None):
     """ Get the Schema URL.
     Args:
-        metadata_format: OaiProviderMetadataFormat
+        metadata_format: OaiProviderMetadataFormat.
+        host_uri: Host URI.
 
     Returns:
         Schema URL.
@@ -218,9 +220,32 @@ def get_metadata_format_schema_url(metadata_format):
         split_url = metadata_format.schema.split("/")
         title = split_url[0]
         version_number = split_url[1]
-        return settings.OAI_HOST_URI + reverse('core_oaipmh_harvester_app_get_xsd', args=[title, version_number])
+        return _get_absolute_uri(title, version_number, host_uri)
     else:
         return metadata_format.schema
+
+
+def _get_absolute_uri(title, version_number, host_uri=None):
+    """ Get the absolute URI. Use the host_uri in parameter, otherwise use settings.
+    Args:
+        title: Metadata Format title.
+        version_number: Metadata Format version.
+        host_uri: Host URI.
+
+    Returns:
+
+    """
+    reverse_get_xsd = reverse('core_oaipmh_provider_app_get_xsd', args=[title, version_number])
+    absolute_uri_from_settings = urljoin(settings.OAI_HOST_URI, reverse_get_xsd)
+    try:
+        if host_uri:
+            absolute_uri = urljoin(host_uri, reverse_get_xsd)
+        else:
+            absolute_uri = absolute_uri_from_settings
+    except:
+        absolute_uri = absolute_uri_from_settings
+
+    return absolute_uri
 
 
 def _get_simple_template_metadata_format_schema_url(title, version_number):

@@ -183,11 +183,13 @@ class OAIProviderView(TemplateView):
             if len(metadata_formats) == 0:
                 raise oai_provider_exceptions.NoMetadataFormat
             else:
+                host_uri = self.request.build_absolute_uri('/')
                 for metadata_format in metadata_formats:
                     item_info = {
                         'metadataNamespace': metadata_format.metadata_namespace,
                         'metadataPrefix':  metadata_format.metadata_prefix,
-                        'schema':  oai_provider_metadata_format_api.get_metadata_format_schema_url(metadata_format)
+                        'schema':  oai_provider_metadata_format_api.get_metadata_format_schema_url(metadata_format,
+                                                                                                   host_uri)
                     }
                     items.append(item_info)
 

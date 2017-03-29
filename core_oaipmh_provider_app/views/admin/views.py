@@ -6,6 +6,7 @@ from core_oaipmh_provider_app.components.oai_provider_set import api as oai_prov
 from core_main_app.components.version_manager import api as version_manager_api
 from core_oaipmh_provider_app.views.admin.forms import SetForm
 from core_oaipmh_provider_app import settings
+from django.core.urlresolvers import reverse
 
 
 @staff_member_required
@@ -33,8 +34,7 @@ def identity_view(request):
     info = oai_settings_api.get()
     data_provider = {
         'name': info.repository_name,
-        # FIXME: use reverse('oai_server_xxx') when developed
-        'baseURL': settings.OAI_HOST_URI + "/oai_pmh/server/",
+        'baseURL': request.build_absolute_uri(reverse("core_oaipmh_provider_app_server_index")),
         'protocol_version': settings.OAI_PROTOCOL_VERSION,
         'admins': (email for name, email in settings.OAI_ADMINS),
         'deleted': settings.OAI_DELETED_RECORD,
@@ -85,7 +85,7 @@ def metadata_formats_view(request):
     order_field = 'metadata_prefix'
     default_metadata_formats = oai_metadata_format_api.get_all_default_metadata_format(order_by_field=order_field)
     metadata_formats = oai_metadata_format_api.get_all_custom_metadata_format(order_by_field=order_field)
-    template_metadata_formats = _get_template_metadata_format(order_field=order_field)
+    template_metadata_formats = _get_template_metadata_format(request, order_field=order_field)
 
     context = {
         'default_metadata_formats': default_metadata_formats,
@@ -143,7 +143,7 @@ def sets_view(request):
                         context=context, modals=modals)
 
 
-def _get_template_metadata_format(order_field=None):
+def _get_template_metadata_format(request, order_field=None):
     """ Get template metadata format information.
     Args:
         order_field: Possibility to order by field.
@@ -156,10 +156,11 @@ def _get_template_metadata_format(order_field=None):
     template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(order_by_field=order_field)
     for template_item in template_metadata_formats:
         version_manager = version_manager_api.get_from_version(template_item.template)
+        host_uri = request.build_absolute_uri('/')
         item_info = {
             'id': template_item.id,
             'metadata_prefix': template_item.metadata_prefix,
-            'schema': oai_metadata_format_api.get_metadata_format_schema_url(template_item),
+            'schema': oai_metadata_format_api.get_metadata_format_schema_url(template_item, host_uri),
             'title': version_manager.title,
             'metadata_namespace': template_item.metadata_namespace,
             'version': version_manager_api.get_version_number(version_manager, template_item.template.id)
