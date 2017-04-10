@@ -16,6 +16,15 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
     is_template = fields.BooleanField(blank=True)
     template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE, blank=True)
 
+    def __str__(self):
+        """ String representation of an object.
+
+        Returns:
+            String representation
+
+        """
+        return self.metadata_prefix
+
     @staticmethod
     def get_all():
         """ Return all OaiProviderMetadataFormat.

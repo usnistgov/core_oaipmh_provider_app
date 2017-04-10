@@ -1,6 +1,12 @@
 {% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
 
-{% block box_title %}Other Metadata Formats{% endblock %}
+{% block box_title %}
+    Other Metadata Formats <br/>
+    <small>Add other metadata formats by providing a URL.
+        You will need to configure an XSLT file for each Template to perform the
+        mapping between the templates and those metadata formats.
+    </small>
+{% endblock %}
 {% block box_tools %}
 <div class="btn-group pull-right">
     <a href="#" class="btn btn-default add-metadata_format-btn">
@@ -9,10 +15,6 @@
 </div>
 {% endblock %}
 {% block box_body %}
-<p>
-    Add other metadata formats by providing a URL.
-    You will need to configure an XSLT file for each Template under the Template configuration to perform the mapping between the templates and those metadata formats.
-</p>
 <table class="table table-bordered table-striped table-hover">
     <tr>
         <th width="10%;">Metadata Prefix</th>
@@ -28,6 +30,10 @@
             <td>
                 <a class="btn btn-default edit-metadata_format-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
                 <a class="btn btn-danger delete-metadata_format-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+                <a class="btn btn-default mapping-metadata_format-btn"
+                   href="{% url 'admin:core_oaipmh_provider_app_xslt_template_mapping' metadata_format.id %}">
+                    <i class="fa fa-random"></i> Mapping
+                </a>
             </td>
         </tr>
     {% empty %}

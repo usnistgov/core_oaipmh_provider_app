@@ -17,6 +17,8 @@ from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.components.template import api as template_api
 from StringIO import StringIO
 from core_oaipmh_common_app.utils.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
+import core_main_app.components.xsl_transformation.api as xsl_transformation_api
+import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
 
 
@@ -173,7 +175,8 @@ class OAIProviderView(TemplateView):
                 try:
                     record = data_api.get_by_id(record_id)
                     metadata_formats = oai_provider_metadata_format_api.get_all_by_templates([record.template])
-                    # TODO: Get Metadata formats from XSLT association.
+                    xslt_metadata_formats = oai_xsl_template_api.get_metadata_formats_by_templates([record.template])
+                    metadata_formats = set(metadata_formats).union(xslt_metadata_formats)
                 except:
                     raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
             else:
@@ -226,9 +229,8 @@ class OAIProviderView(TemplateView):
 
         """
         try:
-            items = []
-            use_raw = True
             self._check_resumption_token_not_implemented()
+            use_raw = True
             # Handle FROM and UNTIL
             from_date = None
             until_date = None
@@ -237,35 +239,15 @@ class OAIProviderView(TemplateView):
             if self.until:
                 until_date = CheckOaiPmhRequest.check_until(self.until)
             templates_id = self._get_templates_id_by_metadata_prefix(self.metadata_prefix)
+            metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(self.metadata_prefix)
+            if len(templates_id) == 0:
+                templates_id = oai_xsl_template_api.get_template_ids_by_metadata_format(metadata_format)
+                use_raw = False
+
             templates_id_from_set = self._get_templates_id_by_set_spec(self.set)
             set(templates_id).intersection(templates_id_from_set)
 
-            # TODO: Get all TEMPLATES using this metadata prefix thanks to XSLT if len(templates_id) == 0. use_raw=False
-
-            for template in templates_id:
-                oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
-                for elt in oai_data:
-                    identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
-                                                  str(elt.data.id))
-                    item_info = {
-                        'identifier': identifier,
-                        'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
-                        'sets': oai_provider_set_api.get_all_by_templates([template]),
-                        'deleted': elt.status == oai_status.DELETED
-                    }
-
-                    if include_metadata:
-                        if use_raw:
-                            item_info.update({'XML': elt.data.xml_file})
-                        else:
-                            # TODO: Transformation XSLT
-                            raise Exception("Not yet implemented")
-
-                    items.append(item_info)
-
-            # If there is no records
-            if len(items) == 0:
-                raise oai_provider_exceptions.NoRecordsMatch
+            items = self._get_items(templates_id, from_date, until_date, metadata_format, include_metadata, use_raw)
 
             return self.render_to_response({'items': items})
         except oai_provider_exceptions.OAIExceptions, e:
@@ -293,17 +275,20 @@ class OAIProviderView(TemplateView):
                 metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(self.metadata_prefix)
                 # Check if the record and the given metadata prefix use the same template.
                 use_raw = metadata_format.is_template and (oai_data.template == metadata_format.template)
-                # TODO: Get Metadata formats from XSLT association + XSLT transformation.
-                if not use_raw:
-                    raise
+                if use_raw:
+                    xml = oai_data.data.xml_file
+                else:
+                    xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(oai_data.template.id,
+                                                                                          metadata_format.id).xslt
+                    xml = xsl_transformation_api.xsl_transform(oai_data.data.xml_file, xslt.name)
             except:
                 raise oai_provider_exceptions.CannotDisseminateFormat(self.metadata_prefix)
 
             record_info = {
                 'identifier': self.identifier,
                 'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(oai_data.oai_date_stamp),
-                'sets': oai_provider_set_api.get_all_by_templates([oai_data.template]),
-                'XML': oai_data.data.xml_file,
+                'sets': oai_provider_set_api.get_all_by_template_ids([oai_data.template.id]),
+                'XML': xml,
                 'deleted': oai_data.status == oai_status.DELETED
             }
 
@@ -325,27 +310,33 @@ class OAIProviderView(TemplateView):
             raise oai_provider_exceptions.BadResumptionToken(self.resumption_token)
 
     @staticmethod
-    def _get_items(templates_id, from_date, until_date, include_metadata=False, use_raw=True):
+    def _get_items(templates_id, from_date, until_date, metadata_format, include_metadata=False, use_raw=True):
         items = []
         for template in templates_id:
-            oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
-            for elt in oai_data:
-                identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
-                                              str(elt.data.id))
-                item_info = {
-                    'identifier': identifier,
-                    'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
-                    'sets': oai_provider_set_api.get_all_by_templates([template]),
-                    'deleted': elt.status == oai_status.DELETED
-                }
-                if include_metadata:
-                    if use_raw:
-                        item_info.update({'XML': elt.data.xml_file})
-                    else:
-                        # TODO: Transformation XSLT
-                        raise Exception("Not yet implemented")
+            try:
+                xslt = None
+                if not use_raw:
+                    xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(template, metadata_format).xslt
+                oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
+                for elt in oai_data:
+                    identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
+                                                  str(elt.data.id))
+                    item_info = {
+                        'identifier': identifier,
+                        'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
+                        'sets': oai_provider_set_api.get_all_by_template_ids([template]),
+                        'deleted': elt.status == oai_status.DELETED
+                    }
+                    if include_metadata:
+                        if use_raw:
+                            item_info.update({'XML': elt.data.xml_file})
+                        else:
+                            xml = xsl_transformation_api.xsl_transform(elt.data.xml_file, xslt.name)
+                            item_info.update({'XML': xml})
 
-                items.append(item_info)
+                    items.append(item_info)
+            except (exceptions.DoesNotExist, exceptions.XMLError, Exception):
+                pass
 
         # If there is no records
         if len(items) == 0:
@@ -367,9 +358,6 @@ class OAIProviderView(TemplateView):
             metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(metadata_prefix)
             if metadata_format.is_template:
                 templates_id.append(str(metadata_format.template.id))
-
-            # TODO: Get Metadata formats from XSLT association.
-
             return templates_id
         except:
             raise oai_provider_exceptions.CannotDisseminateFormat(metadata_prefix)

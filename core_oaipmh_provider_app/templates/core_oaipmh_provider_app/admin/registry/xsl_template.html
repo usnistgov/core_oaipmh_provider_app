@@ -1,0 +1,9 @@
+{% extends "core_main_app/_render/admin/theme/tools/section.html" %}
+{% load staticfiles %}
+
+{% block section_title %}Mapping Manager{% endblock %}
+{% block section_subtitle %}for metadata format <b>{{ data.metadata_format.metadata_prefix }}</b>{% endblock %}
+
+{% block section_content %}
+    {% include 'core_oaipmh_provider_app/admin/registry/xsl_template/table.html' %}
+{% endblock %}

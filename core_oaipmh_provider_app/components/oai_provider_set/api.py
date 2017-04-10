@@ -78,15 +78,19 @@ def get_all_by_templates_manager(templates_manager):
     return OaiProviderSet.get_all_by_templates_manager(templates_manager=templates_manager)
 
 
-def get_all_by_templates(templates):
-    """ Get all OaiProviderSet used by a list of templates.
+def get_all_by_template_ids(template_ids):
+    """ Get all OaiProviderSet used by a list of templates ids.
 
     Args:
-        templates: List of templates.
+        template_ids: List of templates ids.
 
     Returns:
         List of OaiProviderSet.
 
     """
-    templates_manager = template_version_manager_api.get_all_by_version_ids(templates)
+    # Be sure to have string and not ObjectId()
+    string_ids = map(str, template_ids)
+    # Get all templates managers thanks to templates ids.
+    templates_manager = template_version_manager_api.get_all_by_version_ids(string_ids)
+    # Get all OaiProviderSet used by those templates manager
     return get_all_by_templates_manager(templates_manager)

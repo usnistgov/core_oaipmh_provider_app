@@ -1,13 +1,18 @@
+"""Admin AJAX views
+"""
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from rest_framework import status
 from core_oaipmh_provider_app.views.admin.forms import EditIdentityForm, MetadataFormatForm, EditMetadataFormatForm,\
-    TemplateMetadataFormatForm, SetForm
+    TemplateMetadataFormatForm, SetForm, MappingXSLTForm
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_main_app.components.template_version_manager import api as template_version_manager_api
+from core_main_app.components.xsl_transformation import api as xsl_transformation_api
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
 from django.contrib import messages
 from django.template import loader
 import requests
@@ -215,9 +220,9 @@ def add_set(request):
                 set_name = request.POST.get('set_name')
                 templates_manager = request.POST.getlist('templates_manager', [])
                 description = request.POST.get('description', '')
-                obj = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates_manager=templates_manager,
-                                     description=description)
-                oai_provider_set_api.upsert(obj)
+                set_ = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates_manager=templates_manager,
+                                      description=description)
+                oai_provider_set_api.upsert(set_)
                 messages.add_message(request, messages.SUCCESS, 'Set added with success.')
 
                 return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -276,6 +281,88 @@ def edit_set(request):
             template_name = 'core_oaipmh_provider_app/admin/registry/sets/modals/edit_set_form.html'
             context = {
                 "edit_set_form": edit_set_form
+            }
+
+            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
+                                'application/javascript')
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+
+def add_template_mapping(request):
+    """ Add a mapping between a template and a metadata format (thanks to an XSLT).
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        if request.method == 'POST':
+            form = MappingXSLTForm(request.POST)
+            if form.is_valid():
+                metadata_format = request.POST.get('oai_metadata_format')
+                template = request.POST.get('template')
+                xslt = request.POST.get('xslt')
+
+                oai_xsl_template = OaiXslTemplate(oai_metadata_format=metadata_format, template=template, xslt=xslt)
+                oai_xsl_template_api.upsert(oai_xsl_template)
+                messages.add_message(request, messages.SUCCESS, 'Mapping added with success.')
+
+                return HttpResponse(json.dumps({}), content_type='application/javascript')
+            else:
+                return HttpResponseBadRequest('Bad entries. Please check your entries')
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+
+def delete_template_mapping(request):
+    """ Delete a mapping between a template and a metadata format.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        oai_xsl_template = oai_xsl_template_api.get_by_id(request.GET['id'])
+        oai_xsl_template_api.delete(oai_xsl_template)
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+    return HttpResponse(json.dumps({}), content_type='application/javascript')
+
+
+def edit_template_mapping(request):
+    """ Edit a mapping between a template and a metadata format.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        if request.method == 'POST':
+            form = MappingXSLTForm(request.POST)
+            if form.is_valid():
+                oai_xsl_template = oai_xsl_template_api.get_by_id(request.POST['id'])
+                xslt = request.POST.get('xslt')
+                oai_xsl_template.xslt = xsl_transformation_api.get_by_id(xslt)
+                oai_xsl_template_api.upsert(oai_xsl_template)
+                messages.add_message(request, messages.SUCCESS, 'Mapping edited with success.')
+
+                return HttpResponse(json.dumps({}), content_type='application/javascript')
+            else:
+                return HttpResponseBadRequest('Bad entries. Please check your entries')
+        elif request.method == 'GET':
+            oai_xsl_template = oai_xsl_template_api.get_by_id(request.GET['id'])
+            data = {'id': oai_xsl_template.id, 'template': oai_xsl_template.template.id,
+                    'oai_metadata_format': oai_xsl_template.oai_metadata_format.id,
+                    "xslt": oai_xsl_template.xslt.id}
+            edit_mapping_form = MappingXSLTForm(data, edit_mode=True)
+            template_name = 'core_oaipmh_provider_app/admin/registry/xsl_template/modals/edit_mapping_form.html'
+            context = {
+                "edit_mapping_form": edit_mapping_form
             }
 
             return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),

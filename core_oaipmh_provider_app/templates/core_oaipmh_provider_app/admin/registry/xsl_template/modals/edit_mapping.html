@@ -1,0 +1,16 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}edit-template_mapping-modal{% endblock %}
+{% block modal_title %}Edit Mapping <i class="edit-template_mapping-name"></i>{% endblock %}
+
+{% block modal_body %}
+<div id="edit-template_mapping-modal-form">
+</div>
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+<a id="edit-template_mapping-save" class="btn btn-success" href="#">
+    <i class="fa fa-save"></i> Edit
+</a>
+{% endblock %}

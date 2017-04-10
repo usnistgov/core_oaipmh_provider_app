@@ -153,7 +153,7 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
         mock_get_all_by_templates.return_value = [mock_oai_provider_set1, mock_oai_provider_set2]
 
         # Act
-        result = provider_set_api.get_all_by_templates([template_id])
+        result = provider_set_api.get_all_by_template_ids([template_id])
 
         # Assert
         self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))

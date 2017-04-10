@@ -1,10 +1,10 @@
 """
 Url router for the administration site
 """
-from django.contrib import admin
 from django.conf.urls import url
-from views.admin import views as admin_views
+from django.contrib import admin
 from views.admin import ajax as admin_ajax
+from views.admin import views as admin_views
 
 admin_urls = [
     url(r'^provider/identity/config', admin_views.identity_view,
@@ -27,6 +27,19 @@ admin_urls = [
     url(r'^provider/sets/add', admin_ajax.add_set, name='core_oaipmh_provider_app_add_set'),
     url(r'^provider/sets/delete', admin_ajax.delete_set, name='core_oaipmh_provider_app_delete_set'),
     url(r'^provider/sets/edit', admin_ajax.edit_set, name='core_oaipmh_provider_app_edit_set'),
+
+    url(r'^provider/xslt_template/mapping/(?P<metadata_format_id>\w+)', admin_views.xsl_template_view,
+        name='core_oaipmh_provider_app_xslt_template_mapping'),
+    url(r'^provider/xslt_template/add', admin_ajax.add_template_mapping,
+        name='core_oaipmh_provider_app_add_template_mapping'),
+    url(r'^provider/xslt_template/delete', admin_ajax.delete_template_mapping,
+        name='core_oaipmh_provider_app_delete_template_mapping'),
+    url(r'^provider/xslt_template/edit', admin_ajax.edit_template_mapping,
+        name='core_oaipmh_provider_app_edit_template_mapping'),
+
+
+
+
 ]
 
 urls = admin.site.get_urls()

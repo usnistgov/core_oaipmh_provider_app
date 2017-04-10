@@ -1,0 +1,43 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}Mapping <br/>
+<small>
+   Map a template with an XSLT to convert the template toward metadata format
+    <b>{{ data.metadata_format.metadata_prefix }}</b>.
+</small>
+{% endblock %}
+{% block box_tools %}
+<div class="btn-group pull-right">
+    <a href="{% url 'admin:core_oaipmh_provider_app_metadata_formats'%}" class="btn btn-default">
+        <i class="fa fa-arrow-left"></i> Previous page
+    </a>
+    <a href="#" class="btn btn-default add-template_mapping-btn">
+        <i class="fa fa-plus-circle"></i> Add Mapping
+    </a>
+</div>
+{% endblock %}
+{% block box_body %}
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+        <th width="40%;">Template</th>
+        <th width="40%;">XSLT name</th>
+        <th width="20%;">Actions</th>
+    </tr>
+    {% for xsl_template in data.xsl_templates %}
+        <tr objectid="{{ xsl_template.id }}">
+            <td>{{ xsl_template.template_title }} (Version {{ xsl_template.template_version }})</td>
+            <td>{{ xsl_template.xslt.name }}</td>
+            <td>
+                <a class="btn btn-default edit-template_mapping-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
+                <a class="btn btn-danger delete-template_mapping-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+        </tr>
+    {% empty %}
+        <tr>
+            <td class="empty" colspan="5">
+                There are currently no mappings. Please
+                <a href="#" class="add-template_mapping-btn">add a new one</a>.
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

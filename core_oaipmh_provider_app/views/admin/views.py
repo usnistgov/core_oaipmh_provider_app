@@ -4,7 +4,8 @@ from core_oaipmh_provider_app.components.oai_settings import api as oai_settings
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_main_app.components.version_manager import api as version_manager_api
-from core_oaipmh_provider_app.views.admin.forms import SetForm
+from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
+from core_oaipmh_provider_app.views.admin.forms import SetForm, MappingXSLTForm
 from core_oaipmh_provider_app import settings
 from django.core.urlresolvers import reverse
 
@@ -68,6 +69,10 @@ def metadata_formats_view(request):
             },
             {
                 "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/edit_metadata_format.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/mapping_metadata_format.js",
                 "is_raw": False
             }
         ],
@@ -168,3 +173,64 @@ def _get_template_metadata_format(request, order_field=None):
         items_template_metadata_format.append(item_info)
 
     return items_template_metadata_format
+
+
+@staff_member_required
+def xsl_template_view(request, metadata_format_id):
+    assets = {
+        "js": [
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/add_mapping.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/delete_mapping.js",
+                "is_raw": False
+            },
+            {
+                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/edit_mapping.js",
+                "is_raw": False
+            }
+        ],
+    }
+
+    modals = [
+        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/add_mapping.html",
+        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/delete_mapping.html",
+        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/edit_mapping.html"
+    ]
+
+    metadata_format = oai_metadata_format_api.get_by_id(metadata_format_id)
+
+    context = {
+        "xsl_templates": _get_xsl_templates(metadata_format),
+        "metadata_format": metadata_format,
+        "add_mapping_form": MappingXSLTForm(initial={'oai_metadata_format': metadata_format})
+    }
+
+    return admin_render(request, "core_oaipmh_provider_app/admin/registry/xsl_template.html", assets=assets,
+                        context=context, modals=modals)
+
+
+def _get_xsl_templates(metadata_format):
+    """ Get template metadata format information.
+    Args:
+        metadata_format: OaiProviderMetadataFormat.
+
+    Returns:
+        Template metadata format information.
+
+    """
+    items_xsl_templates = []
+    xsl_templates = oai_xsl_template_api.get_all_by_metadata_format(metadata_format)
+    for item in xsl_templates:
+        version_manager = version_manager_api.get_from_version(item.template)
+        item_info = {
+            'id': item.id,
+            'template_title': version_manager.title,
+            'template_version': version_manager_api.get_version_number(version_manager, item.template.id),
+            'xslt': item.xslt,
+        }
+        items_xsl_templates.append(item_info)
+
+    return items_xsl_templates

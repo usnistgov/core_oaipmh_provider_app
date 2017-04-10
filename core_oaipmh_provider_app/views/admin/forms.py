@@ -1,6 +1,8 @@
 from django import forms
 from core_main_app.components.template_version_manager import api as template_version_manager_api
 from core_main_app.components.template import api as template_api
+from core_main_app.components.xsl_transformation import api as xsl_transformation_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
 
 
 class EditIdentityForm(forms.Form):
@@ -67,6 +69,26 @@ class SetForm(forms.Form):
         self.fields['templates_manager'].choices = _get_templates_manager()
 
 
+class MappingXSLTForm(forms.Form):
+    """
+        A set form.
+    """
+    id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    oai_metadata_format = forms.ModelChoiceField(widget=forms.HiddenInput(),
+                                                 queryset=oai_provider_metadata_format_api.get_all(),
+                                                 label='Metadata Prefix', required=True)
+    template = forms.ChoiceField(label='Template', widget=forms.Select(attrs={"class": "form-control"}))
+    xslt = forms.ChoiceField(label='XSLT', widget=forms.Select(attrs={"class": "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        edit_mode = kwargs.pop('edit_mode', None)
+        super(MappingXSLTForm, self).__init__(*args, **kwargs)
+        self.fields['template'].choices = _get_templates_versions()
+        self.fields['xslt'].choices = _get_xsl_transformation()
+        if edit_mode:
+            self.fields['template'].widget = forms.HiddenInput()
+
+
 def _get_templates_versions():
     """ Get templates versions.
 
@@ -104,3 +126,21 @@ def _get_templates_manager():
         pass
 
     return templates_manager
+
+
+def _get_xsl_transformation():
+    """ Get XSLT.
+
+    Returns:
+        List of XSLT.
+
+    """
+    xsl_transformation = []
+    try:
+        list_ = xsl_transformation_api.get_all()
+        for elt in list_:
+            xsl_transformation.append((elt.id, elt.name))
+    except Exception:
+        pass
+
+    return xsl_transformation

@@ -1,0 +1,1 @@
+var deleteMappingGetUrl = "{% url 'admin:core_oaipmh_provider_app_delete_template_mapping' %}";

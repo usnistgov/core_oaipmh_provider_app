@@ -1,6 +1,12 @@
 {% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
 
-{% block box_title %}Templates as Metadata Formats{% endblock %}
+{% block box_title %}
+    Templates as Metadata Formats <br/>
+    <small>
+        Add templates as metadata formats in order to exchange metadata records directly.
+        Please note metadata format will be associated only to the template that you select.
+    </small>
+{% endblock %}
 {% block box_tools %}
 <div class="btn-group pull-right">
     <a href="#" class="btn btn-default add-template-metadata_format-btn">
@@ -9,10 +15,6 @@
 </div>
 {% endblock %}
 {% block box_body %}
-<p>
-   Add templates as metadata formats in order to exchange metadata records directly.
-   Please note metadata format will be associated only to the template that you select.<br>
-</p>
 <table class="table table-bordered table-striped table-hover">
     <tr>
         <th width="10%;">Metadata Prefix</th>

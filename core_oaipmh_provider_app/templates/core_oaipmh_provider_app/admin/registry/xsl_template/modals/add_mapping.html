@@ -1,0 +1,25 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}add-template_mapping-modal{% endblock %}
+{% block modal_title %}Add new mapping for Metadata format <i>{{ data.metadata_format.metadata_prefix }}</i>{% endblock %}
+
+{% block modal_body %}
+<div class="alert alert-error" id="banner_add_errors" style="display: none;">
+    <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
+    <div id="form_add_errors">
+    </div>
+</div>
+
+<form id="add-template_mapping-form" method="post">
+    {% csrf_token %}
+    {{ data.add_mapping_form }}
+    <div id="add-template_mapping-errors" style="color:red;">
+        {{ errors | safe}}
+    </div>
+</form>
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+<a id="add-template_mapping-save" class="btn btn-success" href="#"><i class="fa fa-save"></i> Add mapping</a>
+{% endblock %}

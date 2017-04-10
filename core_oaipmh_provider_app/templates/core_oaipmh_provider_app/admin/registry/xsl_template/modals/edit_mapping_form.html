@@ -1,0 +1,14 @@
+<div class="alert alert-error" id="banner_edit_errors" style="display: none;">
+    <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
+    <div id="form_edit_errors">
+    </div>
+</div>
+
+<form id="edit-template_mapping-form" method="post">
+    {% csrf_token %}
+    {{ edit_mapping_form }}
+    <div id="edit-template_mapping-errors" style="color:red;">
+        {{ errors | safe}}
+    </div>
+    <br/>
+</form>
