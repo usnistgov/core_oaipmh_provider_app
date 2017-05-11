@@ -1,0 +1,12 @@
+[
+  {
+      "id": "59074b574697f60cd918ece7",
+      "_cls": "OaiSet.OaiProviderSet",
+      "set_spec": "set_demo",
+      "set_name": "Set demo",
+      "templates_manager": [
+          "58fe33d04697f6801b7de564"
+      ],
+      "description": "Set oai demo diffusion"
+  }
+]

@@ -1,0 +1,156 @@
+[
+    {
+        "id": "5910b6294697f61558fc8b25",
+        "template": "58fe33d04697f6801b7de563",
+        "user_id": "1",
+        "title": "Test 1",
+        "dict_content": {
+            "experiment": {
+                "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "citation": {
+                    "citation": {
+                        "citation": null
+                    }
+                },
+                "id": 1234,
+                "experimentType": {
+                    "tracerDiffusivity": {
+                        "dataAnalysis": null,
+                        "experimentalConditions": {
+                            "environment": {
+                                "environment": null
+                            },
+                            "measurementConditions": null
+                        },
+                        "samplePreparations": {
+                            "sampleGeometry": {
+                                "geometry": [
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    },
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    }
+                                ]
+                            },
+                            "samplePreparationProcedure": {
+                                "procedureDescription": null,
+                                "procedureName": null
+                            }
+                        },
+                        "measurement": {
+                            "dataCollectionMethod": null,
+                            "type": null,
+                            "experimentalMethod": {
+                                "direct": {
+                                    "EPMA": {
+                                        "EPMAInstrumentBrand": null
+                                    }
+                                }
+                            }
+                        },
+                        "material": {
+                            "phase": {
+                                "crystalStructure": null,
+                                "name": null
+                            },
+                            "materialName": "Test 1",
+                            "Composition": {
+                                "quantityUnit": "mass fraction",
+                                "materialForm": {
+                                    "singleCrystalline": null
+                                },
+                                "constituents": null
+                            }
+                        },
+                        "diffusingSpecies": {
+                            "element": "Ac"
+                        }
+                    }
+                }
+            }
+        },
+        "is_published": true,
+        "publication_date": null,
+        "last_modification_date": "2017-05-08T18:17:13.420000"
+    },
+    {
+        "id": "5910b6294697f61558fc8c6e",
+        "template": "58fe33d04697f6801b7de563",
+        "user_id": "1",
+        "title": "Test 2",
+        "dict_content": {
+            "experiment": {
+                "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "citation": {
+                    "citation": {
+                        "citation": null
+                    }
+                },
+                "id": 34535243,
+                "experimentType": {
+                    "tracerDiffusivity": {
+                        "dataAnalysis": null,
+                        "experimentalConditions": {
+                            "environment": {
+                                "environment": null
+                            },
+                            "measurementConditions": null
+                        },
+                        "samplePreparations": {
+                            "sampleGeometry": {
+                                "geometry": [
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    },
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    }
+                                ]
+                            },
+                            "samplePreparationProcedure": {
+                                "procedureDescription": null,
+                                "procedureName": null
+                            }
+                        },
+                        "measurement": {
+                            "dataCollectionMethod": null,
+                            "type": null,
+                            "experimentalMethod": {
+                                "direct": {
+                                    "EPMA": {
+                                        "EPMAInstrumentBrand": null
+                                    }
+                                }
+                            }
+                        },
+                        "material": {
+                            "phase": {
+                                "crystalStructure": null,
+                                "name": null
+                            },
+                            "materialName": "Test 2",
+                            "Composition": {
+                                "quantityUnit": "mass fraction",
+                                "materialForm": {
+                                    "singleCrystalline": null
+                                },
+                                "constituents": null
+                            }
+                        },
+                        "diffusingSpecies": {
+                            "element": "Ac"
+                        }
+                    }
+                }
+            }
+        },
+        "is_published": true,
+        "publication_date": null,
+        "last_modification_date": "2017-05-08T18:17:41.940000"
+    }
+]
