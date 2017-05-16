@@ -275,12 +275,15 @@ class OAIProviderView(TemplateView):
                 metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(self.metadata_prefix)
                 # Check if the record and the given metadata prefix use the same template.
                 use_raw = metadata_format.is_template and (oai_data.template == metadata_format.template)
-                if use_raw:
-                    xml = oai_data.data.xml_content
+                if not oai_status.DELETED:
+                    if use_raw:
+                        xml = oai_data.data.xml_content
+                    else:
+                        xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(oai_data.template.id,
+                                                                                              metadata_format.id).xslt
+                        xml = xsl_transformation_api.xsl_transform(oai_data.data.xml_content, xslt.name)
                 else:
-                    xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(oai_data.template.id,
-                                                                                          metadata_format.id).xslt
-                    xml = xsl_transformation_api.xsl_transform(oai_data.data.xml_content, xslt.name)
+                    xml = None
             except:
                 raise oai_provider_exceptions.CannotDisseminateFormat(self.metadata_prefix)
 
@@ -327,7 +330,7 @@ class OAIProviderView(TemplateView):
                         'sets': oai_provider_set_api.get_all_by_template_ids([template]),
                         'deleted': elt.status == oai_status.DELETED
                     }
-                    if include_metadata:
+                    if include_metadata and elt.status == oai_status.ACTIVE:
                         if use_raw:
                             item_info.update({'XML': elt.data.xml_content})
                         else:

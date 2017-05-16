@@ -35,12 +35,10 @@ def post_delete_data(sender, document, **kwargs):
 
     """
     try:
-        deleted = kwargs.get('deleted', False)
-        if deleted:
-            oai_data = oai_data_api.get_by_data(document)
-            oai_data.oai_date_stamp = datetime.now()
-            oai_data.status = status.DELETED
+        oai_data = oai_data_api.get_by_data(document)
+        oai_data.oai_date_stamp = datetime.now()
+        oai_data.status = status.DELETED
 
-            oai_data_api.upsert(oai_data)
+        oai_data_api.upsert(oai_data)
     except Exception as e:
         pass
