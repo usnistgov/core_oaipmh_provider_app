@@ -101,8 +101,8 @@ def _get_templates_versions():
         list_ = template_version_manager_api.get_active_global_version_manager()
         for elt in list_:
             for version in elt.versions:
-                version_name = "{0} (Version {1})".format(elt.title,
-                                                          template_version_manager_api.get_version_number(elt, version))
+                template = template_api.get(version)
+                version_name = template.display_name
                 templates.append((version, version_name))
     except Exception:
         pass

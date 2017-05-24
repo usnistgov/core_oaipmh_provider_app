@@ -160,15 +160,13 @@ def _get_template_metadata_format(request, order_field=None):
     items_template_metadata_format = []
     template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(order_by_field=order_field)
     for template_item in template_metadata_formats:
-        version_manager = version_manager_api.get_from_version(template_item.template)
         host_uri = request.build_absolute_uri('/')
         item_info = {
             'id': template_item.id,
             'metadata_prefix': template_item.metadata_prefix,
             'schema': oai_metadata_format_api.get_metadata_format_schema_url(template_item, host_uri),
-            'title': version_manager.title,
-            'metadata_namespace': template_item.metadata_namespace,
-            'version': version_manager_api.get_version_number(version_manager, template_item.template.id)
+            'title': template_item.template.display_name,
+            'metadata_namespace': template_item.metadata_namespace
         }
         items_template_metadata_format.append(item_info)
 
@@ -224,11 +222,9 @@ def _get_xsl_templates(metadata_format):
     items_xsl_templates = []
     xsl_templates = oai_xsl_template_api.get_all_by_metadata_format(metadata_format)
     for item in xsl_templates:
-        version_manager = version_manager_api.get_from_version(item.template)
         item_info = {
             'id': item.id,
-            'template_title': version_manager.title,
-            'template_version': version_manager_api.get_version_number(version_manager, item.template.id),
+            'template_title': item.template.display_name,
             'xslt': item.xslt,
         }
         items_xsl_templates.append(item_info)
