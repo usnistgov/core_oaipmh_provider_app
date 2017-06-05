@@ -70,10 +70,6 @@ def metadata_formats_view(request):
             {
                 "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/edit_metadata_format.js",
                 "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/mapping_metadata_format.js",
-                "is_raw": False
             }
         ],
         "css": [
