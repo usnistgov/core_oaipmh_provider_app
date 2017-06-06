@@ -275,7 +275,7 @@ class OAIProviderView(TemplateView):
                 metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(self.metadata_prefix)
                 # Check if the record and the given metadata prefix use the same template.
                 use_raw = metadata_format.is_template and (oai_data.template == metadata_format.template)
-                if not oai_status.DELETED:
+                if oai_data.status != oai_status.DELETED:
                     if use_raw:
                         xml = oai_data.data.xml_content
                     else:
