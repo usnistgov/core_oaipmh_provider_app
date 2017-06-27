@@ -35,5 +35,9 @@ urlpatterns = [
         name='core_oaipmh_provider_app_rest_update_set'),
     url(r'^delete/set', oai_set_views.delete_set,
         name='core_oaipmh_provider_app_rest_delete_set'),
-
+    url(r'^mapping/template/metadata_format/xslt', oai_metadata_format_views.template_to_metadata_format_mapping_xslt,
+        name='core_oaipmh_provider_app_rest_mapping_template_mf_xslt'),
+    url(r'^unmapping/template/metadata_format/xslt',
+        oai_metadata_format_views.template_to_metadata_format_unmapping_xslt,
+        name='core_oaipmh_provider_app_rest_unmapping_template_mf_xslt'),
 ]

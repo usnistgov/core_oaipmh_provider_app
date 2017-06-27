@@ -96,3 +96,14 @@ class UpdateSetSerializer(BasicSerializer):
     set_name = CharField(required=False)
     templates_manager = ListField(child=CharField(), required=False)
     description = CharField(required=False)
+
+
+class TemplateToMFMappingXSLTSerializer(BasicSerializer):
+    template_id = CharField(required=True)
+    metadata_format_id = CharField(required=True)
+    xslt_id = CharField(required=True)
+
+
+class TemplateToMFUnMappingXSLTSerializer(BasicSerializer):
+    template_id = CharField(required=True)
+    metadata_format_id = CharField(required=True)
