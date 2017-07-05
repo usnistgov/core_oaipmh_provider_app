@@ -87,3 +87,17 @@ class OaiXslTemplate(Document):
 
            """
         return OaiXslTemplate.objects(oai_metadata_format=metadata_format).all()
+
+    def save_object(self):
+        """ Custom save.
+
+        Returns:
+            Saved Instance.
+
+        """
+        try:
+            return self.save()
+        except mongoengine_errors.NotUniqueError as e:
+            raise exceptions.NotUniqueError(e.message)
+        except Exception as ex:
+            raise exceptions.ModelError(ex.message)

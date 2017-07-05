@@ -1,22 +1,25 @@
 """Admin AJAX views
 """
-from django.http.response import HttpResponseBadRequest, HttpResponse
-from rest_framework import status
-from core_oaipmh_provider_app.views.admin.forms import EditIdentityForm, MetadataFormatForm, EditMetadataFormatForm,\
-    TemplateMetadataFormatForm, SetForm, MappingXSLTForm
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+import json
+
+import requests
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from django.contrib import messages
+from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.template import loader
+from rest_framework import status
+
 from core_main_app.components.template_version_manager import api as template_version_manager_api
 from core_main_app.components.xsl_transformation import api as xsl_transformation_api
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
-from django.contrib import messages
-from django.template import loader
-import requests
-import json
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.views.admin.forms import EditIdentityForm, MetadataFormatForm, EditMetadataFormatForm,\
+    TemplateMetadataFormatForm, SetForm, MappingXSLTForm
+from core_main_app.commons import exceptions
 
 
 def check_registry(request):
@@ -312,6 +315,9 @@ def add_template_mapping(request):
                 return HttpResponse(json.dumps({}), content_type='application/javascript')
             else:
                 return HttpResponseBadRequest('Bad entries. Please check your entries')
+    except exceptions.NotUniqueError:
+        return HttpResponseBadRequest("This mapping already exists.",
+                                      content_type='application/javascript')
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 

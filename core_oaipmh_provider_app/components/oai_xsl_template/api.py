@@ -62,7 +62,7 @@ def upsert(oai_xsl_template):
     Returns:
 
     """
-    return oai_xsl_template.save()
+    return oai_xsl_template.save_object()
 
 
 def get_by_template_id_and_metadata_format_id(template_id, metadata_format_id):
