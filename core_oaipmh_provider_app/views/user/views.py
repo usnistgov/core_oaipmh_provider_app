@@ -173,7 +173,7 @@ class OAIProviderView(TemplateView):
             if self.identifier is not None:
                 record_id = CheckOaiPmhRequest.check_identifier(self.identifier)
                 try:
-                    record = data_api.get_by_id(record_id)
+                    record = data_api.get_by_id(record_id, self.request.user)
                     metadata_formats = oai_provider_metadata_format_api.get_all_by_templates([record.template])
                     xslt_metadata_formats = oai_xsl_template_api.get_metadata_formats_by_templates([record.template])
                     metadata_formats = set(metadata_formats).union(xslt_metadata_formats)
