@@ -7,7 +7,8 @@ from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.settings import OAI_PROVIDER_ROOT, OAI_SCHEME, OAI_REPO_IDENTIFIER
+from core_oaipmh_provider_app.settings import OAI_SCHEME, OAI_REPO_IDENTIFIER
+from tests.test_settings import OAI_PROVIDER_ROOT
 import json
 import os
 

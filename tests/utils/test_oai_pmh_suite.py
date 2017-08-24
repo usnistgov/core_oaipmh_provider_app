@@ -1,22 +1,7 @@
-from django.test import override_settings, SimpleTestCase
-import os
+from django.test import SimpleTestCase
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
-@override_settings(
-    SECRET_KEY='<secret_key>',
-    ALLOWED_HOSTS=['testserver'],
-    TEMPLATES=[
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [
-                os.path.join((os.path.dirname(os.path.dirname(
-                    os.path.abspath(__file__))))
-                    , 'templates')
-            ],
-        },
-    ]
-)
 class TestOaiPmhSuite(SimpleTestCase):
     def check_tag_exist(self, text, check_tag):
         tag_found = False

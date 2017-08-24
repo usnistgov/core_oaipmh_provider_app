@@ -18,7 +18,7 @@ from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_main_app.commons import exceptions as common_exceptions
-from core_oaipmh_provider_app.utils.test_oai_pmh_suite import TestOaiPmhSuite
+from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 
 class TestServerGeneral(TestOaiPmhSuite):
