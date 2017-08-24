@@ -4,7 +4,8 @@ OaiProviderMetadataFormat API
 from core_main_app.components.template import api as template_api
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.commons.exceptions import DoesNotExist
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
+    OaiProviderMetadataFormat
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from xml_utils.xsd_tree.xsd_tree import XSDTree
@@ -51,7 +52,8 @@ def get_by_id(oai_provider_metadata_format_id):
         OaiProviderMetadataFormat instance.
 
     """
-    return OaiProviderMetadataFormat.get_by_id(oai_metadata_format_id=oai_provider_metadata_format_id)
+    return OaiProviderMetadataFormat.\
+        get_by_id(oai_metadata_format_id=oai_provider_metadata_format_id)
 
 
 def get_by_metadata_prefix(metadata_prefix):
@@ -150,22 +152,28 @@ def add_metadata_format(metadata_prefix, schema_url):
         if http_response.status_code == status.HTTP_200_OK:
             xml_schema = http_response.text
             target_namespace = _get_target_namespace(xml_schema)
-            obj = OaiProviderMetadataFormat(metadata_prefix=metadata_prefix, schema=schema_url, xml_schema=xml_schema,
-                                            metadata_namespace=target_namespace, is_default=False, is_template=False)
+            obj = OaiProviderMetadataFormat(metadata_prefix=metadata_prefix, schema=schema_url,
+                                            xml_schema=xml_schema, is_default=False,
+                                            metadata_namespace=target_namespace, is_template=False)
             upsert(obj)
             content = OaiPmhMessage.get_message_labelled('Metadata format added with success.')
 
             return Response(content, status=status.HTTP_201_CREATED)
         else:
-            raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format. Impossible'
-                                                                     ' to retrieve the schema at the given URL',
-                                                             status_code=status.HTTP_400_BAD_REQUEST)
+            raise oai_pmh_exceptions.\
+                OAIAPILabelledException(message='Unable to add the new metadata format. Impossible'
+                                                ' to retrieve the schema at the given URL',
+                                        status_code=status.HTTP_400_BAD_REQUEST)
+    except oai_pmh_exceptions.OAIAPILabelledException as e:
+        raise e
     except exceptions.XMLError as e:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
-                                                         status_code=status.HTTP_400_BAD_REQUEST)
+        raise oai_pmh_exceptions.\
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+                                    status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
-                                                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise oai_pmh_exceptions.\
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+                                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def add_template_metadata_format(metadata_prefix, template_id):
@@ -183,10 +191,11 @@ def add_template_metadata_format(metadata_prefix, template_id):
         xml_schema = template.content
         target_namespace = _get_target_namespace(xml_schema)
         version_number = version_manager_api.get_version_number(version_manager, template_id)
-        schema_url = _get_simple_template_metadata_format_schema_url(version_manager.title, version_number)
-        obj = OaiProviderMetadataFormat(metadata_prefix=metadata_prefix, schema=schema_url, xml_schema=xml_schema,
-                                        metadata_namespace=target_namespace, is_default=False, is_template=True,
-                                        template=template)
+        schema_url = _get_simple_template_metadata_format_schema_url(version_manager.title,
+                                                                     version_number)
+        obj = OaiProviderMetadataFormat(metadata_prefix=metadata_prefix, schema=schema_url,
+                                        xml_schema=xml_schema, is_default=False, is_template=True,
+                                        metadata_namespace=target_namespace, template=template)
         upsert(obj)
         content = OaiPmhMessage.get_message_labelled('Metadata format added with success.')
 
@@ -194,16 +203,19 @@ def add_template_metadata_format(metadata_prefix, template_id):
     except oai_pmh_exceptions.OAIAPILabelledException as e:
         raise e
     except DoesNotExist:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format. '
-                                                                 'Impossible to retrieve the template with the '
-                                                                 'given template',
-                                                         status_code=status.HTTP_404_NOT_FOUND)
+        raise oai_pmh_exceptions.\
+            OAIAPILabelledException(message='Unable to add the new metadata format. '
+                                            'Impossible to retrieve the template with the '
+                                            'given template',
+                                    status_code=status.HTTP_404_NOT_FOUND)
     except exceptions.XMLError as e:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
-                                                         status_code=status.HTTP_400_BAD_REQUEST)
+        raise oai_pmh_exceptions.\
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+                                    status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
-                                                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise oai_pmh_exceptions.\
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+                                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def get_metadata_format_schema_url(metadata_format, host_uri=None):
