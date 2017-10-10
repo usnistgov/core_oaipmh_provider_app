@@ -1,16 +1,20 @@
 """ fixtures files for Server
 """
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
-from core_main_app.components.template.models import Template
+import json
+
+import os
+
 from core_main_app.components.data.models import Data
-from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
+from core_main_app.components.template.models import Template
+from core_main_app.components.template_version_manager import api as template_version_manager_api
+from core_main_app.components.template_version_manager.models import TemplateVersionManager
+from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.settings import OAI_SCHEME, OAI_REPO_IDENTIFIER
 from tests.test_settings import OAI_PROVIDER_ROOT
-import json
-import os
 
 DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_PROVIDER_ROOT, 'utils', 'tests', 'data')
 
@@ -58,6 +62,9 @@ class OaiPmhFixtures(FixtureInterface):
         saved_templates = []
         list_templates = OaiPmhMock.mock_template()
         for template in list_templates:
+            # Create template version manager
+            template_version_manager = TemplateVersionManager(title='default_chemical_element_type')
+            template_version_manager_api.insert(template_version_manager, template)
             saved_templates.append(template.save())
 
         self.templates = saved_templates
@@ -124,6 +131,11 @@ class OaiPmhMock(object):
         return list_templates
 
     @staticmethod
+    def mock_oai_first_template(version=''):
+        list_templates = OaiPmhMock.mock_template(version)
+        return list_templates[0]
+
+    @staticmethod
     def mock_data(version=''):
         with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'data{0}.json'.format(version))) as f:
             data = f.read()
@@ -146,6 +158,11 @@ class OaiPmhMock(object):
         data_json = json.loads(data)
         list_metadata_format = [OaiProviderMetadataFormat(**x) for x in data_json]
         return list_metadata_format
+
+    @staticmethod
+    def mock_oai_first_metadata_format(version=''):
+        list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(version)
+        return list_oai_metadata_formats[0]
 
     @staticmethod
     def mock_oai_set(version=''):

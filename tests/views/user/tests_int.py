@@ -11,7 +11,7 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import api
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
-from tests.views.user.fixtures.fixtures import OaiPmhFixtures
+from tests.utils.fixtures.fixtures import OaiPmhFixtures
 
 fixture_data = OaiPmhFixtures()
 
