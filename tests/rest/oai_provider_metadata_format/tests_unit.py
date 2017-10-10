@@ -9,11 +9,14 @@ from rest_framework import status
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template.models import Template
+from core_main_app.components.xsl_transformation.models import XslTransformation
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as  \
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
     OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
 from core_oaipmh_provider_app.rest.oai_provider_metadata_format import views as  \
     rest_oai_provider_metadata_format
 
@@ -213,6 +216,154 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         response = RequestMock.\
             do_request_put(rest_oai_provider_metadata_format.update_metadata_format,
                            user=_create_mock_user(is_staff=True), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
+    def setUp(self):
+        super(TestTemplateToMetadataFormatMappingXslt, self).setUp()
+        self.data = {"template_id": str(ObjectId()), "metadata_format_id": str(ObjectId()),
+                     "xslt_id": str(ObjectId())}
+        self.bad_data = {}
+
+    def test_template_to_metadata_format_mapping_xslt_unauthorized(self):
+        # Act
+        response = RequestMock.\
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=False), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_template_to_metadata_format_mapping_xslt_serializer_invalid(self):
+        # Act
+        response = RequestMock.\
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.bad_data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch.object(Template, 'get_by_id')
+    def test_template_to_metadata_format_mapping_xslt_template_not_found(self, mock_get_by_id):
+        # Arrange
+        mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
+
+        # Act
+        response = RequestMock. \
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch.object(XslTransformation, 'get_by_id')
+    @patch.object(Template, 'get_by_id')
+    def test_template_to_metadata_format_mapping_xslt_oai_xslt_template_not_found(self,
+                                                                                  mock_get_template,
+                                                                                  mock_get_by_id):
+        # Arrange
+        mock_get_template.return_value = Mock(spec=Template)
+        mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
+
+        # Act
+        response = RequestMock. \
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch.object(OaiProviderMetadataFormat, 'get_by_id')
+    @patch.object(Template, 'get_by_id')
+    @patch.object(XslTransformation, 'get_by_id')
+    def test_template_to_metadata_format_mapping_xslt_metadata_format_not_found(self,
+                                                                                mock_get_xslt,
+                                                                                mock_get_template,
+                                                                                mock_get_by_id):
+        # Arrange
+        mock_get_xslt.return_value = Mock(spec=XslTransformation)
+        mock_get_template.return_value = Mock(spec=Template)
+        mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
+
+        # Act
+        response = RequestMock. \
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch.object(OaiProviderMetadataFormat, 'get_by_id')
+    @patch.object(Template, 'get_by_id')
+    @patch.object(XslTransformation, 'get_by_id')
+    def test_template_to_metadata_format_mapping_xslt_impossible_temp_meta_form(self,
+                                                                                mock_get_xslt,
+                                                                                mock_get_template,
+                                                                                mock_get_meta_form):
+        # Arrange
+        mock_get_xslt.return_value = Mock(spec=XslTransformation)
+        mock_get_template.return_value = Mock(spec=Template)
+        mock_metadata_format = OaiProviderMetadataFormat()
+        # Metadata format is template
+        mock_metadata_format.is_template = True
+        mock_get_meta_form.return_value = mock_metadata_format
+
+        # Act
+        response = RequestMock. \
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_mapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.data)
+
+        # Assert
+        self.assertEqual(response.data['message'], "Impossible to map a XSLT to a template "
+                                                   "metadata format")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
+    def setUp(self):
+        super(TestTemplateToMetadataFormatUnMappingXslt, self).setUp()
+        self.data = {"template_id": str(ObjectId()), "metadata_format_id": str(ObjectId())}
+        self.bad_data = {}
+
+    def test_template_to_metadata_format_unmapping_xslt_unauthorized(self):
+        # Act
+        response = RequestMock.\
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_unmapping_xslt,
+                            user=_create_mock_user(is_staff=False), data=self.data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_template_to_metadata_format_unmapping_xslt_serializer_invalid(self):
+        # Act
+        response = RequestMock.\
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_unmapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.bad_data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch.object(OaiXslTemplate, 'get_by_template_id_and_metadata_format_id')
+    def test_template_to_metadata_format_unmapping_xslt_not_found(self, mock_get_by_id):
+        # Arrange
+        mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
+
+        # Act
+        response = RequestMock. \
+            do_request_post(rest_oai_provider_metadata_format.
+                            template_to_metadata_format_unmapping_xslt,
+                            user=_create_mock_user(is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
