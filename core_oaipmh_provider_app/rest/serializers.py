@@ -84,8 +84,8 @@ class UpdateSetSerializer(BasicSerializer):
     def update(self, instance, validated_data):
         instance.set_spec = validated_data.get('set_spec', instance.set_spec)
         instance.set_name = validated_data.get('set_name', instance.set_name)
-        templates_manager = validated_data.get('templates_manager', None)
-        if templates_manager is not None:
+        templates_manager = validated_data.get('templates_manager', [])
+        if len(templates_manager) > 0:
             templates_manager = [version_manager_api.get(id_) for id_ in templates_manager]
             instance.templates_manager = templates_manager
         instance.description = validated_data.get('description', instance.description)

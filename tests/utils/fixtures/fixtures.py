@@ -171,3 +171,8 @@ class OaiPmhMock(object):
         data_json = json.loads(data)
         list_set = [OaiProviderSet(**x) for x in data_json]
         return list_set
+
+    @staticmethod
+    def mock_oai_first_set(version=''):
+        list_oai_sets = OaiPmhMock.mock_oai_set(version)
+        return list_oai_sets[0]
