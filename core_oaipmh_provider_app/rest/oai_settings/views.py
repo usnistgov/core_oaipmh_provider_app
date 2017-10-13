@@ -1,22 +1,21 @@
 """ OaiSettings rest api
 """
 
-from core_oaipmh_provider_app import settings
-from core_main_app.utils.decorators import api_staff_member_required, api_permission_required
-from rest_framework.decorators import api_view
+import requests
+from django.core.urlresolvers import reverse
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
+from core_main_app.utils.decorators import api_staff_member_required
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
-from core_oaipmh_harvester_app.commons import rights
-from django.core.urlresolvers import reverse
-import requests
 
 
 @api_view(['GET'])
-@api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access)
+@api_staff_member_required()
 def select(request):
     """ Return the OAI-PMH server settings.
 
@@ -37,7 +36,7 @@ def select(request):
 
 
 @api_view(['GET'])
-@api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access)
+@api_staff_member_required()
 def check_registry(request):
     """ Check if the registry is available to answer OAI-PMH requests.
 
@@ -84,7 +83,7 @@ def update(request):
         if serializer.is_valid():
             settings_ = oai_settings_api.get()
             serializer.update(settings_, serializer.data)
-            oai_settings_api.upsert(settings)
+            oai_settings_api.upsert(settings_)
         else:
             raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
                                                                   status_code=status.HTTP_400_BAD_REQUEST)

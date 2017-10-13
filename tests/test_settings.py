@@ -16,3 +16,4 @@ TEMPLATES=[
         ],
     },
 ]
+ROOT_URLCONF = 'core_oaipmh_provider_app.urls'
