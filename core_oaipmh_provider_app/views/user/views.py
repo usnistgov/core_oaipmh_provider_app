@@ -16,7 +16,7 @@ from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.components.template import api as template_api
 from StringIO import StringIO
-from core_oaipmh_common_app.utils.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
+from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
 import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions

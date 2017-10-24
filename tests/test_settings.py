@@ -4,6 +4,8 @@ from os.path import dirname, realpath, join
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     "tests",
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
 ]
 OAI_PROVIDER_ROOT = dirname(realpath(__file__))
 ALLOWED_HOSTS=['testserver']
