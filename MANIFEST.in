@@ -1,4 +1,4 @@
-include README.md
-include requirements.txt
+include README.rst
+include requirements.core.txt
 recursive-include core_oaipmh_provider_app/static *
 recursive-include core_oaipmh_provider_app/templates *

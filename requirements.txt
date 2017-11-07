@@ -1,3 +1,0 @@
-core-oaipmh-common-app==1.0.0-alpha4
-requests==2.3.0
-signals_utils==1.0.0-beta2
