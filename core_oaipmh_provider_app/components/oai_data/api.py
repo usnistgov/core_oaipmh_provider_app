@@ -114,25 +114,16 @@ def upsert_from_data(document, force_update=False):
     """
     try:
         oai_data = get_by_data(document)
-        # Check the status. If no more published, considered as deleted.
-        if (not document.is_published) and (oai_data.status != status.DELETED):
-            oai_data.status = status.DELETED
-            force_update = True
-        elif document.is_published and (oai_data.status == status.DELETED):
-            oai_data.status = status.ACTIVE
-            force_update = True
-
         if force_update:
             oai_data.oai_date_stamp = datetime.now()
             upsert(oai_data)
     except exceptions.DoesNotExist:
         # Create only if the record is published.
-        if document.is_published:
-            oai_data = OaiData()
-            oai_data.status = status.ACTIVE
-            oai_data.data = document
-            oai_data.template = document.template
-            oai_data.oai_date_stamp = datetime.now()
-            upsert(oai_data)
+        oai_data = OaiData()
+        oai_data.status = status.ACTIVE
+        oai_data.data = document
+        oai_data.template = document.template
+        oai_data.oai_date_stamp = datetime.now()
+        upsert(oai_data)
     except Exception:
         pass

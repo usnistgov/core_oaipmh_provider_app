@@ -72,8 +72,6 @@
                 }
             }
         },
-        "is_published": true,
-        "publication_date": null,
         "last_modification_date": "2017-05-08T18:17:13.420000"
     },
     {
@@ -149,8 +147,6 @@
                 }
             }
         },
-        "is_published": true,
-        "publication_date": null,
         "last_modification_date": "2017-05-08T18:17:41.940000"
     }
 ]
