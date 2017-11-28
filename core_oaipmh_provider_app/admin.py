@@ -3,8 +3,8 @@ Url router for the administration site
 """
 from django.conf.urls import url
 from django.contrib import admin
-from views.admin import ajax as admin_ajax
-from views.admin import views as admin_views
+from core_oaipmh_provider_app.views.admin import ajax as admin_ajax, views as admin_views
+
 
 admin_urls = [
     url(r'^provider/identity/config', admin_views.identity_view,
@@ -36,10 +36,6 @@ admin_urls = [
         name='core_oaipmh_provider_app_delete_template_mapping'),
     url(r'^provider/xslt_template/edit', admin_ajax.edit_template_mapping,
         name='core_oaipmh_provider_app_edit_template_mapping'),
-
-
-
-
 ]
 
 urls = admin.site.get_urls()
