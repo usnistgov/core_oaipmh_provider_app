@@ -63,7 +63,7 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
     @patch.object(requests, 'get')
     def test_add_metadata_format(self, mock_get):
         # Arrange
-        text = '<test>Hello</test>'
+        text = "<schema xmlns='http://www.w3.org/2001/XMLSchema'></schema>"
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = text
         user = _create_mock_user(is_staff=True)

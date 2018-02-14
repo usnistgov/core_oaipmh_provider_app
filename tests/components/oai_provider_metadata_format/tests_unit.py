@@ -241,7 +241,7 @@ def _set_oai_provider_metadata_format_fields(oai_provider_metadata_format, is_te
     """
     oai_provider_metadata_format.metadata_prefix = "test"
     oai_provider_metadata_format.schema = schema
-    oai_provider_metadata_format.xml_schema = "<root><test>Hello</test></root>"
+    oai_provider_metadata_format.xml_schema = "<schema xmlns='http://www.w3.org/2001/XMLSchema'></schema>"
     oai_provider_metadata_format.metadata_namespace = 'http://test.com/meta'
     oai_provider_metadata_format.is_default = True
     oai_provider_metadata_format.is_template = is_template

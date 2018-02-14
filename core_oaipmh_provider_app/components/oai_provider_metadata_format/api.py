@@ -4,6 +4,8 @@ OaiProviderMetadataFormat API
 from core_main_app.components.template import api as template_api
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.commons.exceptions import DoesNotExist
+from core_main_app.utils.xml import is_schema_valid
+from core_main_app.commons.exceptions import XSDError
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
     OaiProviderMetadataFormat
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
@@ -29,6 +31,7 @@ def upsert(oai_provider_metadata_format):
 
 
     """
+    is_schema_valid(oai_provider_metadata_format.xml_schema)
     return oai_provider_metadata_format.save()
 
 
@@ -166,7 +169,7 @@ def add_metadata_format(metadata_prefix, schema_url):
                                         status_code=status.HTTP_400_BAD_REQUEST)
     except oai_pmh_exceptions.OAIAPILabelledException as e:
         raise e
-    except exceptions.XMLError as e:
+    except (exceptions.XMLError, XSDError) as e:
         raise oai_pmh_exceptions.\
             OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
                                     status_code=status.HTTP_400_BAD_REQUEST)
