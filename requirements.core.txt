@@ -1,4 +1,4 @@
-core_main_app==1.0.0-alpha6
-core-oaipmh-common-app==1.0.0-alpha6
-signals_utils==1.0.0-beta4
-xml_utils==1.0.0-alpha6
+core_main_app==1.0.0-beta1
+core-oaipmh-common-app==1.0.0-beta1
+signals_utils==1.0.0-beta5
+xml_utils==1.0.0-beta1
