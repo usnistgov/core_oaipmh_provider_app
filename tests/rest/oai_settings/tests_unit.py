@@ -22,7 +22,7 @@ class TestSelect(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_settings.select, user, self.data)
+            do_request_get(rest_oai_settings.Settings.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -39,7 +39,7 @@ class TestCheckRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_settings.check_registry, user, self.data)
+            do_request_get(rest_oai_settings.Check.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -52,7 +52,7 @@ class TestCheckRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_settings.check_registry, user, self.data)
+            do_request_get(rest_oai_settings.Check.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -65,7 +65,7 @@ class TestCheckRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock. \
-            do_request_get(rest_oai_settings.check_registry, user, self.data)
+            do_request_get(rest_oai_settings.Check.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -80,8 +80,8 @@ class TestUpdate(SimpleTestCase):
     def test_update_unauthorized(self):
         # Act
         response = RequestMock.\
-            do_request_put(rest_oai_settings.update,
-                           user=_create_mock_user(is_staff=False), data=self.data)
+            do_request_patch(rest_oai_settings.Settings.as_view(),
+                             user=_create_mock_user(is_staff=False), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

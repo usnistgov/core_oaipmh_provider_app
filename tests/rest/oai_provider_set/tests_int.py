@@ -1,8 +1,8 @@
 """ Int Test Rest OaiProviderSet
 """
-import requests
+from bson.objectid import ObjectId
 from django.contrib.auth.models import User
-from mock.mock import Mock, patch
+from mock.mock import Mock
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \
@@ -20,7 +20,7 @@ class TestSelectSet(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestSelectSet, self).setUp()
-        self.data = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
+        self.param = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
 
     def test_select_set_returns(self):
         # Arrange
@@ -28,7 +28,7 @@ class TestSelectSet(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(rest_oai_provider_set.
-                                              select_set, user=user, data=self.data)
+                                              SetDetail.as_view(), user=user, param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -47,7 +47,7 @@ class TestSelectAllSets(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(rest_oai_provider_set.
-                                              select_all_sets, user, self.data)
+                                              SetsList.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -59,7 +59,7 @@ class TestAddSet(MongoIntegrationBaseTestCase):
     def setUp(self):
         super(TestAddSet, self).setUp()
         self.data = {"set_spec": "oai_dummy", "set_name": "dummy set",
-                     "templates_manager": ["id1", "id2"],
+                     "templates_manager": [ObjectId(), ObjectId()],
                      "description": "The description"}
         self.nb_sets = len(OaiProviderSet.objects.all())
 
@@ -68,7 +68,8 @@ class TestAddSet(MongoIntegrationBaseTestCase):
         user = _create_mock_user(is_staff=True)
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_provider_set.add_set, user, self.data)
+        response = RequestMock.do_request_post(rest_oai_provider_set.SetsList.as_view(), user,
+                                               self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -80,7 +81,7 @@ class TestDeleteSet(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestDeleteSet, self).setUp()
-        self.data = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
+        self.param = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
         self.nb_sets = len(OaiProviderSet.objects.all())
 
     def test_delete_set(self):
@@ -88,10 +89,11 @@ class TestDeleteSet(MongoIntegrationBaseTestCase):
         user = _create_mock_user(is_staff=True)
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_provider_set.delete_set, user, self.data)
+        response = RequestMock.do_request_delete(rest_oai_provider_set.SetDetail.as_view(), user,
+                                                 param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(OaiProviderSet.objects.all()), self.nb_sets - 1)
 
 
@@ -104,16 +106,19 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
         self.new_set_spec = "{0}_new".format(self.first_set.set_spec)
         self.new_set_name = "{0}_new".format(self.first_set.set_name)
         self.new_description = "{0}_new".format(self.first_set.description)
-        self.data = {"set_id": str(self.first_set.id),
-                     "set_spec": self.new_set_spec, "set_name": self.new_set_name,
-                     "description": self.new_description}
+        self.new_template_version = self.fixture.template_version[0]
+        self.param = {"set_id": str(self.first_set.id)}
+        self.data = {"set_spec": self.new_set_spec, "set_name": self.new_set_name,
+                     "description": self.new_description,
+                     "templates_manager": [str(self.new_template_version.id)]}
 
     def test_update_set(self):
         # Arrange
         user = _create_mock_user(is_staff=True)
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_provider_set.update_set, user, self.data)
+        response = RequestMock.do_request_patch(rest_oai_provider_set.SetDetail.as_view(), user,
+                                                data=self.data, param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -126,6 +131,9 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
         self.assertEqual(OaiProviderSet.objects.
                          get(pk=self.first_set.id).description,
                          self.new_description)
+        self.assertEqual(OaiProviderSet.objects.
+                         get(pk=self.first_set.id).templates_manager,
+                         [self.new_template_version])
 
 
 def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):

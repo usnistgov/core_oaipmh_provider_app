@@ -24,7 +24,8 @@ class TestSelect(MongoIntegrationBaseTestCase):
         user = _create_mock_user(is_staff=True)
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_settings.select, user=user, data=self.data)
+        response = RequestMock.do_request_get(rest_oai_settings.Settings.as_view(), user=user,
+                                              data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -49,7 +50,8 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
         user = _create_mock_user(is_staff=True)
 
         # Act
-        response = RequestMock.do_request_put(rest_oai_settings.update, user, self.data)
+        response = RequestMock.do_request_patch(rest_oai_settings.Settings.as_view(), user,
+                                                self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)

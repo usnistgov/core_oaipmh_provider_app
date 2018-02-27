@@ -31,6 +31,7 @@ class OaiPmhFixtures(FixtureInterface):
     oai_identify = None
     settings = None
     templates = []
+    template_version = []
     oai_sets = []
     oai_metadata_formats = []
     oai_records = []
@@ -60,14 +61,17 @@ class OaiPmhFixtures(FixtureInterface):
     """
     def insert_templates(self):
         saved_templates = []
+        saved_template_version = []
         list_templates = OaiPmhMock.mock_template()
         for template in list_templates:
             # Create template version manager
             template_version_manager = TemplateVersionManager(title='default_chemical_element_type')
             template_version_manager_api.insert(template_version_manager, template)
+            saved_template_version.append(template_version_manager)
             saved_templates.append(template.save())
 
         self.templates = saved_templates
+        self.template_version = saved_template_version
 
     """
         Data's methods

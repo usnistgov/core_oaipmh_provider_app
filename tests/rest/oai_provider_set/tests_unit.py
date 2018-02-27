@@ -19,20 +19,8 @@ from core_oaipmh_provider_app.rest.oai_provider_set import views as  \
 class TestSelectSet(SimpleTestCase):
     def setUp(self):
         super(TestSelectSet, self).setUp()
-        self.data = {"set_id": str(ObjectId())}
+        self.param = {"set_id": str(ObjectId())}
         self.bad_data = {}
-
-    def test_select_set_serializer_invalid(self):
-        # Arrange
-        user = _create_mock_user(is_staff=True)
-
-        # Act
-        response = RequestMock.\
-            do_request_get(rest_oai_provider_set.select_set, user,
-                           data=self.bad_data)
-
-        # Assert
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_select_set_unauthorized(self):
         # Arrange
@@ -40,8 +28,8 @@ class TestSelectSet(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_provider_set.select_set, user,
-                           self.data)
+            do_request_get(rest_oai_provider_set.SetDetail.as_view(), user,
+                           param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -53,8 +41,8 @@ class TestSelectSet(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_provider_set.select_set,
-                           user=_create_mock_user(is_staff=True), data=self.data)
+            do_request_get(rest_oai_provider_set.SetDetail.as_view(),
+                           user=_create_mock_user(is_staff=True), param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -72,7 +60,7 @@ class TestSelectAllSet(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_get(rest_oai_provider_set.select_all_sets, user,
+            do_request_get(rest_oai_provider_set.SetDetail.as_view(), user,
                            self.data)
 
         # Assert
@@ -93,7 +81,7 @@ class TestAddSet(SimpleTestCase):
 
         # Act
         response = RequestMock.\
-            do_request_post(rest_oai_provider_set.add_set, user, self.data)
+            do_request_post(rest_oai_provider_set.SetsList.as_view(), user, self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -101,7 +89,7 @@ class TestAddSet(SimpleTestCase):
     def test_add_set_serializer_invalid(self):
         # Act
         response = RequestMock.\
-            do_request_post(rest_oai_provider_set.add_set,
+            do_request_post(rest_oai_provider_set.SetsList.as_view(),
                             user=_create_mock_user(is_staff=True), data=self.bad_data)
 
         # Assert
@@ -111,27 +99,19 @@ class TestAddSet(SimpleTestCase):
 class TestUpdateSet(SimpleTestCase):
     def setUp(self):
         super(TestUpdateSet, self).setUp()
-        self.data = {"set_id": str(ObjectId()), "set_spec": "oai_dummy", "set_name": "dummy",
+        self.param = {"set_id": str(ObjectId())}
+        self.data = {"set_spec": "oai_dummy", "set_name": "dummy",
                      "templates_manager": ["id1", "id2"], "description": "value"}
-        self.bad_data = {}
 
     def test_update_set_unauthorized(self):
         # Act
         response = RequestMock.\
-            do_request_post(rest_oai_provider_set.update_set,
-                            user=_create_mock_user(is_staff=False), data=self.data)
+            do_request_patch(rest_oai_provider_set.SetDetail.as_view(),
+                             user=_create_mock_user(is_staff=False), data=self.data,
+                             param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_update_set_serializer_invalid(self):
-        # Act
-        response = RequestMock. \
-            do_request_post(rest_oai_provider_set.update_set,
-                            user=_create_mock_user(is_staff=True), data=self.bad_data)
-
-        # Assert
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch.object(OaiProviderSet, 'get_by_id')
     def test_update_set_not_found(self, mock_get_by_id):
@@ -140,8 +120,9 @@ class TestUpdateSet(SimpleTestCase):
 
         # Act
         response = RequestMock. \
-            do_request_post(rest_oai_provider_set.update_set,
-                            user=_create_mock_user(is_staff=True), data=self.data)
+            do_request_patch(rest_oai_provider_set.SetDetail.as_view(),
+                             user=_create_mock_user(is_staff=True), data=self.data,
+                             param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -150,27 +131,16 @@ class TestUpdateSet(SimpleTestCase):
 class TestDeleteSet(SimpleTestCase):
     def setUp(self):
         super(TestDeleteSet, self).setUp()
-        self.data = {}
-        self.bad_data = {}
-        self.bad_set = {"set_id": str(ObjectId())}
+        self.param = {"set_id": str(ObjectId())}
 
     def test_delete_set_unauthorized(self):
         # Act
         response = RequestMock.\
-            do_request_post(rest_oai_provider_set.delete_set,
-                            user=_create_mock_user(is_staff=False), data=self.data)
+            do_request_delete(rest_oai_provider_set.SetDetail.as_view(),
+                              user=_create_mock_user(is_staff=False), param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_delete_set_serializer_invalid(self):
-        # Act
-        response = RequestMock.\
-            do_request_post(rest_oai_provider_set.delete_set,
-                            user=_create_mock_user(is_staff=True), data=self.bad_data)
-
-        # Assert
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch.object(oai_provider_set_api, 'get_by_id')
     def test_delete_set_not_found(self, mock_get_by_id):
@@ -178,9 +148,9 @@ class TestDeleteSet(SimpleTestCase):
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
         # Act
-        response = RequestMock.\
-            do_request_post(rest_oai_provider_set.delete_set,
-                            user=_create_mock_user(is_staff=True), data=self.bad_set)
+        response = RequestMock. \
+            do_request_delete(rest_oai_provider_set.SetDetail.as_view(),
+                              user=_create_mock_user(is_staff=True), param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
