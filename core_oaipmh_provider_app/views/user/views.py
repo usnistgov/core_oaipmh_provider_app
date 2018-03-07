@@ -323,7 +323,7 @@ class OAIProviderView(TemplateView):
                 oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
                 for elt in oai_data:
                     identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
-                                                  str(elt.data.id))
+                                                  str(elt.data_id))
                     item_info = {
                         'identifier': identifier,
                         'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),

@@ -18,6 +18,16 @@ class OaiData(Document):
     status = fields.StringField(blank=False)
     template = fields.ReferenceField(Template, blank=False)
 
+    @property
+    def data_id(self):
+        """ Get data id even if the reference is broken (Deleted Data).
+
+            Returns:
+                ObjectId: Data id.
+
+        """
+        return self._data["data"].id
+
     @staticmethod
     def get_by_id(oai_data_id):
         """ Returns the object with the given id
