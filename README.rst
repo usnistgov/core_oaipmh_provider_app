@@ -1,4 +1,5 @@
-core_oaipmh_provider_app
+========================
+Core Oaipmh Provider App
 ========================
 
 OAI-PMH provider capabilities for the curator core project.
