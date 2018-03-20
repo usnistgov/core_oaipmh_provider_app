@@ -4,12 +4,13 @@
 
 {% block box_tools %}
 <div class="btn-group pull-right">
-    <a href="#" class="btn btn-default edit-identity-btn">
-        <i class="fa fa-cogs"></i> Edit my Server’s Identity
-    </a>
-    <a href="#" class="btn btn-default check-status-btn">
-        <i class="fa fa-check-circle"></i> Check status
-    </a>
+    {% url 'admin:core_oaipmh_provider_app_edit_identity' data.data_provider.id as edit_url %}
+    {% include 'core_main_app/common/buttons/edit.html' %}
+    <span>
+        <a href="#" class="btn btn-default check-status-btn">
+            <i class="fa fa-check-circle"></i> Check status
+        </a>
+    </span>
 </div>
 {% endblock %}
 

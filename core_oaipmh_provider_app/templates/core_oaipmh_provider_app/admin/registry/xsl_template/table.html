@@ -28,8 +28,11 @@
             <td>{{ xsl_template.template_title }}</td>
             <td>{{ xsl_template.xslt.name }}</td>
             <td>
-                <a class="btn btn-default edit-template_mapping-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
-                <a class="btn btn-danger delete-template_mapping-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+                {% url 'admin:core_oaipmh_provider_app_edit_template_mapping' xsl_template.id as edit_url %}
+                {% include 'core_main_app/common/buttons/edit.html' %}
+                <span>
+                    <a class="btn btn-danger delete-template_mapping-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+                </span>
         </tr>
     {% empty %}
         <tr>

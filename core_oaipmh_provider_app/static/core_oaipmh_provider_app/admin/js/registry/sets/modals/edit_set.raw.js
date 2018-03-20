@@ -1,1 +1,0 @@
-var editSetGetPostUrl = "{% url 'admin:core_oaipmh_provider_app_edit_set' %}";

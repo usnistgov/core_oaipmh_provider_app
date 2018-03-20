@@ -5,7 +5,7 @@ openDeleteMappingModal = function(event)
 {
     event.preventDefault();
 
-    var $setRow = $(this).parent().parent();
+    var $setRow = $(this).parent().parent().parent();
     var objectID = $setRow.attr("objectid");
     var setName = $setRow.find("td:first").text();
 

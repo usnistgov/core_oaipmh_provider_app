@@ -2,7 +2,7 @@ openDeleteMetadataFormatModal = function(event)
 {
     event.preventDefault();
 
-    var $metadataFormatRow = $(this).parent().parent();
+    var $metadataFormatRow = $(this).parent().parent().parent();
     var objectID = $metadataFormatRow.attr("objectid");
     var metadataFormatName = $metadataFormatRow.find("td:first").text();
 

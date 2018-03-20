@@ -31,8 +31,11 @@
             </td>
             <td>{{ set.description }}</td>
             <td>
-                <a class="btn btn-default edit-set-btn" href="#"><i class="fa fa-edit"></i> Edit</a>
-                <a class="btn btn-danger delete-set-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+                {% url 'admin:core_oaipmh_provider_app_edit_set' set.id as edit_url %}
+                {% include 'core_main_app/common/buttons/edit.html' %}
+                <span>
+                    <a class="btn btn-danger delete-set-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
+                </span>
         </tr>
     {% empty %}
         <tr>

@@ -1,13 +1,14 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.urlresolvers import reverse
+
 from core_main_app.utils.rendering import admin_render
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_main_app.views.common.ajax import EditTemplateVersionManagerView
+from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
-from core_main_app.components.version_manager import api as version_manager_api
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
 from core_oaipmh_provider_app.views.admin.forms import SetForm, MappingXSLTForm
-from core_oaipmh_provider_app import settings
-from django.core.urlresolvers import reverse
 
 
 @staff_member_required
@@ -18,10 +19,7 @@ def identity_view(request):
                 "path": "core_oaipmh_provider_app/admin/js/registry/identity/check_registry.js",
                 "is_raw": False
             },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/identity/modals/edit_identity.js",
-                "is_raw": False
-            }
+            EditTemplateVersionManagerView.get_modal_js_path()
         ],
         "css": [
             "core_oaipmh_provider_app/admin/css/registry/identity/table_info.css"
@@ -29,11 +27,12 @@ def identity_view(request):
     }
 
     modals = [
-        "core_oaipmh_provider_app/admin/registry/identity/modals/edit_identity.html"
+        EditTemplateVersionManagerView.get_modal_html_path()
     ]
 
     info = oai_settings_api.get()
     data_provider = {
+        'id': info.id,
         'name': info.repository_name,
         'baseURL': request.build_absolute_uri(reverse("core_oaipmh_provider_app_server_index")),
         'protocol_version': settings.OAI_PROTOCOL_VERSION,
@@ -48,7 +47,8 @@ def identity_view(request):
     }
 
     context = {
-        "data_provider": data_provider
+        "data_provider": data_provider,
+        "object_name": info.repository_name
     }
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/identity.html", assets=assets,
@@ -67,10 +67,7 @@ def metadata_formats_view(request):
                 "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/delete_metadata_format.js",
                 "is_raw": False
             },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/edit_metadata_format.js",
-                "is_raw": False
-            }
+            EditTemplateVersionManagerView.get_modal_js_path()
         ],
         "css": [
             "core_oaipmh_provider_app/admin/css/registry/metadata_formats/page.css"
@@ -80,7 +77,7 @@ def metadata_formats_view(request):
     modals = [
         "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/add_metadata_format.html",
         "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/delete_metadata_format.html",
-        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/edit_metadata_format.html"
+        EditTemplateVersionManagerView.get_modal_html_path()
     ]
 
     order_field = 'metadata_prefix'
@@ -121,7 +118,8 @@ def sets_view(request):
             {
                 "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/edit_set.js",
                 "is_raw": False
-            }
+            },
+            EditTemplateVersionManagerView.get_modal_js_path()
         ],
         "css": [
             "core_oaipmh_provider_app/admin/libs/fSelect/css/fSelect.css",
@@ -132,7 +130,7 @@ def sets_view(request):
     modals = [
         "core_oaipmh_provider_app/admin/registry/sets/modals/add_set.html",
         "core_oaipmh_provider_app/admin/registry/sets/modals/delete_set.html",
-        "core_oaipmh_provider_app/admin/registry/sets/modals/edit_set.html"
+        EditTemplateVersionManagerView.get_modal_html_path()
     ]
 
     context = {
@@ -181,17 +179,14 @@ def xsl_template_view(request, metadata_format_id):
                 "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/delete_mapping.js",
                 "is_raw": False
             },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/edit_mapping.js",
-                "is_raw": False
-            }
+            EditTemplateVersionManagerView.get_modal_js_path()
         ],
     }
 
     modals = [
         "core_oaipmh_provider_app/admin/registry/xsl_template/modals/add_mapping.html",
         "core_oaipmh_provider_app/admin/registry/xsl_template/modals/delete_mapping.html",
-        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/edit_mapping.html"
+        EditTemplateVersionManagerView.get_modal_html_path()
     ]
 
     metadata_format = oai_metadata_format_api.get_by_id(metadata_format_id)

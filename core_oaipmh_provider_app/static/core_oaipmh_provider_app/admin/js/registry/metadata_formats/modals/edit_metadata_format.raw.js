@@ -1,1 +1,0 @@
-var editMetadataFormatGetPostUrl = "{% url 'admin:core_oaipmh_provider_app_edit_metadata_format' %}";
