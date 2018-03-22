@@ -6,11 +6,12 @@ import requests
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
-from django.http.response import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from rest_framework import status
 
 from core_main_app.commons import exceptions
+from core_main_app.commons.exceptions import NotUniqueError
 from core_main_app.views.common.ajax import EditObjectModalView
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
@@ -47,19 +48,14 @@ class EditIdentityView(EditObjectModalView):
     form_class = EditIdentityForm
     model = OaiSettings
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_identity")
+    success_message = 'Data provider edited with success.'
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             oai_settings_api.upsert(self.object)
-            messages.add_message(self.request, messages.SUCCESS, 'Data provider edited with '
-                                                                 'success.')
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditIdentityView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 def add_metadata_format(request):
@@ -121,19 +117,17 @@ class EditMetadataFormatView(EditObjectModalView):
     form_class = EditMetadataFormatForm
     model = OaiProviderMetadataFormat
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = 'Metadata Format edited with success.'
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             oai_provider_metadata_format_api.upsert(self.object)
-            messages.add_message(self.request, messages.SUCCESS, 'Metadata Format edited with '
-                                                                 'success.')
+        except NotUniqueError:
+            form.add_error(None, "A Metadata Format with the same prefix already exists. Please "
+                                 "choose another prefix.")
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditMetadataFormatView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 def add_template_metadata_format(request):
@@ -223,18 +217,14 @@ class EditSetView(EditObjectModalView):
     form_class = SetForm
     model = OaiProviderSet
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = 'Set edited with success.'
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             oai_provider_set_api.upsert(self.object)
-            messages.add_message(self.request, messages.SUCCESS, 'Set edited with success.')
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditSetView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
     def get_initial(self):
         initial = super(EditSetView, self).get_initial()
@@ -293,18 +283,14 @@ def delete_template_mapping(request):
 class EditTemplateMappingView(EditObjectModalView):
     form_class = MappingXSLTForm
     model = OaiXslTemplate
+    success_message = 'Mapping edited with success.'
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             oai_xsl_template_api.upsert(self.object)
-            messages.add_message(self.request, messages.SUCCESS, 'Mapping edited with success.')
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditTemplateMappingView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
     def get_initial(self):
         initial = super(EditTemplateMappingView, self).get_initial()
@@ -324,4 +310,5 @@ class EditTemplateMappingView(EditObjectModalView):
         return kwargs
 
     def get_success_url(self):
-        return reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+        return reverse_lazy("admin:core_oaipmh_provider_app_xslt_template_mapping",
+                            args=(self.object.oai_metadata_format.id,))

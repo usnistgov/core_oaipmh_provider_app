@@ -117,3 +117,16 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             raise exceptions.DoesNotExist(e.message)
         except Exception as e:
             raise exceptions.ModelError(e.message)
+
+    def save_object(self):
+        """Custom save
+
+        Returns:
+
+        """
+        try:
+            return self.save()
+        except mongoengine_errors.NotUniqueError as e:
+            raise exceptions.NotUniqueError(e.message)
+        except Exception as ex:
+            raise exceptions.ModelError(ex.message)

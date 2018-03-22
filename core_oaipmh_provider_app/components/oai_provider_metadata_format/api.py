@@ -1,23 +1,25 @@
 """
 OaiProviderMetadataFormat API
 """
-from core_main_app.components.template import api as template_api
-from core_main_app.components.version_manager import api as version_manager_api
-from core_main_app.commons.exceptions import DoesNotExist
-from core_main_app.utils.xml import is_schema_valid
-from core_main_app.commons.exceptions import XSDError
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
-    OaiProviderMetadataFormat
+from urlparse import urljoin
+
+import requests
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from xml_utils.xsd_tree.xsd_tree import XSDTree
-from rest_framework.response import Response
-from rest_framework import status
-from core_oaipmh_provider_app import settings
 from django.core.urlresolvers import reverse
-from urlparse import urljoin
+from rest_framework import status
+from rest_framework.response import Response
+
 import xml_utils.commons.exceptions as exceptions
-import requests
+from core_main_app.commons.exceptions import DoesNotExist
+from core_main_app.commons.exceptions import XSDError
+from core_main_app.components.template import api as template_api
+from core_main_app.components.version_manager import api as version_manager_api
+from core_main_app.utils.xml import is_schema_valid
+from core_oaipmh_provider_app import settings
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
+    OaiProviderMetadataFormat
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def upsert(oai_provider_metadata_format):
@@ -32,7 +34,7 @@ def upsert(oai_provider_metadata_format):
 
     """
     is_schema_valid(oai_provider_metadata_format.xml_schema)
-    return oai_provider_metadata_format.save()
+    return oai_provider_metadata_format.save_object()
 
 
 def delete(oai_provider_metadata_format):
