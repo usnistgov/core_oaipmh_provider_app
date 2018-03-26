@@ -31,14 +31,19 @@ class EditIdentityForm(DocumentForm):
         fields = ['repository_name', 'repository_identifier', 'enable_harvesting']
 
 
-class MetadataFormatForm(forms.Form):
+class MetadataFormatForm(DocumentForm):
     """
         A metadata format form.
     """
     metadata_prefix = forms.CharField(label='Metadata Prefix', required=True,
                                       widget=forms.TextInput(attrs={'placeholder': 'example: oai_dc',
                                                                     'class': 'form-control'}))
-    schema = forms.URLField(label='Schema URL', required=True, widget=forms.URLInput(attrs={'class': 'form-control'}))
+    schema = forms.URLField(label='Schema URL', required=True,
+                            widget=forms.URLInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        document = OaiProviderMetadataFormat
+        fields = ['metadata_prefix', 'schema']
 
 
 class EditMetadataFormatForm(DocumentForm):
@@ -55,18 +60,27 @@ class EditMetadataFormatForm(DocumentForm):
         fields = ['metadata_prefix']
 
 
-class TemplateMetadataFormatForm(forms.Form):
+class TemplateMetadataFormatForm(DocumentForm):
     """
         A template metadata format form.
     """
     metadata_prefix = forms.CharField(label='Metadata Prefix', required=True,
                                       widget=forms.TextInput(attrs={'placeholder': 'example: oai_dc',
                                                                     'class': 'form-control'}))
-    template = forms.ChoiceField(label='Template', widget=forms.Select(attrs={"class": "form-control"}))
+    template = forms.ChoiceField(label='Template',
+                                 widget=forms.Select(attrs={"class": "form-control"}))
+
+    class Meta:
+        document = OaiProviderMetadataFormat
+        fields = ['metadata_prefix', 'template']
 
     def __init__(self, *args, **kwargs):
         super(TemplateMetadataFormatForm, self).__init__(*args, **kwargs)
         self.fields['template'].choices = _get_templates_versions()
+
+    def clean_template(self):
+        data = self.cleaned_data['template']
+        return template_api.get(data)
 
 
 class SetForm(DocumentForm):

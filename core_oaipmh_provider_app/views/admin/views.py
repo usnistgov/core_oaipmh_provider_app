@@ -2,13 +2,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse
 
 from core_main_app.utils.rendering import admin_render
-from core_main_app.views.common.ajax import EditTemplateVersionManagerView
+from core_main_app.views.common.ajax import AddObjectModalView, EditObjectModalView, \
+    DeleteObjectModalView
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
-from core_oaipmh_provider_app.views.admin.forms import SetForm, MappingXSLTForm
 
 
 @staff_member_required
@@ -19,7 +19,7 @@ def identity_view(request):
                 "path": "core_oaipmh_provider_app/admin/js/registry/identity/check_registry.js",
                 "is_raw": False
             },
-            EditTemplateVersionManagerView.get_modal_js_path()
+            EditObjectModalView.get_modal_js_path()
         ],
         "css": [
             "core_oaipmh_provider_app/admin/css/registry/identity/table_info.css"
@@ -27,7 +27,7 @@ def identity_view(request):
     }
 
     modals = [
-        EditTemplateVersionManagerView.get_modal_html_path()
+        EditObjectModalView.get_modal_html_path()
     ]
 
     info = oai_settings_api.get()
@@ -59,15 +59,9 @@ def identity_view(request):
 def metadata_formats_view(request):
     assets = {
         "js": [
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/add_metadata_format.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/metadata_formats/modals/delete_metadata_format.js",
-                "is_raw": False
-            },
-            EditTemplateVersionManagerView.get_modal_js_path()
+            AddObjectModalView.get_modal_js_path(),
+            EditObjectModalView.get_modal_js_path(),
+            DeleteObjectModalView.get_modal_js_path(),
         ],
         "css": [
             "core_oaipmh_provider_app/admin/css/registry/metadata_formats/page.css"
@@ -75,9 +69,9 @@ def metadata_formats_view(request):
     }
 
     modals = [
-        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/add_metadata_format.html",
-        "core_oaipmh_provider_app/admin/registry/metadata_formats/modals/delete_metadata_format.html",
-        EditTemplateVersionManagerView.get_modal_html_path()
+        AddObjectModalView.get_modal_html_path(),
+        EditObjectModalView.get_modal_html_path(),
+        DeleteObjectModalView.get_modal_html_path(),
     ]
 
     order_field = 'metadata_prefix'
@@ -107,19 +101,9 @@ def sets_view(request):
                 "path": "core_oaipmh_provider_app/admin/libs/fSelect/js/fSelect.js",
                 "is_raw": False
             },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/add_set.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/delete_set.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/edit_set.js",
-                "is_raw": False
-            },
-            EditTemplateVersionManagerView.get_modal_js_path()
+            AddObjectModalView.get_modal_js_path(),
+            EditObjectModalView.get_modal_js_path(),
+            DeleteObjectModalView.get_modal_js_path(),
         ],
         "css": [
             "core_oaipmh_provider_app/admin/libs/fSelect/css/fSelect.css",
@@ -128,14 +112,13 @@ def sets_view(request):
     }
 
     modals = [
-        "core_oaipmh_provider_app/admin/registry/sets/modals/add_set.html",
-        "core_oaipmh_provider_app/admin/registry/sets/modals/delete_set.html",
-        EditTemplateVersionManagerView.get_modal_html_path()
+        AddObjectModalView.get_modal_html_path(),
+        EditObjectModalView.get_modal_html_path(),
+        DeleteObjectModalView.get_modal_html_path(),
     ]
 
     context = {
-        'sets': oai_provider_set_api.get_all(order_by_field='set_spec'),
-        'add_set_form': SetForm()
+        'sets': oai_provider_set_api.get_all(order_by_field='set_spec')
     }
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/sets.html", assets=assets,
@@ -171,30 +154,23 @@ def _get_template_metadata_format(request, order_field=None):
 def xsl_template_view(request, metadata_format_id):
     assets = {
         "js": [
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/add_mapping.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/xsl_template/delete_mapping.js",
-                "is_raw": False
-            },
-            EditTemplateVersionManagerView.get_modal_js_path()
+            AddObjectModalView.get_modal_js_path(),
+            EditObjectModalView.get_modal_js_path(),
+            DeleteObjectModalView.get_modal_js_path(),
         ],
     }
 
     modals = [
-        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/add_mapping.html",
-        "core_oaipmh_provider_app/admin/registry/xsl_template/modals/delete_mapping.html",
-        EditTemplateVersionManagerView.get_modal_html_path()
+        AddObjectModalView.get_modal_html_path(),
+        EditObjectModalView.get_modal_html_path(),
+        DeleteObjectModalView.get_modal_html_path(),
     ]
 
     metadata_format = oai_metadata_format_api.get_by_id(metadata_format_id)
 
     context = {
         "xsl_templates": _get_xsl_templates(metadata_format),
-        "metadata_format": metadata_format,
-        "add_mapping_form": MappingXSLTForm(initial={'oai_metadata_format': metadata_format})
+        "metadata_format": metadata_format
     }
 
     return admin_render(request, "core_oaipmh_provider_app/admin/registry/xsl_template.html", assets=assets,

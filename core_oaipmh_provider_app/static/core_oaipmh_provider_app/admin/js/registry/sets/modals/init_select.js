@@ -8,3 +8,12 @@ InitSelectMultipleTemplates = function(path_elt)
         showSearch: true
     });
 }
+
+$('#edit-object-modal').on('show.bs.modal error.bs.modal', function (e) {
+    InitSelectMultipleTemplates("#edit-object-modal #id_templates_manager");
+})
+
+
+$('#add-object-modal').on('show.bs.modal error.bs.modal', function (e) {
+    InitSelectMultipleTemplates("#add-object-modal #id_templates_manager");
+})

@@ -9,9 +9,8 @@
 {% endblock %}
 {% block box_tools %}
 <div class="btn-group pull-right">
-    <a href="#" class="btn btn-default add-template-metadata_format-btn">
-        <i class="fa fa-plus-circle"></i> Add Metadata Format
-    </a>
+    {% url 'admin:core_oaipmh_provider_app_add_template_metadata_format' as add_url %}
+    {% include 'core_main_app/common/buttons/add.html' with label='Add Metadata Format' %}
 </div>
 {% endblock %}
 {% block box_body %}
@@ -32,18 +31,15 @@
             <td>
                 {% url 'admin:core_oaipmh_provider_app_edit_metadata_format' metadata_format.id as edit_url %}
                 {% include 'core_main_app/common/buttons/edit.html' %}
-                <span>
-                    <a class="btn btn-danger delete-template-metadata_format-btn" href="#">
-                        <i class="fa fa-trash"></i> Delete
-                    </a>
-                </span>
+                {% url 'admin:core_oaipmh_provider_app_delete_metadata_format' metadata_format.id as delete_url %}
+                {% include 'core_main_app/common/buttons/delete.html' %}
             </td>
         </tr>
     {% empty %}
         <tr>
-            <td class="empty" colspan="5">
+            <td class="empty add" colspan="5">
                 There are currently no Metadata Formats. Please
-                <a href="#" class="add-template-metadata_format-btn">add a new one</a>.
+                <a href="{% url 'admin:core_oaipmh_provider_app_add_template_metadata_format' %}">add a new one</a>.
             </td>
         </tr>
     {% endfor %}

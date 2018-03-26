@@ -3,16 +3,13 @@
 import json
 
 import requests
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
-from django.template import loader
 from rest_framework import status
 
-from core_main_app.commons import exceptions
 from core_main_app.commons.exceptions import NotUniqueError
-from core_main_app.views.common.ajax import EditObjectModalView
+from core_main_app.views.common.ajax import AddObjectModalView, EditObjectModalView, \
+    DeleteObjectModalView
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import \
@@ -58,59 +55,30 @@ class EditIdentityView(EditObjectModalView):
             form.add_error(None, e.message)
 
 
-def add_metadata_format(request):
-    """ Add a metadata format.
-    Args:
-        request:
+class AddMetadataFormatView(AddObjectModalView):
+    form_class = MetadataFormatForm
+    model = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = 'Metadata Format created with success.'
 
-    Returns:
-
-    """
-    try:
-        if request.method == 'POST':
-            form = MetadataFormatForm(request.POST)
-            if form.is_valid():
-                metadata_prefix = request.POST.get('metadata_prefix')
-                schema = request.POST.get('schema')
-                req = oai_provider_metadata_format_api.add_metadata_format(metadata_prefix, schema)
-                if req.status_code == status.HTTP_201_CREATED:
-                    messages.add_message(request, messages.SUCCESS, 'Metadata Format added with success.')
-
-                    return HttpResponse(json.dumps({}), content_type='application/javascript')
-                else:
-                    data = req.data
-                    return HttpResponseBadRequest(data[OaiPmhMessage.label])
-            else:
-                return HttpResponseBadRequest('Bad entries. Please check your entries')
-        elif request.method == 'GET':
-            add_metadata_format_form = MetadataFormatForm()
-            template_name = 'core_oaipmh_provider_app/admin/registry/metadata_formats/modals/' \
-                            'add_metadata_format_form.html'
-            context = {
-                "add_metadata_format_form": add_metadata_format_form
-            }
-
-            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
-                                'application/javascript')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_metadata_format_api.add_metadata_format(self.object.metadata_prefix,
+                                                                 self.object.schema)
+        except Exception, e:
+            form.add_error(None, e.message)
 
 
-def delete_metadata_format(request):
-    """ Delete a metadata format.
-    Args:
-        request:
+class DeleteMetadataFormatView(DeleteObjectModalView):
+    model = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = 'Metadata Format deleted with success.'
+    field_for_name = 'metadata_prefix'
 
-    Returns:
-
-    """
-    try:
-        metadata_format = oai_provider_metadata_format_api.get_by_id(request.GET['id'])
-        oai_provider_metadata_format_api.delete(metadata_format)
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
-
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_provider_metadata_format_api.delete(self.object)
 
 
 class EditMetadataFormatView(EditObjectModalView):
@@ -130,87 +98,44 @@ class EditMetadataFormatView(EditObjectModalView):
             form.add_error(None, e.message)
 
 
-def add_template_metadata_format(request):
-    """ Add a template metadata format.
-    Args:
-        request:
+class AddTemplateMetadataFormatView(AddObjectModalView):
+    form_class = TemplateMetadataFormatForm
+    model = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = 'Template Metadata Format created with success.'
 
-    Returns:
-
-    """
-    try:
-        if request.method == 'POST':
-            form = TemplateMetadataFormatForm(request.POST)
-            if form.is_valid():
-                metadata_prefix = request.POST.get('metadata_prefix')
-                template = request.POST.get('template')
-                req = oai_provider_metadata_format_api.add_template_metadata_format(metadata_prefix, template)
-                if req.status_code == status.HTTP_201_CREATED:
-                    messages.add_message(request, messages.SUCCESS, 'Metadata Format added with success.')
-
-                    return HttpResponse(json.dumps({}), content_type='application/javascript')
-                else:
-                    data = req.data
-                    return HttpResponseBadRequest(data[OaiPmhMessage.label])
-            else:
-                return HttpResponseBadRequest('Bad entries. Please check your entries')
-        elif request.method == 'GET':
-            add_metadata_format_form = TemplateMetadataFormatForm()
-            template_name = 'core_oaipmh_provider_app/admin/registry/metadata_formats/modals/' \
-                            'add_metadata_format_form.html'
-            context = {
-                "add_metadata_format_form": add_metadata_format_form
-            }
-
-            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
-                                'application/javascript')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_metadata_format_api.\
+                add_template_metadata_format(self.object.metadata_prefix, self.object.template.id)
+        except Exception, e:
+            form.add_error(None, e.message)
 
 
-def add_set(request):
-    """ Add a set.
-    Args:
-        request:
+class AddSetView(AddObjectModalView):
+    form_class = SetForm
+    model = OaiProviderSet
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = 'Set created with success.'
 
-    Returns:
-
-    """
-    try:
-        if request.method == 'POST':
-            form = SetForm(request.POST)
-            if form.is_valid():
-                set_spec = request.POST.get('set_spec')
-                set_name = request.POST.get('set_name')
-                templates_manager = request.POST.getlist('templates_manager', [])
-                description = request.POST.get('description', '')
-                set_ = OaiProviderSet(set_spec=set_spec, set_name=set_name, templates_manager=templates_manager,
-                                      description=description)
-                oai_provider_set_api.upsert(set_)
-                messages.add_message(request, messages.SUCCESS, 'Set added with success.')
-
-                return HttpResponse(json.dumps({}), content_type='application/javascript')
-            else:
-                return HttpResponseBadRequest('Bad entries. Please check your entries')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_set_api.upsert(self.object)
+        except Exception, e:
+            form.add_error(None, e.message)
 
 
-def delete_set(request):
-    """ Delete a set.
-    Args:
-        request:
+class DeleteSetView(DeleteObjectModalView):
+    model = OaiProviderSet
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = 'Set deleted with success.'
+    field_for_name = 'set_spec'
 
-    Returns:
-
-    """
-    try:
-        set_ = oai_provider_set_api.get_by_id(request.GET['id'])
-        oai_provider_metadata_format_api.delete(set_)
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
-
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_provider_metadata_format_api.delete(self.object)
 
 
 class EditSetView(EditObjectModalView):
@@ -233,51 +158,45 @@ class EditSetView(EditObjectModalView):
         return initial
 
 
-def add_template_mapping(request):
-    """ Add a mapping between a template and a metadata format (thanks to an XSLT).
-    Args:
-        request:
+class AddTemplateMappingView(AddObjectModalView):
+    form_class = MappingXSLTForm
+    model = OaiXslTemplate
+    success_message = 'Mapping created with success.'
 
-    Returns:
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_xsl_template_api.upsert(self.object)
+        except Exception, e:
+            form.add_error(None, e.message)
 
-    """
-    try:
-        if request.method == 'POST':
-            form = MappingXSLTForm(request.POST)
-            if form.is_valid():
-                metadata_format = request.POST.get('oai_metadata_format')
-                template = request.POST.get('template')
-                xslt = request.POST.get('xslt')
+    def get_initial(self):
+        initial = super(AddTemplateMappingView, self).get_initial()
+        initial['oai_metadata_format'] = self.kwargs.pop('oai_metadata_format')
 
-                oai_xsl_template = OaiXslTemplate(oai_metadata_format=metadata_format, template=template, xslt=xslt)
-                oai_xsl_template_api.upsert(oai_xsl_template)
-                messages.add_message(request, messages.SUCCESS, 'Mapping added with success.')
+        return initial
 
-                return HttpResponse(json.dumps({}), content_type='application/javascript')
-            else:
-                return HttpResponseBadRequest('Bad entries. Please check your entries')
-    except exceptions.NotUniqueError:
-        return HttpResponseBadRequest("This mapping already exists.",
-                                      content_type='application/javascript')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+    def get_success_url(self):
+        return reverse_lazy("admin:core_oaipmh_provider_app_xslt_template_mapping",
+                            args=(self.object.oai_metadata_format.id,))
 
 
-def delete_template_mapping(request):
-    """ Delete a mapping between a template and a metadata format.
-    Args:
-        request:
+class DeleteTemplateMappingView(DeleteObjectModalView):
+    model = OaiXslTemplate
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = 'Mapping deleted with success.'
 
-    Returns:
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_xsl_template_api.delete(self.object)
 
-    """
-    try:
-        oai_xsl_template = oai_xsl_template_api.get_by_id(request.GET['id'])
-        oai_xsl_template_api.delete(oai_xsl_template)
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+    def get_success_url(self):
+        return reverse_lazy("admin:core_oaipmh_provider_app_xslt_template_mapping",
+                            args=(self.object.oai_metadata_format.id,))
 
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
+    def _get_object_name(self):
+        return "the mapping using the template {0} and the xslt {1} "\
+            .format(self.object.template.display_name, self.object.xslt.name)
 
 
 class EditTemplateMappingView(EditObjectModalView):

@@ -11,9 +11,8 @@
     <a href="{% url 'admin:core_oaipmh_provider_app_metadata_formats'%}" class="btn btn-default">
         <i class="fa fa-arrow-left"></i> Previous page
     </a>
-    <a href="#" class="btn btn-default add-template_mapping-btn">
-        <i class="fa fa-plus-circle"></i> Add Mapping
-    </a>
+    {% url 'admin:core_oaipmh_provider_app_add_template_mapping' data.metadata_format.id as add_url %}
+    {% include 'core_main_app/common/buttons/add.html' with label='Add Mapping' %}
 </div>
 {% endblock %}
 {% block box_body %}
@@ -30,15 +29,14 @@
             <td>
                 {% url 'admin:core_oaipmh_provider_app_edit_template_mapping' xsl_template.id as edit_url %}
                 {% include 'core_main_app/common/buttons/edit.html' %}
-                <span>
-                    <a class="btn btn-danger delete-template_mapping-btn" href="#"><i class="fa fa-trash"></i> Delete</a>
-                </span>
+                {% url 'admin:core_oaipmh_provider_app_delete_template_mapping' xsl_template.id as delete_url %}
+                {% include 'core_main_app/common/buttons/delete.html' %}
         </tr>
     {% empty %}
         <tr>
-            <td class="empty" colspan="5">
+            <td class="empty add" colspan="5">
                 There are currently no mappings. Please
-                <a href="#" class="add-template_mapping-btn">add a new one</a>.
+                <a href="{% url 'admin:core_oaipmh_provider_app_add_template_mapping' data.metadata_format.id %}" >add a new one</a>.
             </td>
         </tr>
     {% endfor %}
