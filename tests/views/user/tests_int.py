@@ -5,7 +5,7 @@ from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
-from core_main_app.utils.tests_tools.MockUser import MockUser
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
@@ -115,4 +115,4 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
 
 
 def _create_user(user_id, is_superuser=False):
-    return MockUser(user_id, is_superuser=is_superuser)
+    return create_mock_user(user_id, is_superuser=is_superuser)

@@ -10,6 +10,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sites',
 
+    # Extra apps
+    "password_policies",
+
     # Local apps
     "tests",
 ]
@@ -27,6 +30,11 @@ TEMPLATES = [{
             'templates'
         )
     ],
+    'OPTIONS': {
+        'context_processors': [
+            "django.contrib.auth.context_processors.auth",
+        ]
+    }
 }]
 
 ROOT_URLCONF = 'core_oaipmh_provider_app.urls'

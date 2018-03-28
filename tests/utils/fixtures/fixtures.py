@@ -3,6 +3,7 @@
 import json
 
 import os
+from django.test.utils import override_settings
 
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
@@ -59,6 +60,8 @@ class OaiPmhFixtures(FixtureInterface):
     """
         Template's methods
     """
+
+    @override_settings(ROOT_URLCONF="core_main_app.urls")
     def insert_templates(self):
         saved_templates = []
         saved_template_version = []

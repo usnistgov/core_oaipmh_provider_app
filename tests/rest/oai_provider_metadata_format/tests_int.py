@@ -1,12 +1,12 @@
 """ Int Test Rest OaiProviderMetadataFormat
 """
 import requests
-from django.contrib.auth.models import User
-from mock.mock import Mock, patch
+from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
     OaiProviderMetadataFormat
@@ -24,7 +24,7 @@ class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
 
     def test_select_metadata_format_returns(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_provider_metadata_format.
@@ -43,7 +43,7 @@ class TestSelectAllMetadataFormats(MongoIntegrationBaseTestCase):
 
     def test_select_all_metadata_formats(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_provider_metadata_format.
@@ -67,7 +67,7 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
         text = "<schema xmlns='http://www.w3.org/2001/XMLSchema'></schema>"
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = text
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_post(rest_oai_provider_metadata_format.
@@ -89,7 +89,7 @@ class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
 
     def test_add_template_metadata_format(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_post(rest_oai_provider_metadata_format.
@@ -112,7 +112,7 @@ class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
 
     def test_delete_metadata_format(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_delete(rest_oai_provider_metadata_format.
@@ -135,7 +135,7 @@ class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
 
     def test_update_metadata_format(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_provider_metadata_format.
@@ -147,22 +147,3 @@ class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
         self.assertEqual(OaiProviderMetadataFormat.objects.
                          get(pk=self.first_metadata_format.id).metadata_prefix,
                          self.new_metadata_prefix)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user

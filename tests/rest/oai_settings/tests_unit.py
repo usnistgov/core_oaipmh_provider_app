@@ -1,14 +1,14 @@
 """ Unit Test Rest OaiSettings
 """
 import requests
-from django.contrib.auth.models import User
 from django.test.testcases import SimpleTestCase
-from mock.mock import Mock, patch
+from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.rest.oai_settings import views as  \
     rest_oai_settings
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 
 class TestSelect(SimpleTestCase):
@@ -18,14 +18,14 @@ class TestSelect(SimpleTestCase):
 
     def test_select_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
             do_request_get(rest_oai_settings.Settings.as_view(), user, self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class TestCheckRegistry(SimpleTestCase):
@@ -35,20 +35,20 @@ class TestCheckRegistry(SimpleTestCase):
 
     def test_check_registry_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
             do_request_get(rest_oai_settings.Check.as_view(), user, self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(requests, 'get')
     def test_check_registry_available(self, mock_get):
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user("1", is_staff=True)
 
         # Act
         response = RequestMock.\
@@ -61,7 +61,7 @@ class TestCheckRegistry(SimpleTestCase):
     def test_check_registry_unavailable(self, mock_get):
         # Arrange
         mock_get.return_value.status_code = status.HTTP_404_NOT_FOUND
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user("1", is_staff=True)
 
         # Act
         response = RequestMock. \
@@ -81,26 +81,7 @@ class TestUpdate(SimpleTestCase):
         # Act
         response = RequestMock.\
             do_request_patch(rest_oai_settings.Settings.as_view(),
-                             user=_create_mock_user(is_staff=False), data=self.data)
+                             user=create_mock_user("1", is_staff=False), data=self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

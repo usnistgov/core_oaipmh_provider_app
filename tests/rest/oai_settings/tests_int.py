@@ -1,11 +1,10 @@
 """ Int Test Rest OaiSettings
 """
-from django.contrib.auth.models import User
-from mock.mock import Mock
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.rest.oai_settings import views as rest_oai_settings
@@ -21,7 +20,7 @@ class TestSelect(MongoIntegrationBaseTestCase):
 
     def test_select_returns(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_settings.Settings.as_view(), user=user,
@@ -47,7 +46,7 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
 
     def test_update(self):
         # Arrange
-        user = _create_mock_user(is_staff=True)
+        user = create_mock_user('1', is_staff=True)
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_settings.Settings.as_view(), user,
@@ -59,22 +58,3 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
         self.assertEqual(settings_.repository_name, self.new_repository_name)
         self.assertEqual(settings_.repository_identifier, self.new_repository_identifier)
         self.assertEqual(str(settings_.enable_harvesting), self.new_enable_harvesting)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user

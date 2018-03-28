@@ -2,7 +2,6 @@
 """
 import requests
 from bson.objectid import ObjectId
-from django.contrib.auth.models import User
 from django.test.testcases import SimpleTestCase
 from mock.mock import patch, Mock
 from rest_framework import status
@@ -19,6 +18,7 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
 from core_oaipmh_provider_app.rest.oai_provider_metadata_format import views as  \
     rest_oai_provider_metadata_format
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 
 class TestSelectMetadataFormat(SimpleTestCase):
@@ -28,7 +28,7 @@ class TestSelectMetadataFormat(SimpleTestCase):
 
     def test_select_metadata_format_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
@@ -36,7 +36,7 @@ class TestSelectMetadataFormat(SimpleTestCase):
                            param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiProviderMetadataFormat, 'get_by_id')
     def test_select_metadata_format_not_found(self, mock_get_by_id):
@@ -46,7 +46,7 @@ class TestSelectMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock.\
             do_request_get(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                           user=_create_mock_user(is_staff=True), param=self.param)
+                           user=create_mock_user("1", is_staff=True), param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -60,7 +60,7 @@ class TestSelectAllMetadataFormats(SimpleTestCase):
 
     def test_select_all_metadata_formats_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
@@ -68,7 +68,7 @@ class TestSelectAllMetadataFormats(SimpleTestCase):
                            self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class TestAddMetadataFormat(SimpleTestCase):
@@ -80,20 +80,21 @@ class TestAddMetadataFormat(SimpleTestCase):
 
     def test_add_metadata_format_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
-            do_request_post(rest_oai_provider_metadata_format.MetadataFormatsList.as_view(), user, self.data)
+            do_request_post(rest_oai_provider_metadata_format.MetadataFormatsList.as_view(), user,
+                            self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_metadata_format_serializer_invalid(self):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.MetadataFormatsList.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.bad_data)
+                            user=create_mock_user("1", is_staff=True), data=self.bad_data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -108,7 +109,7 @@ class TestAddMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.MetadataFormatsList.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -123,7 +124,7 @@ class TestAddMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.MetadataFormatsList.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -137,7 +138,7 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
 
     def test_add_template_metadata_format_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user("1", is_staff=False)
 
         # Act
         response = RequestMock.\
@@ -145,13 +146,13 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
                             user, self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_template_metadata_format_serializer_invalid(self):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.TemplateAsMetadataFormat.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.bad_data)
+                            user=create_mock_user("1", is_staff=True), data=self.bad_data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -164,7 +165,7 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.TemplateAsMetadataFormat.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -181,11 +182,11 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock. \
             do_request_patch(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                             user=_create_mock_user(is_staff=False), data=self.data,
+                             user=create_mock_user("1", is_staff=False), data=self.data,
                              param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiProviderMetadataFormat, 'get_by_id')
     def test_update_metadata_format_serializer_invalid(self, mock_metadata_format):
@@ -194,7 +195,7 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock. \
             do_request_patch(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                             user=_create_mock_user(is_staff=True), data=self.bad_data,
+                             user=create_mock_user("1", is_staff=True), data=self.bad_data,
                              param=self.param)
 
         # Assert
@@ -208,7 +209,7 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock. \
             do_request_patch(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                             user=_create_mock_user(is_staff=True), data=self.data,
+                             user=create_mock_user("1", is_staff=True), data=self.data,
                              param=self.param)
 
         # Assert
@@ -227,17 +228,17 @@ class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=False), data=self.data)
+                            user=create_mock_user("1", is_staff=False), data=self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_template_to_metadata_format_mapping_xslt_serializer_invalid(self):
         # Act
         response = RequestMock.\
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.bad_data)
+                            user=create_mock_user("1", is_staff=True), data=self.bad_data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -251,7 +252,7 @@ class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -269,7 +270,7 @@ class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -290,7 +291,7 @@ class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -314,7 +315,7 @@ class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_post(rest_oai_provider_metadata_format.
                             TemplateMetadataFormatXSLT.as_view(),
-                            user=_create_mock_user(is_staff=True), data=self.data)
+                            user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.data['message']['oai_metadata_format'],
@@ -333,17 +334,17 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_delete(rest_oai_provider_metadata_format.
                               TemplateMetadataFormatXSLT.as_view(),
-                              user=_create_mock_user(is_staff=False), data=self.data)
+                              user=create_mock_user("1", is_staff=False), data=self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_template_to_metadata_format_unmapping_xslt_serializer_invalid(self):
         # Act
         response = RequestMock. \
             do_request_delete(rest_oai_provider_metadata_format.
                               TemplateMetadataFormatXSLT.as_view(),
-                              user=_create_mock_user(is_staff=True), data=self.bad_data)
+                              user=create_mock_user("1", is_staff=True), data=self.bad_data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -357,7 +358,7 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         response = RequestMock. \
             do_request_delete(rest_oai_provider_metadata_format.
                               TemplateMetadataFormatXSLT.as_view(),
-                              user=_create_mock_user(is_staff=True), data=self.data)
+                              user=create_mock_user("1", is_staff=True), data=self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -372,10 +373,10 @@ class TestDeleteMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock. \
             do_request_delete(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                              user=_create_mock_user(is_staff=False), param=self.param)
+                              user=create_mock_user("1", is_staff=False), param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(oai_provider_metadata_format_api, 'get_by_id')
     def test_delete_metadata_format_not_found(self, mock_get_by_id):
@@ -385,26 +386,7 @@ class TestDeleteMetadataFormat(SimpleTestCase):
         # Act
         response = RequestMock. \
             do_request_delete(rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
-                              user=_create_mock_user(is_staff=True), param=self.param)
+                              user=create_mock_user("1", is_staff=True), param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user
