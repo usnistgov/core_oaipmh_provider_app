@@ -3,8 +3,6 @@
  */
 checkStatus = function()
 {
-    event.preventDefault();
-
     var $registryTd = $("#Status");
     var url = $registryTd.attr("url");
 
