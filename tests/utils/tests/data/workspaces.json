@@ -1,0 +1,9 @@
+[
+  {
+      "id" : "5b33d1544697f6a6a40d6354",
+      "title" : "Global Public Workspace",
+      "read_perm_id" : "38",
+      "write_perm_id" : "39",
+      "is_public" : true
+  }
+]

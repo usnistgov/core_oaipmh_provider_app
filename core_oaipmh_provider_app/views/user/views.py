@@ -20,6 +20,7 @@ from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import XSDFlat
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
 import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+from core_main_app.components.workspace import api as workspace_api
 
 
 class OAIProviderView(TemplateView):
@@ -322,22 +323,25 @@ class OAIProviderView(TemplateView):
                     xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(template, metadata_format).xslt
                 oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
                 for elt in oai_data:
-                    identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
-                                                  str(elt.data_id))
-                    item_info = {
-                        'identifier': identifier,
-                        'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
-                        'sets': oai_provider_set_api.get_all_by_template_ids([template]),
-                        'deleted': elt.status == oai_status.DELETED
-                    }
-                    if include_metadata and elt.status == oai_status.ACTIVE:
-                        if use_raw:
-                            item_info.update({'XML': elt.data.xml_content})
-                        else:
-                            xml = xsl_transformation_api.xsl_transform(elt.data.xml_content, xslt.name)
-                            item_info.update({'XML': xml})
+                    # Only data from public workspace.
+                    if elt.data.workspace is not None and \
+                            workspace_api.is_workspace_public(elt.data.workspace):
+                        identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
+                                                      str(elt.data_id))
+                        item_info = {
+                            'identifier': identifier,
+                            'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
+                            'sets': oai_provider_set_api.get_all_by_template_ids([template]),
+                            'deleted': elt.status == oai_status.DELETED
+                        }
+                        if include_metadata and elt.status == oai_status.ACTIVE:
+                            if use_raw:
+                                item_info.update({'XML': elt.data.xml_content})
+                            else:
+                                xml = xsl_transformation_api.xsl_transform(elt.data.xml_content, xslt.name)
+                                item_info.update({'XML': xml})
 
-                    items.append(item_info)
+                        items.append(item_info)
             except (exceptions.DoesNotExist, exceptions.XMLError, Exception):
                 pass
 

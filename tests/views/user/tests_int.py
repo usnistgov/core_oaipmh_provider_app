@@ -1,17 +1,17 @@
 """ Unit Test User
 """
-from mock.mock import patch
-from rest_framework import status
-
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from mock.mock import patch
+from rest_framework import status
+
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
-from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 from tests.utils.fixtures.fixtures import OaiPmhFixtures
+from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 fixture_data = OaiPmhFixtures()
 
@@ -55,7 +55,7 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, 'ListIdentifiers')
-        self.check_tag_count(response.rendered_content, 'identifier', len(self.fixture.oai_data))
+        self.check_tag_count(response.rendered_content, 'identifier', self.fixture.nb_public_data)
 
     def test_get_list_records(self):
         # Arrange
@@ -68,7 +68,7 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, 'ListRecords')
-        self.check_tag_count(response.rendered_content, 'record', len(self.fixture.oai_data))
+        self.check_tag_count(response.rendered_content, 'record', self.fixture.nb_public_data)
 
     @patch.object(oai_provider_metadata_format_api, 'get_metadata_format_schema_url')
     def test_get_list_metadata_formats(self, mock_get_metadata_format_schema_url):

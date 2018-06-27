@@ -1,15 +1,17 @@
 """ fixtures files for Server
 """
 import json
-
 import os
-from django.test.utils import override_settings
 
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager import api as template_version_manager_api
 from core_main_app.components.template_version_manager.models import TemplateVersionManager
+from core_main_app.components.workspace import api as workspace_api
+from core_main_app.components.workspace.models import Workspace
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from django.test.utils import override_settings
+
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
@@ -41,9 +43,12 @@ class OaiPmhFixtures(FixtureInterface):
     name = "Registry"
     identifier = 'dummy'
     data_identifiers = []
+    workspaces = []
+    nb_public_data = 0
 
     def insert_data(self):
         self.insert_settings()
+        self.insert_workspaces()
         self.insert_templates()
         self.insert_record()
         self.insert_oai_record()
@@ -77,13 +82,28 @@ class OaiPmhFixtures(FixtureInterface):
         self.template_version = saved_template_version
 
     """
+        Workspace's methods
+    """
+
+    def insert_workspaces(self):
+        saved_data = []
+        list_data = OaiPmhMock.mock_workspaces()
+        for elt in list_data:
+            saved_data.append(elt.save())
+
+        self.workspaces = saved_data
+
+    """
         Data's methods
     """
     def insert_record(self):
         saved_data = []
+        self.nb_public_data = 0
         list_data = OaiPmhMock.mock_data()
         for elt in list_data:
             saved_data.append(elt.save())
+            if elt.workspace is not None and workspace_api.is_workspace_public(elt.workspace):
+                self.nb_public_data += 1
 
         self.data = saved_data
 
@@ -141,6 +161,14 @@ class OaiPmhMock(object):
     def mock_oai_first_template(version=''):
         list_templates = OaiPmhMock.mock_template(version)
         return list_templates[0]
+
+    @staticmethod
+    def mock_workspaces(version=''):
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'workspaces{0}.json'.format(version))) as f:
+            data = f.read()
+        data_json = json.loads(data)
+        list_data = [Workspace(**x) for x in data_json]
+        return list_data
 
     @staticmethod
     def mock_data(version=''):
