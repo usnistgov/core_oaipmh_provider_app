@@ -3,8 +3,8 @@
  */
 checkStatus = function()
 {
-    var $registryTd = $("#Status");
-    var url = $registryTd.attr("url");
+    let $registryTd = $("#Status");
+    let url = $registryTd.attr("url");
 
     $registryTd.html('<i class="fa fa-spinner fa-spin"></i>');
 
@@ -17,7 +17,7 @@ checkStatus = function()
         	url : url,
         },
         success: function(data){
-            if (data.is_available)
+            if ("is_available" in data && data.is_available)
             {
                 $registryTd.html('<i class="fa fa-signal"></i> Available');
                 $registryTd.css("color", "#5cb85c");
@@ -28,11 +28,11 @@ checkStatus = function()
             }
         },
         error:function(data){
-            $registryTd.html('<i class="fa fa-warning"></i> Error while checking');
+            $registryTd.html('<i class="fa fa-warning"></i> '+data.responseText);
             $registryTd.css("color", "#d9534f");
         },
     });
-}
+};
 
 
 $(document).ready(function() {

@@ -2,12 +2,13 @@
 """
 import json
 
-import requests
 from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
+from requests import ConnectionError
 from rest_framework import status
 
 from core_main_app.commons.exceptions import NotUniqueError
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_main_app.views.common.ajax import AddObjectModalView, EditObjectModalView, \
     DeleteObjectModalView
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
@@ -18,7 +19,7 @@ from core_oaipmh_provider_app.components.oai_provider_set import api as oai_prov
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
-from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
+from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
 from core_oaipmh_provider_app.views.admin.forms import EditIdentityForm, MetadataFormatForm, \
     EditMetadataFormatForm, TemplateMetadataFormatForm, SetForm, MappingXSLTForm
@@ -33,8 +34,13 @@ def check_registry(request):
 
     """
     try:
-        http_response = requests.get(request.GET['url'])
+        http_response = send_get_request(request.GET['url'])
         is_available = http_response.status_code == status.HTTP_200_OK
+    except ConnectionError:
+        return HttpResponseBadRequest(
+            "Connection error while checking availability",
+            content_type='application/javascript'
+        )
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
