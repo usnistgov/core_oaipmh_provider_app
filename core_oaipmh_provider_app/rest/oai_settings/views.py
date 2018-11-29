@@ -1,9 +1,6 @@
 """ OaiSettings rest api
 """
-
 import requests
-from core_oaipmh_common_app.commons import exceptions as exceptions_oai
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from rest_framework import status
@@ -13,19 +10,26 @@ from rest_framework.views import APIView
 
 import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 from core_main_app.utils.decorators import api_staff_member_required
+from core_oaipmh_common_app.commons import exceptions as exceptions_oai
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
 
 
 class Settings(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Return the OAI-PMH server settings.
+        """ Return the OAI-PMH server settings
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/settings
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: List of Registries
+            - code: 500
+              content: Internal server error
         """
         try:
             settings_ = oai_settings_api.get()
@@ -38,22 +42,28 @@ class Settings(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request):
-        """ Edit the OAI-PMH server settings.
+        """ Edit the OAI-PMH server settings
 
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/settings
+        Parameters:
 
-        Params:
-            request (HttpRequest): request.
+            {
+                "repository_name":"value",
+                "repository_identifier":"value",
+                "enable_harvesting":"True or False"
+            }
+
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"repository_name":"value", "repository_identifier":"value", "enable_harvesting":"True or False"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 200
+              content: Success message
+            - code: 400
+              content: Validation error
+            - code: 500
+              content: Internal server error
         """
         try:
             settings_ = oai_settings_api.get()
@@ -79,13 +89,18 @@ class Settings(APIView):
 class Check(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Check if the registry is available to answer OAI-PMH requests.
+        """ Check if the registry is available to answer OAI-PMH requests
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/check/registry
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Success label
+            - code: 500
+              content: Internal server error
         """
         try:
             base_url = request.build_absolute_uri(reverse("core_oaipmh_provider_app_server_index"))

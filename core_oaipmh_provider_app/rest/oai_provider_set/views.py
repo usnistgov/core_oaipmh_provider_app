@@ -1,8 +1,5 @@
 """ OaiProviderSet rest api
 """
-
-from core_oaipmh_common_app.commons import exceptions as exceptions_oai
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -12,19 +9,26 @@ from rest_framework.views import APIView
 import core_oaipmh_provider_app.components.oai_provider_set.api as oai_provider_set_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.decorators import api_staff_member_required
+from core_oaipmh_common_app.commons import exceptions as exceptions_oai
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
 
 
 class SetsList(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Return all sets.
+        """ Get all OaiProviderSet
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/set
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: List of OaiProviderSet
+            - code: 500
+              content: Internal server error
         """
         try:
             sets = oai_provider_set_api.get_all()
@@ -37,22 +41,29 @@ class SetsList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new set.
+        """ Create a OaiProviderSet
 
-        POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/set
+        Parameters:
+
+            {
+                "set_spec": "value", 
+                "set_name":"value", 
+                "templates_manager": ["id1", "id2"], 
+                "description":"value"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"set_spec":"value", "set_name":"value", "templates_manager": ["id1", "id2"], "description":"value"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 201
+              content: Success Label
+            - code: 400
+              content: Validation error
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
@@ -77,16 +88,21 @@ class SetsList(APIView):
 class SetDetail(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request, set_id):
-        """ Get a set by its id.
+        """ Get a OaiProviderSet
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/set/{id}
+        Args:
 
-        Params:
-            request (HttpRequest): request.
+            request: HTTP request
+            set_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Registry
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
@@ -104,16 +120,21 @@ class SetDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, set_id):
-        """ Delete a set by its id.
-
-        DELETE http://<server_ip>:<server_port>/<rest_oai_pmh_url>/set/{id}
+        """ Delete a OaiProviderSet
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
+            set_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 204
+              content: Deletion succeed
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
@@ -131,22 +152,31 @@ class SetDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, set_id):
-        """ Update set.
+        """ Update a OaiProviderSet
 
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/set/{id}
+        Parameters:
+
+            {
+                "set_spec":"value",
+                "set_name":"value",
+                "templates_manager": ["id1", "id2"],
+                "description":"value"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"set_spec":"value", "set_name":"value", "templates_manager": ["id1", "id2"], "description":"value"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 200
+              content: Success message
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)

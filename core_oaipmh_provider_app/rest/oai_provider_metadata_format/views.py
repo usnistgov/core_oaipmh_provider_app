@@ -1,7 +1,5 @@
 """ OaiProviderMetadataFormat rest api
 """
-from core_oaipmh_common_app.commons import exceptions as exceptions_oai
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -10,6 +8,8 @@ from rest_framework.views import APIView
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.decorators import api_staff_member_required
+from core_oaipmh_common_app.commons import exceptions as exceptions_oai
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
@@ -17,17 +17,23 @@ from core_oaipmh_provider_app.rest import serializers
 
 
 class MetadataFormatsList(APIView):
-    """ List all metadata formats, or create a new one. """
+    """ List all MetadataFormat, or create a new one
+    """
 
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Return all metadata formats.
+        """ Return all MetadataFormat
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/metadata_format
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: List of MetadataFormat
+            - code: 500
+              content: Internal server error
         """
         try:
             metadata_formats = oai_provider_metadata_format_api.get_all()
@@ -40,22 +46,27 @@ class MetadataFormatsList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new metadata format.
+        """ Add a new MetadataFormat
 
-        POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/metadata_format
+        Parameters:
+
+            {
+                "metadata_prefix" : "value",
+                "schema_url" : "URL"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"metadata_prefix":"value","schema_url":"URL"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 200
+              content: Success Label
+            - code: 400
+              content: Bad request
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
@@ -77,20 +88,28 @@ class MetadataFormatsList(APIView):
 class MetadataFormatDetail(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request, metadata_format_id):
-        """ Get a metadata format by its id.
+        """ Get a MetadataFormat
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/metadata_format/{id}
+        Parameters:
 
-        Params:
-            request (HttpRequest): request.
-            metadata_format_id: Metadata Format id.
+            {
+                "metadata_prefix" : "value",
+                "schema_url" : "URL"
+            }
+
+        Args:
+
+            request: HTTP request
+            metadata_format_id: ObjectId
 
         Returns:
-            Response object.
 
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 200
+              content: MetadataFormat
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
@@ -109,17 +128,21 @@ class MetadataFormatDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, metadata_format_id):
-        """ Delete a metadata format by its id.
-
-        DELETE http://<server_ip>:<server_port>/<rest_oai_pmh_url>/metadata_format/{id}
+        """ Delete a MetadataFormat
 
         Args:
-            request (HttpRequest): request.
-            metadata_format_id: Metadata Format id.
+
+            request: HTTP request
+            metadata_format_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 204
+              content: Deletion succeed
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
@@ -138,20 +161,29 @@ class MetadataFormatDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, metadata_format_id):
-        """ Update a metadata format.
+        """ Update a MetadataFormat
 
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/metadata_format/{id}
+        Parameters:
+
+            {
+                "metadata_prefix" : "value"
+            }
 
         Args:
-            request (HttpRequest): request.
-            metadata_format_id: Metadata Format id.
+
+            request: HTTP request
+            metadata_format_id: ObjectId
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"metadata_prefix":"value"}
-
+            - code: 200
+              content: Success message
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
@@ -182,22 +214,27 @@ class MetadataFormatDetail(APIView):
 class TemplateAsMetadataFormat(APIView):
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new template as metadata format.
+        """ Add a new Template as MetadataFormat
 
-        POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/template_metadata_format
+        Parameters:
+
+            {
+                "metadata_prefix" : "value",
+                "template_id":"value"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"metadata_prefix":"value","template_id":"value"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 201
+              content: Success Label
+            - code: 400
+              content: Validation error
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
@@ -222,17 +259,28 @@ class TemplateMetadataFormatXSLT(APIView):
         """ Map a template, a metadata format and a XSLT. Used for the transformation of the
         template toward the metadata format thanks to the XSLT.
 
-        POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/template_metadata_format_xslt
+        Parameters:
+
+            {
+                "template": "value",
+                "oai_metadata_format": "value",
+                "xslt": "value"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"template": "value", "oai_metadata_format": "value", "xslt": "value"}
-
+            - code: 200
+              content: Success Label
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
@@ -260,19 +308,29 @@ class TemplateMetadataFormatXSLT(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request):
-        """ Remove the mapping between a template, a metadata format and a XSLT.
+        """ Remove the mapping between a template, a metadata format and a XSLT
 
-        DELETE http://<server_ip>:<server_port>/<rest_oai_pmh_url>/template_metadata_format_xslt
+        Parameters:
+
+            {
+                "template_id": "value",
+                "metadata_format_id": "value"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"template_id": "value", "metadata_format_id": "value"}
-
+            - code: 204
+              content: Deletion succeed
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
