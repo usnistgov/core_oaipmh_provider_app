@@ -3,7 +3,7 @@ OaiProviderMetadataFormat API
 """
 from urlparse import urljoin
 
-import requests
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.core.urlresolvers import reverse
@@ -153,7 +153,7 @@ def add_metadata_format(metadata_prefix, schema_url):
 
     """
     try:
-        http_response = requests.get(schema_url)
+        http_response = send_get_request(schema_url)
         if http_response.status_code == status.HTTP_200_OK:
             xml_schema = http_response.text
             target_namespace = _get_target_namespace(xml_schema)

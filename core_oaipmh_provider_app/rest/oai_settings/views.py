@@ -1,6 +1,5 @@
 """ OaiSettings rest api
 """
-import requests
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from rest_framework import status
@@ -10,6 +9,7 @@ from rest_framework.views import APIView
 
 import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 from core_main_app.utils.decorators import api_staff_member_required
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
@@ -104,7 +104,7 @@ class Check(APIView):
         """
         try:
             base_url = request.build_absolute_uri(reverse("core_oaipmh_provider_app_server_index"))
-            http_response = requests.get(base_url)
+            http_response = send_get_request(base_url)
             is_available = http_response.status_code == status.HTTP_200_OK
             content = OaiPmhMessage.get_message_labelled('Registry available? : {0}.'.format(
                 is_available))
