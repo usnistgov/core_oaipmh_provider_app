@@ -12,7 +12,7 @@ from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
+from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
 from core_oaipmh_provider_app.rest import serializers
 
 
@@ -61,7 +61,7 @@ class MetadataFormatsList(APIView):
 
         Returns:
 
-            - code: 200
+            - code: 201
               content: Success Label
             - code: 400
               content: Bad request
