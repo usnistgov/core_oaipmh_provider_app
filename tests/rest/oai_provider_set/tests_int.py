@@ -58,7 +58,7 @@ class TestAddSet(MongoIntegrationBaseTestCase):
     def setUp(self):
         super(TestAddSet, self).setUp()
         self.data = {"set_spec": "oai_dummy", "set_name": "dummy set",
-                     "templates_manager": [ObjectId(), ObjectId()],
+                     "templates_manager": [str(ObjectId()), str(ObjectId())],
                      "description": "The description"}
         self.nb_sets = len(OaiProviderSet.objects.all())
 
