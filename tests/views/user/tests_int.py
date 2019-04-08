@@ -1,12 +1,14 @@
-""" Unit Test User
+""" Integrations tests for user views
 """
+from mock import PropertyMock
+from mock.mock import patch
+from rest_framework import status
+
+from core_main_app.components.data.models import Data
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from mock.mock import patch
-from rest_framework import status
-
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
@@ -31,8 +33,10 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, 'Identify')
 
-    def test_get_record(self):
+    @patch.object(Data, "xml_content", new_callable=PropertyMock)
+    def test_get_record(self, mock_xml_content):
         # Arrange
+        mock_xml_content.return_value = "<tag>value</tag>"
         data = {'verb': 'GetRecord', 'metadataPrefix': "oai_demo",
                 'identifier': self.fixture.data_identifiers[0]}
 
@@ -57,8 +61,10 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.check_tag_exist(response.rendered_content, 'ListIdentifiers')
         self.check_tag_count(response.rendered_content, 'identifier', self.fixture.nb_public_data)
 
-    def test_get_list_records(self):
+    @patch.object(Data, "xml_content", new_callable=PropertyMock)
+    def test_get_list_records(self, mock_xml_content):
         # Arrange
+        mock_xml_content.return_value = "<tag>value</tag>"
         data = {'verb': 'ListRecords', 'metadataPrefix': "oai_demo"}
 
         # Act

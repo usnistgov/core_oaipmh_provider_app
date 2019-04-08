@@ -1,23 +1,36 @@
 """ Unit Test Rest OaiRegistry
 """
-from mock.mock import patch, Mock
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from rest_framework import status
+from datetime import datetime
+
 from bson.objectid import ObjectId
-from core_oaipmh_provider_app.commons import exceptions
-from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from django.http.request import HttpRequest
-from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
-from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
-from core_main_app.components.data import api as data_api
-from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
-from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
-from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
+from mock.mock import patch, Mock
+from rest_framework import status
+from rest_framework.status import HTTP_200_OK
+
+
+import core_main_app.components.xsl_transformation.api as xsl_transformation_api
+
 from core_main_app.commons import exceptions as common_exceptions
+from core_main_app.components.data import api as data_api
+from core_main_app.components.template.models import Template
+from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from core_oaipmh_provider_app.commons import exceptions, status as oai_status
+from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
+from core_oaipmh_provider_app.components.oai_data.models import OaiData
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import \
+    api as oai_provider_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import \
+    OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
+from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
+from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 
@@ -472,6 +485,113 @@ class TestGetRecord(TestOaiPmhSuite):
         self.assertTrue(isinstance(response.context_data['errors'][0], exceptions.CannotDisseminateFormat))
         self.check_tag_error_code(response.rendered_content, exceptions.DISSEMINATE_FORMAT)
 
+    @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
+    @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
+    @patch.object(oai_data_api, 'get_by_data')
+    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(HttpRequest, 'build_absolute_uri')
+    @patch.object(oai_settings_api, 'get')
+    def test_get_record_with_xml_decl_use_raw(self, mock_get, mock_request, mock_check_identifier,
+                                              mock_get_by_data, mock_get_by_metadata_prefix,
+                                              mock_get_all_by_template_ids):
+        # Arrange
+        xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
+        mock_oai_template = Mock(spec=Template)
+        mock_oai_template.id = ObjectId()
+
+        mock_metadata_format = Mock(spec=OaiProviderMetadataFormat)
+        mock_metadata_format.is_template = True
+        mock_metadata_format.template = mock_oai_template
+
+        mock_oai_data = Mock(spec=OaiData)
+        mock_oai_data.status = oai_status.ACTIVE
+        mock_oai_data.template = mock_oai_template
+        mock_oai_data.data.xml_content = """
+            %s
+            <body>
+                <tag01>value_a</tag01>
+                <tag02>value_b</tag02>
+            </body>
+        """ % xml_decl
+        mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
+
+        mock_get.return_value = _create_mock_oai_settings()
+        mock_request.return_value = ""
+        mock_check_identifier.return_value = ObjectId()
+        mock_get_by_data.return_value = mock_oai_data
+        mock_get_by_metadata_prefix.return_value = mock_metadata_format
+        mock_get_all_by_template_ids.return_value = ""
+        data = {'verb': 'GetRecord', 'metadataPrefix': "dummy", 'identifier': "dummy"}
+
+        # Act
+        response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
+        output_xml_data = response.context_data["XML"]
+
+        # Assert
+        self.assertNotIn(xml_decl, output_xml_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+    @patch.object(xsl_transformation_api, 'xsl_transform')
+    @patch.object(oai_xsl_template_api, 'get_by_template_id_and_metadata_format_id')
+    @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
+    @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
+    @patch.object(oai_data_api, 'get_by_data')
+    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(HttpRequest, 'build_absolute_uri')
+    @patch.object(oai_settings_api, 'get')
+    def test_get_record_with_xml_decl_not_raw(self, mock_get, mock_request, mock_check_identifier,
+                                              mock_get_by_data, mock_get_by_metadata_prefix,
+                                              mock_get_all_by_template_ids,
+                                              mock_get_by_template_id_and_metadata_format_id,
+                                              mock_xsl_transform):
+        # Arrange
+        xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
+        mock_cleaned_xml = """
+            <body>
+                <tag01>value_a</tag01>
+                <tag02>value_b</tag02>
+            </body>
+        """
+        mock_oai_template = Mock(spec=Template)
+        mock_oai_template.id = ObjectId()
+
+        mock_metadata_format = Mock(spec=OaiProviderMetadataFormat)
+        mock_metadata_format.is_template = False  # Will trigger use_raw = False
+        mock_metadata_format.template = mock_oai_template
+
+        mock_oai_data = Mock(spec=OaiData)
+        mock_oai_data.status = oai_status.ACTIVE
+        mock_oai_data.template = mock_oai_template
+        mock_oai_data.data.xml_content = """
+            %s
+            %s
+        """ % (xml_decl, mock_cleaned_xml)
+        mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
+
+        mock_oai_xslt = Mock(spec=OaiXslTemplate)
+        mock_xslt = Mock(spec=XslTransformation)
+        mock_xslt.name = "dummy"
+        mock_oai_xslt.xslt = mock_xslt
+
+        mock_get.return_value = _create_mock_oai_settings()
+        mock_request.return_value = ""
+        mock_check_identifier.return_value = ObjectId()
+        mock_get_by_data.return_value = mock_oai_data
+        mock_get_by_metadata_prefix.return_value = mock_metadata_format
+        mock_get_all_by_template_ids.return_value = ""
+        mock_get_by_template_id_and_metadata_format_id.return_value = mock_oai_xslt
+        mock_xsl_transform.return_value = mock_cleaned_xml
+
+        data = {'verb': 'GetRecord', 'metadataPrefix': "dummy", 'identifier': "dummy"}
+
+        # Act
+        response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
+        output_xml_data = response.context_data["XML"]
+
+        # Assert
+        self.assertNotIn(xml_decl, output_xml_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
 
 class TestListRecords(TestOaiPmhSuite):
     @patch.object(HttpRequest, 'build_absolute_uri')
@@ -536,7 +656,6 @@ class TestListRecords(TestOaiPmhSuite):
         self.assertTrue(isinstance(response.context_data['errors'][0], exceptions.CannotDisseminateFormat))
         self.check_tag_error_code(response.rendered_content, exceptions.DISSEMINATE_FORMAT)
 
-
     @patch.object(oai_provider_set_api, 'get_by_set_spec')
     @patch.object(oai_xsl_template_api, 'get_template_ids_by_metadata_format')
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
@@ -586,6 +705,115 @@ class TestListRecords(TestOaiPmhSuite):
         # Assert
         self.assertTrue(isinstance(response.context_data['errors'][0], exceptions.NoRecordsMatch))
         self.check_tag_error_code(response.rendered_content, exceptions.NO_RECORDS_MATCH)
+
+    @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
+    @patch.object(oai_data_api, 'get_all_by_template')
+    @patch.object(OAIProviderView, '_get_templates_id_by_set_spec')
+    @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
+    @patch.object(OAIProviderView, '_get_templates_id_by_metadata_prefix')
+    @patch.object(HttpRequest, 'build_absolute_uri')
+    @patch.object(oai_settings_api, 'get')
+    def test_list_record_with_xml_decl_use_raw(self, mock_get, mock_request, mock_get_templates_id,
+                                               mock_get_by_metadata_prefix,
+                                               mock_get_templates_id_by_set_spec,
+                                               mock_get_all_by_template,
+                                               mock_get_all_by_template_ids):
+        # Arrange
+        xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
+
+        mock_get.return_value = _create_mock_oai_settings()
+        mock_request.return_value = ""
+        mock_get_templates_id.return_value = [ObjectId()]
+        mock_get_by_metadata_prefix.return_value = []
+        mock_get_templates_id_by_set_spec.return_value = []
+
+        mock_oai_data = Mock(spec=OaiData)
+        mock_oai_data.status = oai_status.ACTIVE
+        # mock_oai_data.template = mock_oai_template
+        mock_oai_data.data.xml_content = """
+            %s
+            <body>
+                <tag01>value_a</tag01>
+                <tag02>value_b</tag02>
+            </body>
+        """ % xml_decl
+        mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
+
+        mock_get_all_by_template.return_value = [mock_oai_data]
+        mock_get_all_by_template_ids.return_value = []
+
+        data = {'verb': 'ListRecords', 'metadataPrefix': 'dummy', 'set': 'dummy_set'}
+
+        # Act
+        response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
+        output_xml_data = response.context_data["items"][0]["XML"]
+
+        # Assert
+        self.assertNotIn(xml_decl, output_xml_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+    @patch.object(xsl_transformation_api, 'xsl_transform')
+    @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
+    @patch.object(oai_data_api, 'get_all_by_template')
+    @patch.object(oai_xsl_template_api, 'get_by_template_id_and_metadata_format_id')
+    @patch.object(OAIProviderView, '_get_templates_id_by_set_spec')
+    @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
+    @patch.object(oai_xsl_template_api, 'get_template_ids_by_metadata_format')
+    @patch.object(OAIProviderView, '_get_templates_id_by_metadata_prefix')
+    @patch.object(HttpRequest, 'build_absolute_uri')
+    @patch.object(oai_settings_api, 'get')
+    def test_list_record_with_xml_decl_not_raw(self, mock_get, mock_request, mock_get_templates_id,
+                                               mock_get_template_ids_by_metadata_format,
+                                               mock_get_by_metadata_prefix,
+                                               mock_get_templates_id_by_set_spec,
+                                               mock_get_by_template_id_and_metadata_format_id,
+                                               mock_get_all_by_template,
+                                               mock_get_all_by_template_ids, mock_xsl_transform):
+        # Arrange
+        xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
+        mock_cleaned_xml = """
+            <body>
+                <tag01>value_a</tag01>
+                <tag02>value_b</tag02>
+            </body>
+        """
+
+        mock_get.return_value = _create_mock_oai_settings()
+        mock_request.return_value = ""
+        mock_get_templates_id.return_value = []
+        mock_get_template_ids_by_metadata_format.return_value = [ObjectId()]
+        mock_get_by_metadata_prefix.return_value = []
+        mock_get_templates_id_by_set_spec.return_value = []
+
+        mock_oai_xslt = Mock(spec=OaiXslTemplate)
+        mock_xslt = Mock(spec=XslTransformation)
+        mock_xslt.name = "dummy"
+        mock_oai_xslt.xslt = mock_xslt
+
+        mock_get_by_template_id_and_metadata_format_id.return_value = mock_oai_xslt
+
+        mock_oai_data = Mock(spec=OaiData)
+        mock_oai_data.status = oai_status.ACTIVE
+        # mock_oai_data.template = mock_oai_template
+        mock_oai_data.data.xml_content = """
+            %s
+            %s
+        """ % (xml_decl, mock_cleaned_xml)
+        mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
+
+        mock_get_all_by_template.return_value = [mock_oai_data]
+        mock_get_all_by_template_ids.return_value = []
+        mock_xsl_transform.return_value = mock_cleaned_xml
+
+        data = {'verb': 'ListRecords', 'metadataPrefix': 'dummy', 'set': 'dummy_set'}
+
+        # Act
+        response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
+        output_xml_data = response.context_data["items"][0]["XML"]
+
+        # Assert
+        self.assertNotIn(xml_decl, output_xml_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
 
 
 def _create_mock_oai_settings():

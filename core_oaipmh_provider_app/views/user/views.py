@@ -1,26 +1,30 @@
+import re
+from StringIO import StringIO
 from datetime import datetime
+
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
 from rest_framework import status
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
-from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
-from core_main_app.components.data import api as data_api
+
+import core_main_app.components.xsl_transformation.api as xsl_transformation_api
+import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.data import api as data_api
+from core_main_app.components.template import api as template_api
+from core_main_app.components.version_manager import api as version_manager_api
+from core_main_app.components.workspace import api as workspace_api
+from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
 from core_oaipmh_common_app.utils import UTCdatetime
-from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.commons import status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
-from core_main_app.components.version_manager import api as version_manager_api
-from core_main_app.components.template import api as template_api
-from StringIO import StringIO
-from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
-import core_main_app.components.xsl_transformation.api as xsl_transformation_api
-import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
-import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
-from core_main_app.components.workspace import api as workspace_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import \
+    api as oai_provider_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
 
 
 class OAIProviderView(TemplateView):
@@ -60,7 +64,7 @@ class OAIProviderView(TemplateView):
         return self.errors([error])
 
     def errors(self, errors):
-        self.template_name = 'core_oaipmh_provider_app/user/xml/error.html'
+        self.template_name = "core_oaipmh_provider_app/user/xml/error.html"
         return self.render_to_response({
             'errors': errors,
         })
@@ -102,7 +106,9 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException, e:
             return self.error(e)
         except Exception, e:
-            return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse(
+                {'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def identify(self):
         """ Response to identify request.
@@ -178,7 +184,7 @@ class OAIProviderView(TemplateView):
                     metadata_formats = oai_provider_metadata_format_api.get_all_by_templates([record.template])
                     xslt_metadata_formats = oai_xsl_template_api.get_metadata_formats_by_templates([record.template])
                     metadata_formats = set(metadata_formats).union(xslt_metadata_formats)
-                except:
+                except Exception:
                     raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
             else:
                 # No identifier provided. We return all metadata formats available
@@ -270,22 +276,27 @@ class OAIProviderView(TemplateView):
             record_id = CheckOaiPmhRequest.check_identifier(self.identifier)
             try:
                 oai_data = oai_data_api.get_by_data(record_id)
-            except:
+            except Exception:
                 raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
+
             try:
-                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(self.metadata_prefix)
+                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
+                    self.metadata_prefix
+                )
                 # Check if the record and the given metadata prefix use the same template.
-                use_raw = metadata_format.is_template and (oai_data.template == metadata_format.template)
+                use_raw = metadata_format.is_template and \
+                    oai_data.template == metadata_format.template
                 if oai_data.status != oai_status.DELETED:
-                    if use_raw:
-                        xml = oai_data.data.xml_content
-                    else:
-                        xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(oai_data.template.id,
-                                                                                              metadata_format.id).xslt
-                        xml = xsl_transformation_api.xsl_transform(oai_data.data.xml_content, xslt.name)
+                    xml = re.sub(r'<\?xml[^?]+\?>', '', oai_data.data.xml_content)
+
+                    if not use_raw:
+                        xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                            oai_data.template.id, metadata_format.id
+                        ).xslt
+                        xml = xsl_transformation_api.xsl_transform(xml, xslt.name)
                 else:
                     xml = None
-            except:
+            except Exception:
                 raise oai_provider_exceptions.CannotDisseminateFormat(self.metadata_prefix)
 
             record_info = {
@@ -314,32 +325,41 @@ class OAIProviderView(TemplateView):
             raise oai_provider_exceptions.BadResumptionToken(self.resumption_token)
 
     @staticmethod
-    def _get_items(templates_id, from_date, until_date, metadata_format, include_metadata=False, use_raw=True):
+    def _get_items(templates_id, from_date, until_date, metadata_format, include_metadata=False,
+                   use_raw=True):
         items = []
         for template in templates_id:
             try:
                 xslt = None
                 if not use_raw:
-                    xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(template, metadata_format).xslt
-                oai_data = oai_data_api.get_all_by_template(template, from_date=from_date, until_date=until_date)
+                    xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                        template, metadata_format
+                    ).xslt
+                oai_data = oai_data_api.get_all_by_template(
+                    template, from_date=from_date, until_date=until_date
+                )
                 for elt in oai_data:
                     # Only data from public workspace.
                     if elt.data.workspace is not None and \
                             workspace_api.is_workspace_public(elt.data.workspace):
-                        identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER,
+                        identifier = '%s:%s:id/%s' % (settings.OAI_SCHEME,
+                                                      settings.OAI_REPO_IDENTIFIER,
                                                       str(elt.data_id))
                         item_info = {
                             'identifier': identifier,
-                            'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(elt.oai_date_stamp),
+                            'last_modified': UTCdatetime.datetime_to_utc_datetime_iso8601(
+                                elt.oai_date_stamp
+                            ),
                             'sets': oai_provider_set_api.get_all_by_template_ids([template]),
                             'deleted': elt.status == oai_status.DELETED
                         }
                         if include_metadata and elt.status == oai_status.ACTIVE:
-                            if use_raw:
-                                item_info.update({'XML': elt.data.xml_content})
-                            else:
-                                xml = xsl_transformation_api.xsl_transform(elt.data.xml_content, xslt.name)
-                                item_info.update({'XML': xml})
+                            xml = re.sub(r'<\?xml[^?]+\?>', '', elt.data.xml_content)
+
+                            if not use_raw:
+                                xml = xsl_transformation_api.xsl_transform(xml, xslt.name)
+
+                            item_info.update({'XML': xml})
 
                         items.append(item_info)
             except (exceptions.DoesNotExist, exceptions.XMLError, Exception):
@@ -366,7 +386,7 @@ class OAIProviderView(TemplateView):
             if metadata_format.is_template:
                 templates_id.append(str(metadata_format.template.id))
             return templates_id
-        except:
+        except Exception:
             raise oai_provider_exceptions.CannotDisseminateFormat(metadata_prefix)
 
     @staticmethod
