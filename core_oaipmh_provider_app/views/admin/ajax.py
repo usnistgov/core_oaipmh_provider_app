@@ -41,7 +41,7 @@ def check_registry(request):
             "Connection error while checking availability",
             content_type='application/javascript'
         )
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({'is_available': is_available}), content_type='application/javascript')
@@ -57,7 +57,7 @@ class EditIdentityView(EditObjectModalView):
         # Save treatment.
         try:
             oai_settings_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -72,7 +72,7 @@ class AddMetadataFormatView(AddObjectModalView):
         try:
             oai_provider_metadata_format_api.add_metadata_format(self.object.metadata_prefix,
                                                                  self.object.schema)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -100,7 +100,7 @@ class EditMetadataFormatView(EditObjectModalView):
         except NotUniqueError:
             form.add_error(None, "A Metadata Format with the same prefix already exists. Please "
                                  "choose another prefix.")
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -115,7 +115,7 @@ class AddTemplateMetadataFormatView(AddObjectModalView):
         try:
             oai_provider_metadata_format_api.\
                 add_template_metadata_format(self.object.metadata_prefix, self.object.template.id)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -129,7 +129,7 @@ class AddSetView(AddObjectModalView):
         # Save treatment.
         try:
             oai_provider_set_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -154,7 +154,7 @@ class EditSetView(EditObjectModalView):
         # Save treatment.
         try:
             oai_provider_set_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
     def get_initial(self):
@@ -173,7 +173,7 @@ class AddTemplateMappingView(AddObjectModalView):
         # Save treatment.
         try:
             oai_xsl_template_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
     def get_initial(self):
@@ -214,7 +214,7 @@ class EditTemplateMappingView(EditObjectModalView):
         # Save treatment.
         try:
             oai_xsl_template_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
     def get_initial(self):

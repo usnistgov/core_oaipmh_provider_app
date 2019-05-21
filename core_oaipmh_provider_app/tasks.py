@@ -48,7 +48,7 @@ def insert_data_task():
             oai_data_api.upsert_from_data(document, force_update=False)
 
         logger.debug("OAI Data inserted.")
-    except Exception, e:
+    except Exception as e:
         logger.error("Impossible to init the OAI-PMH data: %s" % e.message)
 
     logger.info("OAI Data discovery done")

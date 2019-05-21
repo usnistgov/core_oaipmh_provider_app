@@ -101,11 +101,11 @@ class OAIProviderView(TemplateView):
             elif self.oai_verb == 'ListRecords':
                 return self.list_records()
 
-        except oai_provider_exceptions.OAIExceptions, e:
+        except oai_provider_exceptions.OAIExceptions as e:
             return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException, e:
+        except oai_provider_exceptions.OAIException as e:
             return self.error(e)
-        except Exception, e:
+        except Exception as e:
             return HttpResponse(
                 {'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -159,11 +159,11 @@ class OAIProviderView(TemplateView):
                     items.append(item_info)
 
             return self.render_to_response({'items': items})
-        except oai_provider_exceptions.OAIExceptions, e:
+        except oai_provider_exceptions.OAIExceptions as e:
             return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException, e:
+        except oai_provider_exceptions.OAIException as e:
             return self.error(e)
-        except Exception, e:
+        except Exception as e:
             return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list_metadata_formats(self):
@@ -204,11 +204,11 @@ class OAIProviderView(TemplateView):
                     items.append(item_info)
 
             return self.render_to_response({'items': items})
-        except oai_provider_exceptions.OAIExceptions, e:
+        except oai_provider_exceptions.OAIExceptions as e:
             return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException, e:
+        except oai_provider_exceptions.OAIException as e:
             return self.error(e)
-        except Exception, e:
+        except Exception as e:
             return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list_identifiers(self):
@@ -257,11 +257,11 @@ class OAIProviderView(TemplateView):
             items = self._get_items(templates_id, from_date, until_date, metadata_format, include_metadata, use_raw)
 
             return self.render_to_response({'items': items})
-        except oai_provider_exceptions.OAIExceptions, e:
+        except oai_provider_exceptions.OAIExceptions as e:
             return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException, e:
+        except oai_provider_exceptions.OAIException as e:
             return self.error(e)
-        except Exception, e:
+        except Exception as e:
             return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_record(self):
@@ -308,11 +308,11 @@ class OAIProviderView(TemplateView):
             }
 
             return self.render_to_response(record_info)
-        except oai_provider_exceptions.OAIExceptions, e:
+        except oai_provider_exceptions.OAIExceptions as e:
             return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException, e:
+        except oai_provider_exceptions.OAIException as e:
             return self.error(e)
-        except Exception, e:
+        except Exception as e:
             return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def _check_resumption_token_not_implemented(self):

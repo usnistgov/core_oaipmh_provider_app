@@ -9,6 +9,7 @@ from core_main_app.commons import exceptions
 from mongoengine import errors as mongoengine_errors
 from mongoengine.queryset.visitor import Q
 import operator
+from functools import reduce
 
 
 class OaiData(Document):

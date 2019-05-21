@@ -24,7 +24,7 @@ def init():
                                    repository_identifier=settings.OAI_REPO_IDENTIFIER,
                                    enable_harvesting=False)
         oai_settings_api.upsert(oai_settings)
-    except Exception, e:
+    except Exception as e:
         logger.error("Impossible to init the settings: %s" % e.message)
 
     logger.info("FINISH oai settings discovery.")

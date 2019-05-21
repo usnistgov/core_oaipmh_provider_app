@@ -31,7 +31,7 @@ def init():
                                                         is_template=False)
 
             oai_provider_metadata_format_api.upsert(oai_dublin_core)
-    except Exception, e:
+    except Exception as e:
         logger.error("ERROR : Impossible to init the metadata formats: %s" % e.message)
 
     logger.info("FINISH oai provider metadata format discovery.")
