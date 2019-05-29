@@ -1,5 +1,7 @@
 """ Unit Test Rest OaiProviderMetadataFormat
 """
+from builtins import str
+
 import requests
 from bson.objectid import ObjectId
 from django.test.testcases import SimpleTestCase
@@ -10,15 +12,15 @@ from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
 from core_main_app.components.template.models import Template
 from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as  \
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
     oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import \
     OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
-from core_oaipmh_provider_app.rest.oai_provider_metadata_format import views as  \
+from core_oaipmh_provider_app.rest.oai_provider_metadata_format import views as \
     rest_oai_provider_metadata_format
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 
 class TestSelectMetadataFormat(SimpleTestCase):

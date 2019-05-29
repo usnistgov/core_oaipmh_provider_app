@@ -1,9 +1,10 @@
 """
 OaiProviderSet API
 """
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_main_app.components.template_version_manager import api as template_version_manager_api
+from builtins import map
 
+from core_main_app.components.template_version_manager import api as template_version_manager_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
 
 def upsert(oai_provider_set):
@@ -89,7 +90,7 @@ def get_all_by_template_ids(template_ids):
 
     """
     # Be sure to have string and not ObjectId()
-    string_ids = map(str, template_ids)
+    string_ids = list(map(str, template_ids))
     # Get all templates managers thanks to templates ids.
     templates_manager = template_version_manager_api.get_all_by_version_ids(string_ids)
     # Get all OaiProviderSet used by those templates manager

@@ -1,10 +1,12 @@
 import re
-from StringIO import StringIO
+from builtins import str
 from datetime import datetime
+from io import StringIO
 
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
+from future import standard_library
 from rest_framework import status
 
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
@@ -25,6 +27,8 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import \
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
+
+standard_library.install_aliases()
 
 
 class OAIProviderView(TemplateView):
@@ -107,7 +111,7 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {'content': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def identify(self):

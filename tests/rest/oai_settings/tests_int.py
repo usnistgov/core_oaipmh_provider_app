@@ -1,5 +1,7 @@
 """ Int Test Rest OaiSettings
 """
+from builtins import str
+
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \

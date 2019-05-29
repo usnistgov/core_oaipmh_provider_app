@@ -2,13 +2,16 @@
 OaiXslTemplate model
 """
 
+from builtins import str
+
 from django_mongoengine import fields, Document
+from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import CASCADE
+
+from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.components.xsl_transformation.models import XslTransformation
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
-from mongoengine import errors as mongoengine_errors
-from core_main_app.commons import exceptions
-from mongoengine.queryset.base import CASCADE
 
 
 class OaiXslTemplate(Document):

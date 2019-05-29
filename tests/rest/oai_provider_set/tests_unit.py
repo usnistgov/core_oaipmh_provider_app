@@ -1,19 +1,21 @@
 """ Unit Test Rest OaiProviderSet
 """
+from builtins import str
+
 from bson.objectid import ObjectId
 from django.test.testcases import SimpleTestCase
 from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.commons import exceptions
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_provider_app.components.oai_provider_set import api as  \
-    oai_provider_set_api
-from core_oaipmh_provider_app.components.oai_provider_set.models import  \
-    OaiProviderSet
-from core_oaipmh_provider_app.rest.oai_provider_set import views as  \
-    rest_oai_provider_set
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from core_oaipmh_provider_app.components.oai_provider_set import api as \
+    oai_provider_set_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import \
+    OaiProviderSet
+from core_oaipmh_provider_app.rest.oai_provider_set import views as \
+    rest_oai_provider_set
 
 
 class TestSelectSet(SimpleTestCase):

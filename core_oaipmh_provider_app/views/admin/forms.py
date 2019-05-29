@@ -1,3 +1,5 @@
+from builtins import object
+
 from django import forms
 from mongodbforms import DocumentForm
 
@@ -26,7 +28,7 @@ class EditIdentityForm(DocumentForm):
     repository_identifier = forms.CharField(label='Repository Identifier', required=True,
                                             widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    class Meta:
+    class Meta(object):
         document = OaiSettings
         fields = ['repository_name', 'repository_identifier', 'enable_harvesting']
 
@@ -41,7 +43,7 @@ class MetadataFormatForm(DocumentForm):
     schema = forms.URLField(label='Schema URL', required=True,
                             widget=forms.URLInput(attrs={'class': 'form-control'}))
 
-    class Meta:
+    class Meta(object):
         document = OaiProviderMetadataFormat
         fields = ['metadata_prefix', 'schema']
 
@@ -55,7 +57,7 @@ class EditMetadataFormatForm(DocumentForm):
                                           attrs={'class': 'form-control',
                                                  'placeholder': 'Type the new name'}))
 
-    class Meta:
+    class Meta(object):
         document = OaiProviderMetadataFormat
         fields = ['metadata_prefix']
 
@@ -70,7 +72,7 @@ class TemplateMetadataFormatForm(DocumentForm):
     template = forms.ChoiceField(label='Template',
                                  widget=forms.Select(attrs={"class": "form-control"}))
 
-    class Meta:
+    class Meta(object):
         document = OaiProviderMetadataFormat
         fields = ['metadata_prefix', 'template']
 
@@ -98,7 +100,7 @@ class SetForm(DocumentForm):
                                       attrs={'cols': '60', 'rows': '5', 'class': 'form-control',
                                              'style': 'height:14em;width:100%;'}))
 
-    class Meta:
+    class Meta(object):
         document = OaiProviderSet
         fields = ['set_spec', 'set_name', "templates_manager", 'description']
 
@@ -118,7 +120,7 @@ class MappingXSLTForm(DocumentForm):
                                  widget=forms.Select(attrs={"class": "form-control"}))
     xslt = forms.ChoiceField(label='XSLT', widget=forms.Select(attrs={"class": "form-control"}))
 
-    class Meta:
+    class Meta(object):
         document = OaiXslTemplate
         fields = ['oai_metadata_format', 'template', "xslt"]
 

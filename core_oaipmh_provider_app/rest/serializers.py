@@ -1,6 +1,8 @@
 """
     Serializers used throughout the Rest API
 """
+from builtins import object
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import CharField, ListField
 from rest_framework_mongoengine.serializers import DocumentSerializer
@@ -32,7 +34,7 @@ class TemplateMetadataFormatSerializer(BasicSerializer):
 class OaiProviderMetadataFormatSerializer(DocumentSerializer):
     schema_url = CharField(required=True, write_only=True)
 
-    class Meta:
+    class Meta(object):
         model = OaiProviderMetadataFormat
         fields = "__all__"
         depth = 1
@@ -55,7 +57,7 @@ class UpdateMetadataFormatSerializer(BasicSerializer):
 class OaiProviderSetSerializer(DocumentSerializer):
     templates_manager = ListField(child=CharField(), required=True)
 
-    class Meta:
+    class Meta(object):
         model = OaiProviderSet
         fields = ['id', 'set_spec', 'set_name', 'description', 'templates_manager']
         depth = 1
@@ -77,7 +79,7 @@ class OaiProviderSetSerializer(DocumentSerializer):
 
 
 class TemplateToMFMappingXSLTSerializer(DocumentSerializer):
-    class Meta:
+    class Meta(object):
         model = OaiXslTemplate
         fields = '__all__'
 
@@ -126,7 +128,7 @@ class TemplateToMFUnMappingXSLTSerializer(BasicSerializer):
 
 
 class SettingsSerializer(DocumentSerializer):
-    class Meta:
+    class Meta(object):
         model = OaiSettings
         fields = '__all__'
 

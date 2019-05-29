@@ -1,12 +1,10 @@
 """
 OaiProviderMetadataFormat API
 """
-from urlparse import urljoin
+from urllib.parse import urljoin
 
-from core_main_app.utils.requests_utils.requests_utils import send_get_request
-from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.core.urlresolvers import reverse
+from future import standard_library
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -15,11 +13,16 @@ from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.commons.exceptions import XSDError
 from core_main_app.components.template import api as template_api
 from core_main_app.components.version_manager import api as version_manager_api
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_main_app.utils.xml import is_schema_valid
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app import settings
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import  \
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import \
     OaiProviderMetadataFormat
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+
+standard_library.install_aliases()
 
 
 def upsert(oai_provider_metadata_format):
@@ -291,7 +294,7 @@ def _get_target_namespace(xml_schema):
     root = xsd_tree.find(".")
     if 'targetNamespace' in root.attrib:
         target_namespace = root.attrib['targetNamespace']
-        if target_namespace not in root.nsmap.values():
+        if target_namespace not in list(root.nsmap.values()):
             message = "The use of a targetNamespace without an associated prefix is not supported."
             raise oai_pmh_exceptions.OAIAPILabelledException(message=message,
                                                              status_code=status.HTTP_400_BAD_REQUEST)

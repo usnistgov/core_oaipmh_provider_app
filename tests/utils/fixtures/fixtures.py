@@ -2,6 +2,10 @@
 """
 import json
 import os
+from builtins import object
+from builtins import str
+
+from django.test.utils import override_settings
 
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
@@ -10,8 +14,6 @@ from core_main_app.components.template_version_manager.models import TemplateVer
 from core_main_app.components.workspace import api as workspace_api
 from core_main_app.components.workspace.models import Workspace
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
-from django.test.utils import override_settings
-
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet

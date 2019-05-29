@@ -2,14 +2,17 @@
 OaiData model
 """
 
+import operator
+from builtins import str
+from functools import reduce
+
 from django_mongoengine import fields, Document
-from core_main_app.components.data.models import Data
-from core_main_app.components.template.models import Template
-from core_main_app.commons import exceptions
 from mongoengine import errors as mongoengine_errors
 from mongoengine.queryset.visitor import Q
-import operator
-from functools import reduce
+
+from core_main_app.commons import exceptions
+from core_main_app.components.data.models import Data
+from core_main_app.components.template.models import Template
 
 
 class OaiData(Document):
