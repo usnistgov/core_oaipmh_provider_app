@@ -58,6 +58,6 @@ class OaiProviderSet(OaiSet):
         try:
             return OaiProviderSet.objects().get(set_spec=set_spec)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))

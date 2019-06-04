@@ -176,11 +176,11 @@ def add_metadata_format(metadata_prefix, schema_url):
         raise e
     except (exceptions.XMLError, XSDError) as e:
         raise oai_pmh_exceptions.\
-            OAIAPILabelledException(message='Unable to add the new metadata format. %s' % e.message,
+            OAIAPILabelledException(message='Unable to add the new metadata format. %s' % str(e),
                                     status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         raise oai_pmh_exceptions.\
-            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % str(e),
                                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -218,11 +218,11 @@ def add_template_metadata_format(metadata_prefix, template_id):
                                     status_code=status.HTTP_404_NOT_FOUND)
     except exceptions.XMLError as e:
         raise oai_pmh_exceptions.\
-            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % str(e),
                                     status_code=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         raise oai_pmh_exceptions.\
-            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % e.message,
+            OAIAPILabelledException(message='Unable to add the new metadata format.%s' % str(e),
                                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

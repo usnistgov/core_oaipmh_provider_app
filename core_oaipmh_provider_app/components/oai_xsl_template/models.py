@@ -39,9 +39,9 @@ class OaiXslTemplate(Document):
         try:
             return OaiXslTemplate.objects.get(pk=str(oai_xslt_template_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_by_template_id_and_metadata_format_id(template_id, metadata_format_id):
@@ -61,9 +61,9 @@ class OaiXslTemplate(Document):
         try:
             return OaiXslTemplate.objects().get(template=template_id, oai_metadata_format=metadata_format_id)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_all_by_templates(templates):
@@ -101,6 +101,6 @@ class OaiXslTemplate(Document):
         try:
             return self.save()
         except mongoengine_errors.NotUniqueError as e:
-            raise exceptions.NotUniqueError(e.message)
+            raise exceptions.NotUniqueError(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))

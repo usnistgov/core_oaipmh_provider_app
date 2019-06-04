@@ -114,9 +114,9 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
         try:
             return OaiProviderMetadataFormat.objects().get(metadata_prefix=metadata_prefix)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     def save_object(self):
         """Custom save
@@ -127,6 +127,6 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
         try:
             return self.save()
         except mongoengine_errors.NotUniqueError as e:
-            raise exceptions.NotUniqueError(e.message)
+            raise exceptions.NotUniqueError(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))

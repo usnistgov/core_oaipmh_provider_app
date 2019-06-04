@@ -168,7 +168,7 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse({'content': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list_metadata_formats(self):
         """ Response to ListMetadataFormats request.
@@ -213,7 +213,7 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse({'content': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list_identifiers(self):
         """ Response to ListIdentifiers request.
@@ -266,7 +266,7 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse({'content': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get_record(self):
         """ Response to GetRecord request.
@@ -317,7 +317,7 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({'content': e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse({'content': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def _check_resumption_token_not_implemented(self):
         """ Check if a resumption token has been given. Token not implemented yet.

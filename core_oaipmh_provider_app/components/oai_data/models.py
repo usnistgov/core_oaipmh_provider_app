@@ -50,9 +50,9 @@ class OaiData(Document):
         try:
             return OaiData.objects.get(pk=str(oai_data_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_by_data(data):
@@ -72,9 +72,9 @@ class OaiData(Document):
         try:
             return OaiData.objects.get(data=data)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_all():
@@ -131,4 +131,4 @@ class OaiData(Document):
 
             return earliest_record.oai_date_stamp
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))

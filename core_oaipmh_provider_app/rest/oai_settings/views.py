@@ -37,7 +37,7 @@ class Settings(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -82,7 +82,7 @@ class Settings(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -111,5 +111,5 @@ class Check(APIView):
 
             return Response(content, status=http_response.status_code)
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

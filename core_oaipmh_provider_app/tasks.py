@@ -49,6 +49,6 @@ def insert_data_task():
 
         logger.debug("OAI Data inserted.")
     except Exception as e:
-        logger.error("Impossible to init the OAI-PMH data: %s" % e.message)
+        logger.error("Impossible to init the OAI-PMH data: %s" % str(e))
 
     logger.info("OAI Data discovery done")
