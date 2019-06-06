@@ -290,7 +290,11 @@ def _get_target_namespace(xml_schema):
         The target namespace.
 
     """
-    xsd_tree = XSDTree.fromstring(xml_schema.encode('utf-8'))
+    try:
+        xsd_tree = XSDTree.transform_to_xml(xml_schema)
+    except Exception as e:
+        raise exceptions.XMLError(str(e))
+
     root = xsd_tree.find(".")
     if 'targetNamespace' in root.attrib:
         target_namespace = root.attrib['targetNamespace']
