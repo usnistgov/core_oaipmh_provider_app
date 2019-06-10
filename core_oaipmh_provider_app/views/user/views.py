@@ -423,7 +423,7 @@ def get_xsd(request, title, version_number):
     try:
         template_version = version_manager_api.get_active_global_version_manager_by_title(title)
         template = template_api.get(version_manager_api.get_version_by_number(template_version, int(version_number)))
-        flatten = XSDFlattenerDatabaseOrURL(template.content.encode('utf-8'))
+        flatten = XSDFlattenerDatabaseOrURL(template.content)
         content_encoded = flatten.get_flat()
         file_obj = StringIO(content_encoded)
 
