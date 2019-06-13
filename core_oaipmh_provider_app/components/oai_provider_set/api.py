@@ -1,7 +1,6 @@
 """
 OaiProviderSet API
 """
-from builtins import map
 
 from core_main_app.components.template_version_manager import api as template_version_manager_api
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet

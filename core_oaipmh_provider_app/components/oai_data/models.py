@@ -3,7 +3,6 @@ OaiData model
 """
 
 import operator
-from builtins import str
 from functools import reduce
 
 from django_mongoengine import fields, Document

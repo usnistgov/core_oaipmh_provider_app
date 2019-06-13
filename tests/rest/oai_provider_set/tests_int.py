@@ -1,6 +1,5 @@
 """ Int Test Rest OaiProviderSet
 """
-from builtins import str
 
 from bson.objectid import ObjectId
 from rest_framework import status

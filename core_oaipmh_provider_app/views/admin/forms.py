@@ -1,5 +1,3 @@
-from builtins import object
-
 from django import forms
 from mongodbforms import DocumentForm
 

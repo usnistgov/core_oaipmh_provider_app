@@ -1,6 +1,5 @@
 """ Unit Test Rest OaiProviderSet
 """
-from builtins import str
 
 from bson.objectid import ObjectId
 from django.test.testcases import SimpleTestCase

@@ -1,7 +1,6 @@
 """
     Serializers used throughout the Rest API
 """
-from builtins import object
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import CharField, ListField

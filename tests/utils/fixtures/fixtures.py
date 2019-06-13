@@ -2,8 +2,6 @@
 """
 import json
 import os
-from builtins import object
-from builtins import str
 
 from django.test.utils import override_settings
 

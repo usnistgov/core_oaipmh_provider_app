@@ -1,6 +1,5 @@
 """ Int Test Rest OaiSettings
 """
-from builtins import str
 
 from rest_framework import status
 

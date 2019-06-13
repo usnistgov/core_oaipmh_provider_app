@@ -1,6 +1,5 @@
 """ Unit Test Rest OaiProviderMetadataFormat
 """
-from builtins import str
 
 import requests
 from bson.objectid import ObjectId

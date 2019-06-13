@@ -4,7 +4,6 @@ OaiProviderMetadataFormat API
 from urllib.parse import urljoin
 
 from django.core.urlresolvers import reverse
-from future import standard_library
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -22,7 +21,6 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
     OaiProviderMetadataFormat
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
-standard_library.install_aliases()
 
 
 def upsert(oai_provider_metadata_format):
