@@ -2,8 +2,9 @@
 Check OAI-PMH request utils.
 
 """
-import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
 import re
+
+import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
 from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_provider_app import settings
 

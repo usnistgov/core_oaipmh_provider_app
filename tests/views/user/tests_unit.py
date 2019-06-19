@@ -8,9 +8,7 @@ from mock.mock import patch, Mock
 from rest_framework import status
 from rest_framework.status import HTTP_200_OK
 
-
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
-
 from core_main_app.commons import exceptions as common_exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template.models import Template

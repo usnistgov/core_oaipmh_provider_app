@@ -1,11 +1,12 @@
 """
 Handle signals.
 """
-from signals_utils.signals.mongo import connector, signals
-from core_main_app.components.data.models import Data
-from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
 from datetime import datetime
+
+from core_main_app.components.data.models import Data
 from core_oaipmh_provider_app.commons import status
+from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
+from signals_utils.signals.mongo import connector, signals
 
 
 def init():

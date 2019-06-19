@@ -1,13 +1,15 @@
+from datetime import datetime
 from unittest.case import TestCase
+
 from bson.objectid import ObjectId
 from mock.mock import Mock, patch
+
 import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
-from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_main_app.commons import exceptions
-from datetime import datetime
-from core_oaipmh_provider_app.commons import status
-from core_main_app.components.template.models import Template
 from core_main_app.components.data.models import Data
+from core_main_app.components.template.models import Template
+from core_oaipmh_provider_app.commons import status
+from core_oaipmh_provider_app.components.oai_data.models import OaiData
 
 
 class TestOaiDataUpsert(TestCase):

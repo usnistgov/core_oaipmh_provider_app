@@ -2,10 +2,10 @@
 """
 import logging
 
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
-from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_main_app.commons import exceptions
 from core_oaipmh_provider_app import settings
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 
 logger = logging.getLogger(__name__)
 

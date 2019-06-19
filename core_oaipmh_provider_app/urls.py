@@ -1,6 +1,7 @@
 """ Url router for OAI-PMH provider application
 """
 from django.conf.urls import url, include
+
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from core_oaipmh_provider_app.views.user.views import get_xsd
 

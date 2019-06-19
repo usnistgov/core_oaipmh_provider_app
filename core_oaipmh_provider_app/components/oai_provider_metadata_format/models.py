@@ -3,11 +3,12 @@ OaiProviderMetadataFormat model
 """
 
 from django_mongoengine import fields
-from mongoengine.queryset.base import CASCADE
-from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
-from core_main_app.components.template.models import Template
-from core_main_app.commons import exceptions as exceptions
 from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import CASCADE
+
+from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.template.models import Template
+from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
 
 
 class OaiProviderMetadataFormat(OaiMetadataFormat):

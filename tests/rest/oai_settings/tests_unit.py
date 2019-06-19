@@ -5,10 +5,10 @@ from django.test.testcases import SimpleTestCase
 from mock.mock import patch
 from rest_framework import status
 
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_provider_app.rest.oai_settings import views as  \
-    rest_oai_settings
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from core_oaipmh_provider_app.rest.oai_settings import views as \
+    rest_oai_settings
 
 
 class TestSelect(SimpleTestCase):

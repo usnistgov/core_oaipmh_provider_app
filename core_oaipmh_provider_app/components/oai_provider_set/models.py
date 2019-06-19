@@ -2,12 +2,12 @@
 OaiProviderSet model
 """
 from django_mongoengine import fields
-from mongoengine.queryset.base import PULL
-from core_oaipmh_common_app.components.oai_set.models import OaiSet
-from core_main_app.components.template_version_manager.models import TemplateVersionManager
 from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import PULL
+
 from core_main_app.commons import exceptions
-from bson.objectid import ObjectId
+from core_main_app.components.template_version_manager.models import TemplateVersionManager
+from core_oaipmh_common_app.components.oai_set.models import OaiSet
 
 
 class OaiProviderSet(OaiSet):

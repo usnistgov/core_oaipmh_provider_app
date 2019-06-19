@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 

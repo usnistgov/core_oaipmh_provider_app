@@ -1,8 +1,10 @@
 from unittest.case import TestCase
+
 from bson.objectid import ObjectId
 from mock.mock import Mock, patch
-import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
+
 import core_main_app.components.template_version_manager.api as template_version_manager_api
+import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
 from core_main_app.commons import exceptions
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 

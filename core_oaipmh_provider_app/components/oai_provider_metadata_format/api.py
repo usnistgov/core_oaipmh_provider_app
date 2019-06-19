@@ -22,7 +22,6 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
-
 def upsert(oai_provider_metadata_format):
     """ Create or update an OaiProviderMetadataFormat.
 

@@ -27,7 +27,6 @@ from core_oaipmh_provider_app.components.oai_settings import api as oai_settings
 from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
 
 
-
 class OAIProviderView(TemplateView):
     content_type = 'text/xml'
 

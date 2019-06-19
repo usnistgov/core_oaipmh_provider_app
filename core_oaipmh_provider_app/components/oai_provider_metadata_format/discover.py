@@ -1,11 +1,12 @@
 """ discover settings for oai-pmh
 """
 import logging
+from os.path import join
+
+from django.contrib.staticfiles import finders
 
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
-from django.contrib.staticfiles import finders
-from os.path import join
 
 logger = logging.getLogger(__name__)
 
