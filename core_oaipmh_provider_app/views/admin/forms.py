@@ -1,6 +1,11 @@
+""" OAI pmh provider admin form file
+"""
+import logging
+
 from django import forms
 from mongodbforms import DocumentForm
 
+from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
 from core_main_app.components.template_version_manager import api as template_version_manager_api
 from core_main_app.components.xsl_transformation import api as xsl_transformation_api
@@ -11,6 +16,8 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+
+logger = logging.getLogger(__name__)
 
 
 class EditIdentityForm(DocumentForm):
@@ -154,8 +161,8 @@ def _get_templates_versions():
                 template = template_api.get(version)
                 version_name = template.display_name
                 templates.append((version, version_name))
-    except Exception:
-        pass
+    except exceptions.DoesNotExist as e:
+        logger.warning("_get_templates_versions threw an exception: {0}".format(str(e)))
 
     return templates
 
@@ -168,13 +175,9 @@ def _get_templates_manager():
 
     """
     templates_manager = []
-    try:
-        list_ = template_version_manager_api.get_active_global_version_manager()
-        for elt in list_:
-            templates_manager.append((elt.id, elt.title))
-    except Exception:
-        pass
-
+    list_ = template_version_manager_api.get_active_global_version_manager()
+    for elt in list_:
+        templates_manager.append((elt.id, elt.title))
     return templates_manager
 
 
@@ -186,11 +189,7 @@ def _get_xsl_transformation():
 
     """
     xsl_transformation = []
-    try:
-        list_ = xsl_transformation_api.get_all()
-        for elt in list_:
-            xsl_transformation.append((elt.id, elt.name))
-    except Exception:
-        pass
-
+    list_ = xsl_transformation_api.get_all()
+    for elt in list_:
+        xsl_transformation.append((elt.id, elt.name))
     return xsl_transformation

@@ -1,6 +1,7 @@
 """
     Serializers used throughout the Rest API
 """
+import logging
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import CharField, ListField
@@ -20,6 +21,8 @@ from core_oaipmh_provider_app.components.oai_settings import api as oai_settings
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template import api as  oai_xsl_template_api
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+
+logger = logging.getLogger(__name__)
 
 
 class TemplateMetadataFormatSerializer(BasicSerializer):
@@ -113,8 +116,8 @@ class TemplateToMFMappingXSLTSerializer(DocumentSerializer):
                                                           self.validated_data.get(
                                                               'oai_metadata_format', ''))
             self.instance = oai_xsl_template
-        except exceptions.DoesNotExist:
-            pass
+        except exceptions.DoesNotExist as e:
+            logger.warning("init_instance threw an exception: {0}".format(str(e)))
 
     template = CharField(required=True)
     oai_metadata_format = CharField(required=True)

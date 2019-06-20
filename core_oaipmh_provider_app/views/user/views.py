@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime
 from io import StringIO
@@ -25,6 +26,8 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import \
 from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
+
+logger = logging.getLogger(__name__)
 
 
 class OAIProviderView(TemplateView):
@@ -362,8 +365,8 @@ class OAIProviderView(TemplateView):
                             item_info.update({'XML': xml})
 
                         items.append(item_info)
-            except (exceptions.DoesNotExist, exceptions.XMLError, Exception):
-                pass
+            except Exception as e:
+                logger.warning("_get_items threw an exception: {0}".format(str(e)))
 
         # If there is no records
         if len(items) == 0:
