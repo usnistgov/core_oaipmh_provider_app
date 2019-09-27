@@ -1,5 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from core_main_app.utils.rendering import admin_render
 from core_main_app.views.common.ajax import AddObjectModalView, EditObjectModalView, \
