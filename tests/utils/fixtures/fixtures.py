@@ -139,9 +139,7 @@ class OaiPmhFixtures(FixtureInterface):
         saved_data = []
         list_data = OaiPmhMock.mock_oai_set()
         for elt in list_data:
-            pass
-            # FIXME: error occurs when saving elements (unable to hash list templates_manager)
-            # saved_data.append(elt.save())
+            saved_data.append(elt.save())
 
         self.oai_sets = saved_data
 

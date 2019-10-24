@@ -1,6 +1,5 @@
 """ Int Test Rest OaiProviderSet
 """
-import unittest
 
 from bson.objectid import ObjectId
 from rest_framework import status
@@ -23,7 +22,6 @@ class TestSelectSet(MongoIntegrationBaseTestCase):
         super(TestSelectSet, self).setUp()
         self.param = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
 
-    @unittest.skip("FIXME: test failing after requirements upgrade")
     def test_select_set_returns(self):
         # Arrange
         user = create_mock_user('1', is_staff=True)
@@ -65,7 +63,6 @@ class TestAddSet(MongoIntegrationBaseTestCase):
                      "description": "The description"}
         self.nb_sets = len(OaiProviderSet.objects.all())
 
-    @unittest.skip("FIXME: test failing after requirements upgrade")
     def test_add_set(self):
         # Arrange
         user = create_mock_user('1', is_staff=True)
@@ -87,7 +84,6 @@ class TestDeleteSet(MongoIntegrationBaseTestCase):
         self.param = {"set_id": str(OaiPmhMock().mock_oai_first_set().id)}
         self.nb_sets = len(OaiProviderSet.objects.all())
 
-    @unittest.skip("FIXME: test failing after requirements upgrade")
     def test_delete_set(self):
         # Arrange
         user = create_mock_user('1', is_staff=True)
@@ -116,7 +112,6 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
                      "description": self.new_description,
                      "templates_manager": [str(self.new_template_version.id)]}
 
-    @unittest.skip("FIXME: test failing after requirements upgrade")
     def test_update_set(self):
         # Arrange
         user = create_mock_user('1', is_staff=True)

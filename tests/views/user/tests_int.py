@@ -1,7 +1,5 @@
 """ Integrations tests for user views
 """
-import unittest
-
 from mock import PropertyMock
 from mock.mock import patch
 from rest_framework import status
@@ -108,7 +106,6 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, 'ListMetadataFormats')
 
-    @unittest.skip("FIXME: test failing after requirements upgrade")
     def test_get_list_sets(self):
         # Arrange
         data = {'verb': 'ListSets'}
