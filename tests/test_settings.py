@@ -1,6 +1,7 @@
 import os
 from os.path import dirname, realpath, join
 
+
 SECRET_KEY = 'fake-key'
 
 INSTALLED_APPS = [
@@ -8,6 +9,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.sites',
 
     # Local apps
@@ -17,6 +20,12 @@ INSTALLED_APPS = [
 OAI_PROVIDER_ROOT = dirname(realpath(__file__))
 
 ALLOWED_HOSTS = ['testserver']
+
+MIDDLEWARE = (
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
+)
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -29,7 +38,8 @@ TEMPLATES = [{
     ],
     'OPTIONS': {
         'context_processors': [
-            "django.contrib.auth.context_processors.auth",
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
         ]
     }
 }]
