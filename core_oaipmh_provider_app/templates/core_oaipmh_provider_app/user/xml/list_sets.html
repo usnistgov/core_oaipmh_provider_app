@@ -21,5 +21,8 @@
         {% endif %}
     </set>
     {% endfor %}
+    {% if resumption_token %}
+        {% include "core_oaipmh_provider_app/user/xml/resumption_token.xml" %}
+    {% endif %}
   </ListSets>
 {% endblock %}

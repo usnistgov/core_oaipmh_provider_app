@@ -3,8 +3,11 @@ Check OAI-PMH request utils.
 
 """
 import re
+from datetime import datetime
 
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+from core_oaipmh_provider_app.components.oai_request_page import api as \
+    oai_request_page_api
 from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_provider_app import settings
 
@@ -91,6 +94,7 @@ def check_illegal_and_required(legal, required, data):
         for arg in missing:
             error = 'Missing required argument - %s' % arg
             errors.append(oai_provider_exceptions.BadArgument(error))
+
     # Raise exception.
     if len(errors) > 0:
         raise oai_provider_exceptions.OAIExceptions(errors)
@@ -174,3 +178,29 @@ def _check_dates(date):
         return UTCdatetime.utc_datetime_iso8601_to_datetime(date)
     except Exception as e:
         raise e
+
+
+def check_resumption_token(resumption_token):
+    """ Check resumption token and return associated OAIRequestPage object
+
+    Args:
+        resumption_token:
+
+    Raises:
+        BadResumptionToken:
+
+    Returns:
+    """
+    try:
+        oai_request_page_object = oai_request_page_api.\
+            get_by_resumption_token(resumption_token)
+
+        # Check if the resumption token is not expired
+        if UTCdatetime.datetime_to_utc_datetime_iso8601(
+                oai_request_page_object.expiration_date
+        ) < UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.now()):
+            raise Exception("Token expired")
+
+        return oai_request_page_object
+    except Exception:
+        raise oai_provider_exceptions.BadResumptionToken(resumption_token)

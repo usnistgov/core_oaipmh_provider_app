@@ -13,7 +13,8 @@ from core_main_app.components.workspace import api as workspace_api
 from core_main_app.components.workspace.models import Workspace
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import \
+    OaiProviderMetadataFormat
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.settings import OAI_SCHEME, OAI_REPO_IDENTIFIER

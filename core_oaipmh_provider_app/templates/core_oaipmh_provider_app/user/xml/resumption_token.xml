@@ -1,0 +1,8 @@
+<resumptionToken
+    {% if resumption_token.expiration_date %}
+        expirationDate="{{ resumption_token.expiration_date }}"
+    {% endif %}
+    completeListSize="{{ resumption_token.list_size }}"
+    cursor="{{ resumption_token.cursor }}">
+        {{ resumption_token.token }}
+</resumptionToken>

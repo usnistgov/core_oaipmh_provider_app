@@ -72,7 +72,26 @@ def get_all_by_template(template, from_date=None, until_date=None):
         List of OaiData.
 
     """
-    return OaiData.get_all_by_template(template=template, from_date=from_date, until_date=until_date)
+    return OaiData.get_all_by_template(
+        template=template, from_date=from_date, until_date=until_date
+    )
+
+
+def get_all_by_data_list(data_list, from_date=None, until_date=None):
+    """ Get all OaiData from a specific data list.
+
+    Args:
+        data_list: The template.
+        from_date: From date
+        until_date: Until date
+
+    Returns:
+        List of OaiData.
+
+    """
+    return OaiData.get_all_by_data_list_and_timeframe(
+        data_list=data_list, from_date=from_date, until_date=until_date
+    )
 
 
 def get_all():

@@ -27,9 +27,11 @@ from core_oaipmh_provider_app.components.oai_settings import api as oai_settings
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
-from core_oaipmh_provider_app.utils import CheckOaiPmhRequest
+from core_oaipmh_provider_app.utils import request_checker
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
+from core_main_app.components.workspace import api as workspace_api
+from core_main_app.system import api as system_api
 
 
 class TestServerGeneral(TestOaiPmhSuite):
@@ -320,7 +322,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         self.check_tag_error_code(response.rendered_content, exceptions.ID_DOES_NOT_EXIST)
 
     @patch.object(data_api, 'get_by_id')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(oai_provider_metadata_format_api, 'get_all')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
@@ -367,7 +369,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
     @patch.object(oai_xsl_template_api, 'get_metadata_formats_by_templates')
     @patch.object(oai_provider_metadata_format_api, 'get_all_by_templates')
     @patch.object(data_api, 'get_by_id')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
     def test_list_metadata_format_identifier_with_identifier(self, mock_get, mock_request,
@@ -443,7 +445,7 @@ class TestGetRecord(TestOaiPmhSuite):
         self.check_tag_error_code(response.rendered_content, exceptions.ID_DOES_NOT_EXIST)
 
     @patch.object(oai_data_api, 'get_by_data')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
     def test_get_record_identifier_does_not_exist(self, mock_get, mock_request, mock_check_identifier, mock_get_by_data):
@@ -463,7 +465,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
     @patch.object(oai_data_api, 'get_by_data')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
     def test_get_record_metadata_format_does_not_exist(self, mock_get, mock_request, mock_check_identifier,
@@ -486,7 +488,7 @@ class TestGetRecord(TestOaiPmhSuite):
     @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
     @patch.object(oai_data_api, 'get_by_data')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
     def test_get_record_with_xml_decl_use_raw(self, mock_get, mock_request, mock_check_identifier,
@@ -523,7 +525,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
-        output_xml_data = response.context_data["XML"]
+        output_xml_data = response.context_data["xml"]
 
         # Assert
         self.assertNotIn(xml_decl, output_xml_data)
@@ -534,7 +536,7 @@ class TestGetRecord(TestOaiPmhSuite):
     @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
     @patch.object(oai_data_api, 'get_by_data')
-    @patch.object(CheckOaiPmhRequest, 'check_identifier')
+    @patch.object(request_checker, 'check_identifier')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
     def test_get_record_with_xml_decl_not_raw(self, mock_get, mock_request, mock_check_identifier,
@@ -584,7 +586,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
-        output_xml_data = response.context_data["XML"]
+        output_xml_data = response.context_data["xml"]
 
         # Assert
         self.assertNotIn(xml_decl, output_xml_data)
@@ -705,7 +707,9 @@ class TestListRecords(TestOaiPmhSuite):
         self.check_tag_error_code(response.rendered_content, exceptions.NO_RECORDS_MATCH)
 
     @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
-    @patch.object(oai_data_api, 'get_all_by_template')
+    @patch.object(oai_data_api, 'get_all_by_data_list')
+    @patch.object(system_api, 'get_all_data_in_workspaces_for_templates')
+    @patch.object(workspace_api, 'get_all_public_workspaces')
     @patch.object(OAIProviderView, '_get_templates_id_by_set_spec')
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
     @patch.object(OAIProviderView, '_get_templates_id_by_metadata_prefix')
@@ -714,7 +718,9 @@ class TestListRecords(TestOaiPmhSuite):
     def test_list_record_with_xml_decl_use_raw(self, mock_get, mock_request, mock_get_templates_id,
                                                mock_get_by_metadata_prefix,
                                                mock_get_templates_id_by_set_spec,
-                                               mock_get_all_by_template,
+                                               mock_get_all_public_workspaces,
+                                               mock_get_all_data_in_workspaces_for_templates,
+                                               mock_get_all_by_data_list,
                                                mock_get_all_by_template_ids):
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
@@ -727,7 +733,6 @@ class TestListRecords(TestOaiPmhSuite):
 
         mock_oai_data = Mock(spec=OaiData)
         mock_oai_data.status = oai_status.ACTIVE
-        # mock_oai_data.template = mock_oai_template
         mock_oai_data.data.xml_content = """
             %s
             <body>
@@ -737,14 +742,16 @@ class TestListRecords(TestOaiPmhSuite):
         """ % xml_decl
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
-        mock_get_all_by_template.return_value = [mock_oai_data]
+        mock_get_all_public_workspaces.return_value = []
+        mock_get_all_data_in_workspaces_for_templates.return_value = []
+        mock_get_all_by_data_list.return_value = [mock_oai_data]
         mock_get_all_by_template_ids.return_value = []
 
         data = {'verb': 'ListRecords', 'metadataPrefix': 'dummy', 'set': 'dummy_set'}
 
         # Act
         response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
-        output_xml_data = response.context_data["items"][0]["XML"]
+        output_xml_data = response.context_data["items"][0]["xml"]
 
         # Assert
         self.assertNotIn(xml_decl, output_xml_data)
@@ -752,7 +759,9 @@ class TestListRecords(TestOaiPmhSuite):
 
     @patch.object(xsl_transformation_api, 'xsl_transform')
     @patch.object(oai_provider_set_api, 'get_all_by_template_ids')
-    @patch.object(oai_data_api, 'get_all_by_template')
+    @patch.object(oai_data_api, 'get_all_by_data_list')
+    @patch.object(system_api, 'get_all_data_in_workspaces_for_templates')
+    @patch.object(workspace_api, 'get_all_public_workspaces')
     @patch.object(oai_xsl_template_api, 'get_by_template_id_and_metadata_format_id')
     @patch.object(OAIProviderView, '_get_templates_id_by_set_spec')
     @patch.object(oai_provider_metadata_format_api, 'get_by_metadata_prefix')
@@ -760,13 +769,16 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(OAIProviderView, '_get_templates_id_by_metadata_prefix')
     @patch.object(HttpRequest, 'build_absolute_uri')
     @patch.object(oai_settings_api, 'get')
-    def test_list_record_with_xml_decl_not_raw(self, mock_get, mock_request, mock_get_templates_id,
-                                               mock_get_template_ids_by_metadata_format,
-                                               mock_get_by_metadata_prefix,
-                                               mock_get_templates_id_by_set_spec,
-                                               mock_get_by_template_id_and_metadata_format_id,
-                                               mock_get_all_by_template,
-                                               mock_get_all_by_template_ids, mock_xsl_transform):
+    def test_list_record_with_xml_decl_not_raw(
+            self, mock_get, mock_request, mock_get_templates_id,
+            mock_get_template_ids_by_metadata_format,
+            mock_get_by_metadata_prefix, mock_get_templates_id_by_set_spec,
+            mock_get_by_template_id_and_metadata_format_id,
+            mock_get_all_public_workspaces,
+            mock_get_all_data_in_workspaces_for_templates,
+            mock_get_all_by_data_list, mock_get_all_by_template_ids,
+            mock_xsl_transform
+    ):
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
         mock_cleaned_xml = """
@@ -792,14 +804,15 @@ class TestListRecords(TestOaiPmhSuite):
 
         mock_oai_data = Mock(spec=OaiData)
         mock_oai_data.status = oai_status.ACTIVE
-        # mock_oai_data.template = mock_oai_template
         mock_oai_data.data.xml_content = """
             %s
             %s
         """ % (xml_decl, mock_cleaned_xml)
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
-        mock_get_all_by_template.return_value = [mock_oai_data]
+        mock_get_all_public_workspaces.return_value = []
+        mock_get_all_data_in_workspaces_for_templates.return_value = []
+        mock_get_all_by_data_list.return_value = [mock_oai_data]
         mock_get_all_by_template_ids.return_value = []
         mock_xsl_transform.return_value = mock_cleaned_xml
 
@@ -807,7 +820,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(OAIProviderView.as_view(), None, data=data)
-        output_xml_data = response.context_data["items"][0]["XML"]
+        output_xml_data = response.context_data["items"][0]["xml"]
 
         # Assert
         self.assertNotIn(xml_decl, output_xml_data)

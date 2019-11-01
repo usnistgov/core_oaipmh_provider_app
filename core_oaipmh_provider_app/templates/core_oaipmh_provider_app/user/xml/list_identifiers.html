@@ -5,5 +5,8 @@
     {% for i in items %}
         {% include 'core_oaipmh_provider_app/user/xml/header.html' %}
     {% endfor %}
+    {% if resumption_token %}
+        {% include "core_oaipmh_provider_app/user/xml/resumption_token.xml" %}
+    {% endif %}
   </ListIdentifiers>
 {% endblock %}

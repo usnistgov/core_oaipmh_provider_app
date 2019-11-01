@@ -76,6 +76,26 @@ class OaiData(Document):
             raise exceptions.ModelError(str(ex))
 
     @staticmethod
+    def get_all_by_data_list_and_timeframe(data_list, from_date, until_date):
+        """ Get all OaiData from a specific data list.
+
+        Args:
+            data_list: List of data.
+            from_date: Timeframe start.
+            until_date: Timeframe end.
+
+        Returns:
+            List of OaiData instance.
+        """
+        q_list = {Q(data__in=data_list)}
+        if from_date:
+            q_list.add(Q(oai_date_stamp__gte=from_date))
+        if until_date:
+            q_list.add(Q(oai_date_stamp__lte=until_date))
+
+        return OaiData.objects(reduce(operator.and_, q_list)).all()
+
+    @staticmethod
     def get_all():
         """ Return all OaiData.
 

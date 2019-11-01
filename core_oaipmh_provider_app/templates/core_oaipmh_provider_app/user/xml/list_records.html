@@ -8,11 +8,14 @@
         {% if not i.deleted %}
         <metadata>
             {% autoescape off %}
-            {{ i.XML|safe }}
+            {{ i.xml|safe }}
             {% endautoescape %}
         </metadata>
         {% endif %}
     </record>
     {% endfor %}
+    {% if resumption_token %}
+        {% include "core_oaipmh_provider_app/user/xml/resumption_token.xml" %}
+    {% endif %}
   </ListRecords>
 {% endblock %}
