@@ -24,14 +24,19 @@ def init():
             metadata_namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/"
             with open(finders.find(join('core_oaipmh_provider_app', 'xsd', 'oai_dc.xsd'))) as f:
                 xml_schema = f.read()
-            oai_dublin_core = OaiProviderMetadataFormat(metadata_prefix='oai_dc',
+                simpledc_path = finders.find(join('core_oaipmh_provider_app', 'xsd', 'simpledc20021212.xsd'))
+
+                # replace the simpledc schema URL with the local file version to avoid the HTTPS bug
+                xml_schema = xml_schema.replace("http://dublincore.org/schemas/xmls/simpledc20021212.xsd", simpledc_path)
+
+                oai_dublin_core = OaiProviderMetadataFormat(metadata_prefix='oai_dc',
                                                         metadata_namespace=metadata_namespace,
                                                         schema=schema_url,
                                                         xml_schema=xml_schema,
                                                         is_default=True,
                                                         is_template=False)
 
-            oai_provider_metadata_format_api.upsert(oai_dublin_core)
+                oai_provider_metadata_format_api.upsert(oai_dublin_core)
     except Exception as e:
         logger.error("ERROR : Impossible to init the metadata formats: %s" % str(e))
 
