@@ -14,7 +14,7 @@ class OaiRequestPage(Document):
     template_id_list = fields.ListField(blank=False)
     metadata_format = fields.StringField(blank=False)
     oai_set = fields.StringField(blank=True, default=None)
-    from_date = fields.DateTimeField(blank=False, default=None)
+    from_date = fields.DateTimeField(blank=True, default=None)
     until_date = fields.DateTimeField(blank=True, default=None)
     expiration_date = fields.DateTimeField(blank=False, default=None)
     page_number = fields.IntField(blank=False)
