@@ -3,7 +3,6 @@
 import logging
 
 from django import forms
-from mongodbforms import DocumentForm
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
@@ -16,6 +15,7 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from django_mongoengine.forms import DocumentForm
 
 logger = logging.getLogger(__name__)
 

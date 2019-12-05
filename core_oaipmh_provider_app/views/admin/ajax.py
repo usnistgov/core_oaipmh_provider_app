@@ -49,7 +49,7 @@ def check_registry(request):
 
 class EditIdentityView(EditObjectModalView):
     form_class = EditIdentityForm
-    model = OaiSettings
+    document = OaiSettings
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_identity")
     success_message = 'Data provider edited with success.'
 
@@ -63,7 +63,7 @@ class EditIdentityView(EditObjectModalView):
 
 class AddMetadataFormatView(AddObjectModalView):
     form_class = MetadataFormatForm
-    model = OaiProviderMetadataFormat
+    document = OaiProviderMetadataFormat
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
     success_message = 'Metadata Format created with success.'
 
@@ -77,7 +77,7 @@ class AddMetadataFormatView(AddObjectModalView):
 
 
 class DeleteMetadataFormatView(DeleteObjectModalView):
-    model = OaiProviderMetadataFormat
+    document = OaiProviderMetadataFormat
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
     success_message = 'Metadata Format deleted with success.'
     field_for_name = 'metadata_prefix'
@@ -89,7 +89,7 @@ class DeleteMetadataFormatView(DeleteObjectModalView):
 
 class EditMetadataFormatView(EditObjectModalView):
     form_class = EditMetadataFormatForm
-    model = OaiProviderMetadataFormat
+    document = OaiProviderMetadataFormat
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
     success_message = 'Metadata Format edited with success.'
 
@@ -106,7 +106,7 @@ class EditMetadataFormatView(EditObjectModalView):
 
 class AddTemplateMetadataFormatView(AddObjectModalView):
     form_class = TemplateMetadataFormatForm
-    model = OaiProviderMetadataFormat
+    document = OaiProviderMetadataFormat
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
     success_message = 'Template Metadata Format created with success.'
 
@@ -121,20 +121,21 @@ class AddTemplateMetadataFormatView(AddObjectModalView):
 
 class AddSetView(AddObjectModalView):
     form_class = SetForm
-    model = OaiProviderSet
+    document = OaiProviderSet
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
     success_message = 'Set created with success.'
 
     def _save(self, form):
         # Save treatment.
         try:
+            self.object.templates_manager = [x.id for x in self.object.templates_manager]
             oai_provider_set_api.upsert(self.object)
         except Exception as e:
             form.add_error(None, str(e))
 
 
 class DeleteSetView(DeleteObjectModalView):
-    model = OaiProviderSet
+    document = OaiProviderSet
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
     success_message = 'Set deleted with success.'
     field_for_name = 'set_spec'
@@ -146,13 +147,14 @@ class DeleteSetView(DeleteObjectModalView):
 
 class EditSetView(EditObjectModalView):
     form_class = SetForm
-    model = OaiProviderSet
+    document = OaiProviderSet
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
     success_message = 'Set edited with success.'
 
     def _save(self, form):
         # Save treatment.
         try:
+            self.object.templates_manager = [x.id for x in self.object.templates_manager]
             oai_provider_set_api.upsert(self.object)
         except Exception as e:
             form.add_error(None, str(e))
@@ -166,7 +168,7 @@ class EditSetView(EditObjectModalView):
 
 class AddTemplateMappingView(AddObjectModalView):
     form_class = MappingXSLTForm
-    model = OaiXslTemplate
+    document = OaiXslTemplate
     success_message = 'Mapping created with success.'
 
     def _save(self, form):
@@ -188,7 +190,7 @@ class AddTemplateMappingView(AddObjectModalView):
 
 
 class DeleteTemplateMappingView(DeleteObjectModalView):
-    model = OaiXslTemplate
+    document = OaiXslTemplate
     success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
     success_message = 'Mapping deleted with success.'
 
@@ -207,7 +209,7 @@ class DeleteTemplateMappingView(DeleteObjectModalView):
 
 class EditTemplateMappingView(EditObjectModalView):
     form_class = MappingXSLTForm
-    model = OaiXslTemplate
+    document = OaiXslTemplate
     success_message = 'Mapping edited with success.'
 
     def _save(self, form):
