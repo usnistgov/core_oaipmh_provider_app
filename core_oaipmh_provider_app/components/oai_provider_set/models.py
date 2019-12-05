@@ -12,9 +12,18 @@ from core_oaipmh_common_app.components.oai_set.models import OaiSet
 
 class OaiProviderSet(OaiSet):
     """Represents a set for Oai-Pmh Provider"""
-    templates_manager = fields.ListField(fields.ReferenceField(TemplateVersionManager, reverse_delete_rule=PULL),
-                                         unique_with='set_spec')
+    templates_manager = fields.ListField(
+        fields.ReferenceField(TemplateVersionManager, reverse_delete_rule=PULL)
+    )
     description = fields.StringField(blank=True)
+
+    meta = {
+        "indexes": [
+            {
+                "fields": ["templates_manager", "set_spec"]
+            }
+        ]
+    }
 
     @staticmethod
     def get_all(order_by_field=None):

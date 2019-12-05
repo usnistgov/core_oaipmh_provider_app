@@ -1,0 +1,13 @@
+[
+    {
+        "id" : "58fe33d04697f6801b7de564",
+        "_cls" : "VersionManager.TemplateVersionManager",
+        "title" : "demo_diffusion",
+        "versions" : [
+            "58fe33d04697f6801b7de563"
+        ],
+        "current" : "58fe33d04697f6801b7de563",
+        "is_disabled" : false,
+        "disabled_versions" : []
+    }
+]
