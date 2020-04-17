@@ -3,7 +3,7 @@
 {% block box_title %}Identity{% endblock %}
 
 {% block box_tools %}
-<div class="btn-group pull-right">
+<div class="btn-group float-right">
     {% url 'admin:core_oaipmh_provider_app_edit_identity' data.data_provider.id as edit_url %}
     {% include 'core_main_app/common/buttons/edit.html' %}
     <span>
