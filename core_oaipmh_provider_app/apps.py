@@ -1,5 +1,7 @@
 """ Apps file for setting oai-pmh when app is ready
 """
+import sys
+
 from django.apps import AppConfig
 
 import core_oaipmh_provider_app.components.oai_provider_metadata_format.discover as discover_metadata_formats
@@ -19,8 +21,9 @@ class ProviderAppConfig(AppConfig):
         Returns:
 
         """
-        discover_settings.init()
-        discover_metadata_formats.init()
-        insert_data_in_oai_data()
+        if 'migrate' not in sys.argv:
+            discover_settings.init()
+            discover_metadata_formats.init()
+            insert_data_in_oai_data()
 
-        data_watch.init()
+            data_watch.init()
