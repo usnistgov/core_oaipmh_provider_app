@@ -20,9 +20,11 @@ def init():
         # Get OAI-PMH settings information about this server
         oai_settings_api.get()
     except exceptions.DoesNotExist:
-        oai_settings = OaiSettings(repository_name=settings.OAI_NAME,
-                                   repository_identifier=settings.OAI_REPO_IDENTIFIER,
-                                   enable_harvesting=settings.OAI_ENABLE_HARVESTING)
+        oai_settings = OaiSettings(
+            repository_name=settings.OAI_NAME,
+            repository_identifier=settings.OAI_REPO_IDENTIFIER,
+            enable_harvesting=settings.OAI_ENABLE_HARVESTING,
+        )
         oai_settings_api.upsert(oai_settings)
     except Exception as e:
         logger.error("Impossible to init the settings: %s" % str(e))

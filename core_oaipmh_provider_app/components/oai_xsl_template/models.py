@@ -10,15 +10,24 @@ from mongoengine.queryset.base import CASCADE
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.components.xsl_transformation.models import XslTransformation
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+    OaiProviderMetadataFormat,
+)
 
 
 class OaiXslTemplate(Document):
     """Relation between a template, an OaiProviderMetadataFormat and a XSLT."""
+
     template = fields.ReferenceField(Template, blank=False, reverse_delete_rule=CASCADE)
-    xslt = fields.ReferenceField(XslTransformation, blank=False, reverse_delete_rule=CASCADE)
-    oai_metadata_format = fields.ReferenceField(OaiProviderMetadataFormat, blank=False,
-                                                unique_with=['xslt', 'template'], reverse_delete_rule=CASCADE)
+    xslt = fields.ReferenceField(
+        XslTransformation, blank=False, reverse_delete_rule=CASCADE
+    )
+    oai_metadata_format = fields.ReferenceField(
+        OaiProviderMetadataFormat,
+        blank=False,
+        unique_with=["xslt", "template"],
+        reverse_delete_rule=CASCADE,
+    )
 
     @staticmethod
     def get_by_id(oai_xslt_template_id):
@@ -58,7 +67,9 @@ class OaiXslTemplate(Document):
 
         """
         try:
-            return OaiXslTemplate.objects().get(template=template_id, oai_metadata_format=metadata_format_id)
+            return OaiXslTemplate.objects().get(
+                template=template_id, oai_metadata_format=metadata_format_id
+            )
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:

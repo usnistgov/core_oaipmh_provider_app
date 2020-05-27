@@ -10,9 +10,12 @@ from core_main_app.commons import exceptions
 from core_main_app.utils.decorators import api_staff_member_required
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as \
-    oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_xsl_template import api as oai_xsl_template_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
+from core_oaipmh_provider_app.components.oai_xsl_template import (
+    api as oai_xsl_template_api,
+)
 from core_oaipmh_provider_app.rest import serializers
 
 
@@ -37,7 +40,9 @@ class MetadataFormatsList(APIView):
         """
         try:
             metadata_formats = oai_provider_metadata_format_api.get_all()
-            serializer = serializers.OaiProviderMetadataFormatSerializer(metadata_formats, many=True)
+            serializer = serializers.OaiProviderMetadataFormatSerializer(
+                metadata_formats, many=True
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -70,7 +75,9 @@ class MetadataFormatsList(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.OaiProviderMetadataFormatSerializer(data=request.data)
+            serializer = serializers.OaiProviderMetadataFormatSerializer(
+                data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
@@ -112,13 +119,18 @@ class MetadataFormatDetail(APIView):
               content: Internal server error
         """
         try:
-            metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
-            serializer = serializers.OaiProviderMetadataFormatSerializer(metadata_format)
+            metadata_format = oai_provider_metadata_format_api.get_by_id(
+                metadata_format_id
+            )
+            serializer = serializers.OaiProviderMetadataFormatSerializer(
+                metadata_format
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
-            content = OaiPmhMessage.\
-                get_message_labelled('No Metadata Format found with the given id.')
+            content = OaiPmhMessage.get_message_labelled(
+                "No Metadata Format found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
@@ -145,13 +157,16 @@ class MetadataFormatDetail(APIView):
               content: Internal server error
         """
         try:
-            metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
+            metadata_format = oai_provider_metadata_format_api.get_by_id(
+                metadata_format_id
+            )
             oai_provider_metadata_format_api.delete(metadata_format)
 
             return Response(status=status.HTTP_204_NO_CONTENT)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
-                'No Metadata Format found with the given id.')
+                "No Metadata Format found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
@@ -186,15 +201,20 @@ class MetadataFormatDetail(APIView):
               content: Internal server error
         """
         try:
-            metadata_format = oai_provider_metadata_format_api.get_by_id(metadata_format_id)
+            metadata_format = oai_provider_metadata_format_api.get_by_id(
+                metadata_format_id
+            )
             # Build serializer
-            serializer = serializers.UpdateMetadataFormatSerializer(instance=metadata_format,
-                                                                    data=request.data)
+            serializer = serializers.UpdateMetadataFormatSerializer(
+                instance=metadata_format, data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled('Metadata Format updated with success.')
+            content = OaiPmhMessage.get_message_labelled(
+                "Metadata Format updated with success."
+            )
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
@@ -202,7 +222,8 @@ class MetadataFormatDetail(APIView):
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
-                'No Metadata Format found with the given id.')
+                "No Metadata Format found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
@@ -284,14 +305,18 @@ class TemplateMetadataFormatXSLT(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.TemplateToMFMappingXSLTSerializer(data=request.data)
+            serializer = serializers.TemplateToMFMappingXSLTSerializer(
+                data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Try to set the instance
             serializer.init_instance()
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled('Mapping configured with success.')
+            content = OaiPmhMessage.get_message_labelled(
+                "Mapping configured with success."
+            )
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
@@ -334,16 +359,19 @@ class TemplateMetadataFormatXSLT(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.TemplateToMFUnMappingXSLTSerializer(data=request.data)
+            serializer = serializers.TemplateToMFUnMappingXSLTSerializer(
+                data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Get template id
-            template_id = serializer.data.get('template_id')
+            template_id = serializer.data.get("template_id")
             # Get metadata format id
-            metadata_format_id = serializer.data.get('metadata_format_id')
+            metadata_format_id = serializer.data.get("metadata_format_id")
             # Get mapping
-            oai_xsl_template = oai_xsl_template_api.\
-                get_by_template_id_and_metadata_format_id(template_id, metadata_format_id)
+            oai_xsl_template = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                template_id, metadata_format_id
+            )
             # Delete the mapping
             oai_xsl_template_api.delete(oai_xsl_template)
 

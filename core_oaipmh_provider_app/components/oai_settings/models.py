@@ -10,6 +10,7 @@ from core_main_app.commons import exceptions
 
 class OaiSettings(Document):
     """Represents the settings for Oai-Pmh Provider"""
+
     repository_name = fields.StringField()
     repository_identifier = fields.StringField()
     enable_harvesting = fields.BooleanField()

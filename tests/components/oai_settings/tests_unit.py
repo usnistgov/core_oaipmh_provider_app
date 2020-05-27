@@ -8,7 +8,7 @@ from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 
 
 class TestOaiSettingsGet(TestCase):
-    @patch.object(OaiSettings, 'get')
+    @patch.object(OaiSettings, "get")
     def test_get_return_object(self, mock_get):
         # Arrange
         mock_oai_settings = _create_mock_oai_settings()
@@ -21,7 +21,7 @@ class TestOaiSettingsGet(TestCase):
         # Assert
         self.assertIsInstance(result, OaiSettings)
 
-    @patch.object(OaiSettings, 'get')
+    @patch.object(OaiSettings, "get")
     def test_get_raises_exception_if_object_does_not_exist(self, mock_get):
         # Arrange
         mock_get.side_effect = exceptions.DoesNotExist("Error")
@@ -30,7 +30,7 @@ class TestOaiSettingsGet(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             settings_api.get()
 
-    @patch.object(OaiSettings, 'get')
+    @patch.object(OaiSettings, "get")
     def test_get_raises_exception_if_internal_error(self, mock_get):
         # Arrange
         mock_get.side_effect = exceptions.ModelError("Error")
@@ -41,7 +41,7 @@ class TestOaiSettingsGet(TestCase):
 
 
 class TestOaiSettingsUpsert(TestCase):
-    @patch.object(OaiSettings, 'save')
+    @patch.object(OaiSettings, "save")
     def test_upsert_oai_settings_raises_exception_if_save_failed(self, mock_save):
         # Arrange
         oai_settings = _create_oai_settings()

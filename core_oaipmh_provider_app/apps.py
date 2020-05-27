@@ -13,7 +13,8 @@ from core_oaipmh_provider_app.tasks import insert_data_in_oai_data
 class ProviderAppConfig(AppConfig):
     """ Core application settings
     """
-    name = 'core_oaipmh_provider_app'
+
+    name = "core_oaipmh_provider_app"
 
     def ready(self):
         """ Run when the app is ready
@@ -21,7 +22,7 @@ class ProviderAppConfig(AppConfig):
         Returns:
 
         """
-        if 'migrate' not in sys.argv:
+        if "migrate" not in sys.argv:
             discover_settings.init()
             discover_metadata_formats.init()
             insert_data_in_oai_data()

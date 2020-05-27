@@ -2,7 +2,9 @@
 OaiProviderSet API
 """
 
-from core_main_app.components.template_version_manager import api as template_version_manager_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
 
@@ -75,7 +77,9 @@ def get_all_by_templates_manager(templates_manager):
         List of OaiProviderSet.
 
     """
-    return OaiProviderSet.get_all_by_templates_manager(templates_manager=templates_manager)
+    return OaiProviderSet.get_all_by_templates_manager(
+        templates_manager=templates_manager
+    )
 
 
 def get_all_by_template_ids(template_ids):

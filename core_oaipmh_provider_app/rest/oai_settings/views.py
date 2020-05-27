@@ -68,12 +68,16 @@ class Settings(APIView):
         try:
             settings_ = oai_settings_api.get()
             # Build serializer
-            serializer = serializers.SettingsSerializer(instance=settings_, data=request.data)
+            serializer = serializers.SettingsSerializer(
+                instance=settings_, data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled('OAI-PMH Settings updated with success.')
+            content = OaiPmhMessage.get_message_labelled(
+                "OAI-PMH Settings updated with success."
+            )
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
@@ -103,11 +107,14 @@ class Check(APIView):
               content: Internal server error
         """
         try:
-            base_url = request.build_absolute_uri(reverse("core_oaipmh_provider_app_server_index"))
+            base_url = request.build_absolute_uri(
+                reverse("core_oaipmh_provider_app_server_index")
+            )
             http_response = send_get_request(base_url)
             is_available = http_response.status_code == status.HTTP_200_OK
-            content = OaiPmhMessage.get_message_labelled('Registry available? : {0}.'.format(
-                is_available))
+            content = OaiPmhMessage.get_message_labelled(
+                "Registry available? : {0}.".format(is_available)
+            )
 
             return Response(content, status=http_response.status_code)
         except Exception as e:

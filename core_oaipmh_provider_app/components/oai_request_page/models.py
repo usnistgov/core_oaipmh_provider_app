@@ -10,6 +10,7 @@ class OaiRequestPage(Document):
     """ Informations about a request sent by a harvester needed a paginated
     response.
     """
+
     resumption_token = fields.StringField(blank=False, unique=True)
     template_id_list = fields.ListField(blank=False)
     metadata_format = fields.StringField(blank=False)
@@ -22,11 +23,8 @@ class OaiRequestPage(Document):
     @staticmethod
     def get_by_resumption_token(resumption_token):
         try:
-            return OaiRequestPage.objects.get(
-                resumption_token=resumption_token
-            )
+            return OaiRequestPage.objects.get(resumption_token=resumption_token)
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
-

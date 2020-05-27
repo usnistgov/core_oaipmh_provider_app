@@ -72,7 +72,7 @@ class SetsList(APIView):
             serializer.is_valid(True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled('Set added with success.')
+            content = OaiPmhMessage.get_message_labelled("Set added with success.")
 
             return Response(content, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
@@ -110,7 +110,9 @@ class SetDetail(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
-            content = OaiPmhMessage.get_message_labelled('No Set found with the given id.')
+            content = OaiPmhMessage.get_message_labelled(
+                "No Set found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
@@ -142,7 +144,9 @@ class SetDetail(APIView):
 
             return Response(status=status.HTTP_204_NO_CONTENT)
         except exceptions.DoesNotExist:
-            content = OaiPmhMessage.get_message_labelled('No Set found with the given id.')
+            content = OaiPmhMessage.get_message_labelled(
+                "No Set found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
@@ -181,19 +185,23 @@ class SetDetail(APIView):
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
             # Build serializer
-            serializer = serializers.OaiProviderSetSerializer(instance=set_, data=request.data)
+            serializer = serializers.OaiProviderSetSerializer(
+                instance=set_, data=request.data
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled('Set updated with success.')
+            content = OaiPmhMessage.get_message_labelled("Set updated with success.")
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
-            content = OaiPmhMessage.get_message_labelled('No Set found with the given id.')
+            content = OaiPmhMessage.get_message_labelled(
+                "No Set found with the given id."
+            )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()

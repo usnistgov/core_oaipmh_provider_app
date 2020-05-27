@@ -75,7 +75,9 @@ def get_by_template_id_and_metadata_format_id(template_id, metadata_format_id):
         OaiXslTemplate instance.
 
     """
-    return OaiXslTemplate.get_by_template_id_and_metadata_format_id(template_id, metadata_format_id)
+    return OaiXslTemplate.get_by_template_id_and_metadata_format_id(
+        template_id, metadata_format_id
+    )
 
 
 def get_template_ids_by_metadata_format(metadata_format):
@@ -110,4 +112,3 @@ def get_metadata_formats_by_templates(templates):
         metadata_formats.append(elt.oai_metadata_format)
 
     return metadata_formats
-

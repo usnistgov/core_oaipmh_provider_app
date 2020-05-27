@@ -16,6 +16,7 @@ from core_main_app.components.template.models import Template
 
 class OaiData(Document):
     """Represents a data for Oai-Pmh Provider"""
+
     data = fields.ReferenceField(Data, blank=False)
     oai_date_stamp = fields.DateTimeField(blank=False, default=None)
     status = fields.StringField(blank=False)

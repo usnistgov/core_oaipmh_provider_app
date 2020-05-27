@@ -6,8 +6,9 @@ import re
 from datetime import datetime
 
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
-from core_oaipmh_provider_app.components.oai_request_page import api as \
-    oai_request_page_api
+from core_oaipmh_provider_app.components.oai_request_page import (
+    api as oai_request_page_api,
+)
 from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_provider_app import settings
 
@@ -24,42 +25,44 @@ def check_bad_argument(oai_verb, data):
 
     """
     if oai_verb is None:
-        error_msg = 'The request did not provide any verb.'
+        error_msg = "The request did not provide any verb."
         raise oai_provider_exceptions.BadVerb(error_msg)
     # Check if we have duplicate arguments
     duplicates = [arg for arg in data if len(data.getlist(arg)) > 1]
     if len(duplicates) > 0:
-        error_msg = 'An argument ("multiple occurrences of %s") was passed that was not valid for ' \
-                    'this verb' % ', '.join(duplicates)
+        error_msg = (
+            'An argument ("multiple occurrences of %s") was passed that was not valid for '
+            "this verb" % ", ".join(duplicates)
+        )
         raise oai_provider_exceptions.BadArgument(error_msg)
 
     # Build the illegal and required arguments depending of the verb
-    if oai_verb == 'Identify':
-        legal = ['verb']
-        required = ['verb']
-    elif oai_verb == 'ListIdentifiers':
-        if 'resumptionToken' in data:
-            legal = ['verb', 'resumptionToken']
-            required = ['verb']
+    if oai_verb == "Identify":
+        legal = ["verb"]
+        required = ["verb"]
+    elif oai_verb == "ListIdentifiers":
+        if "resumptionToken" in data:
+            legal = ["verb", "resumptionToken"]
+            required = ["verb"]
         else:
-            legal = ['verb', 'metadataPrefix', 'from', 'until', 'set']
-            required = ['verb', 'metadataPrefix']
-    elif oai_verb == 'ListSets':
-        legal = ['verb', 'resumptionToken']
-        required = ['verb']
-    elif oai_verb == 'ListMetadataFormats':
-        legal = ['verb', 'identifier']
-        required = ['verb']
-    elif oai_verb == 'ListRecords':
-        if 'resumptionToken' in data:
-            legal = ['verb', 'resumptionToken']
-            required = ['verb']
+            legal = ["verb", "metadataPrefix", "from", "until", "set"]
+            required = ["verb", "metadataPrefix"]
+    elif oai_verb == "ListSets":
+        legal = ["verb", "resumptionToken"]
+        required = ["verb"]
+    elif oai_verb == "ListMetadataFormats":
+        legal = ["verb", "identifier"]
+        required = ["verb"]
+    elif oai_verb == "ListRecords":
+        if "resumptionToken" in data:
+            legal = ["verb", "resumptionToken"]
+            required = ["verb"]
         else:
-            legal = ['verb', 'metadataPrefix', 'from', 'until', 'set']
-            required = ['verb', 'metadataPrefix']
-    elif oai_verb == 'GetRecord':
-        legal = ['verb', 'identifier', 'metadataPrefix']
-        required = ['verb', 'identifier', 'metadataPrefix']
+            legal = ["verb", "metadataPrefix", "from", "until", "set"]
+            required = ["verb", "metadataPrefix"]
+    elif oai_verb == "GetRecord":
+        legal = ["verb", "identifier", "metadataPrefix"]
+        required = ["verb", "identifier", "metadataPrefix"]
     else:
         error_msg = 'The verb "%s" is illegal' % oai_verb
         raise oai_provider_exceptions.BadVerb(error_msg)
@@ -85,14 +88,15 @@ def check_illegal_and_required(legal, required, data):
     # If yes, add error.
     if len(illegal) > 0:
         for arg in illegal:
-            error = 'Arguments ("%s") was passed that was not valid for ' \
-                        'this verb' % arg
+            error = (
+                'Arguments ("%s") was passed that was not valid for ' "this verb" % arg
+            )
             errors.append(oai_provider_exceptions.BadArgument(error))
     # Check if a parameter is missing for the request
     missing = [arg for arg in required if arg not in data]
     if len(missing) > 0:
         for arg in missing:
-            error = 'Missing required argument - %s' % arg
+            error = "Missing required argument - %s" % arg
             errors.append(oai_provider_exceptions.BadArgument(error))
 
     # Raise exception.
@@ -113,7 +117,9 @@ def check_identifier(identifier):
 
     """
     # Check if the identifier pattern is OK.
-    p = re.compile("%s:%s:id/(.*)" % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER))
+    p = re.compile(
+        "%s:%s:id/(.*)" % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER)
+    )
     id_matches = p.search(identifier)
     if id_matches:
         # If yes, we retrieve the record ID
@@ -192,12 +198,13 @@ def check_resumption_token(resumption_token):
     Returns:
     """
     try:
-        oai_request_page_object = oai_request_page_api.\
-            get_by_resumption_token(resumption_token)
+        oai_request_page_object = oai_request_page_api.get_by_resumption_token(
+            resumption_token
+        )
 
         # Check if the resumption token is not expired
         if UTCdatetime.datetime_to_utc_datetime_iso8601(
-                oai_request_page_object.expiration_date
+            oai_request_page_object.expiration_date
         ) < UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.now()):
             raise Exception("Token expired")
 

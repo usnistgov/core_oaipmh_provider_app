@@ -5,8 +5,12 @@ from os.path import join
 
 from django.contrib.staticfiles import finders
 
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import api as oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import OaiProviderMetadataFormat
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+    OaiProviderMetadataFormat,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,19 +26,28 @@ def init():
             # Add dublin core metadata prefix
             schema_url = "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
             metadata_namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/"
-            with open(finders.find(join('core_oaipmh_provider_app', 'xsd', 'oai_dc.xsd'))) as f:
+            with open(
+                finders.find(join("core_oaipmh_provider_app", "xsd", "oai_dc.xsd"))
+            ) as f:
                 xml_schema = f.read()
-                simpledc_path = finders.find(join('core_oaipmh_provider_app', 'xsd', 'simpledc20021212.xsd'))
+                simpledc_path = finders.find(
+                    join("core_oaipmh_provider_app", "xsd", "simpledc20021212.xsd")
+                )
 
                 # replace the simpledc schema URL with the local file version to avoid the HTTPS bug
-                xml_schema = xml_schema.replace("http://dublincore.org/schemas/xmls/simpledc20021212.xsd", simpledc_path)
+                xml_schema = xml_schema.replace(
+                    "http://dublincore.org/schemas/xmls/simpledc20021212.xsd",
+                    simpledc_path,
+                )
 
-                oai_dublin_core = OaiProviderMetadataFormat(metadata_prefix='oai_dc',
-                                                        metadata_namespace=metadata_namespace,
-                                                        schema=schema_url,
-                                                        xml_schema=xml_schema,
-                                                        is_default=True,
-                                                        is_template=False)
+                oai_dublin_core = OaiProviderMetadataFormat(
+                    metadata_prefix="oai_dc",
+                    metadata_namespace=metadata_namespace,
+                    schema=schema_url,
+                    xml_schema=xml_schema,
+                    is_default=True,
+                    is_template=False,
+                )
 
                 oai_provider_metadata_format_api.upsert(oai_dublin_core)
     except Exception as e:

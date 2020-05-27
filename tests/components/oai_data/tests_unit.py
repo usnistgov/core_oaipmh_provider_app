@@ -16,7 +16,7 @@ class TestOaiDataUpsert(TestCase):
     def setUp(self):
         self.mock_oai_data = _create_oai_data()
 
-    @patch.object(OaiData, 'save')
+    @patch.object(OaiData, "save")
     def test_oai_data_upsert_returns_object(self, mock_save):
         # Arrange
         mock_save.return_value = self.mock_oai_data
@@ -27,7 +27,7 @@ class TestOaiDataUpsert(TestCase):
         # Assert
         self.assertIsInstance(result, OaiData)
 
-    @patch.object(OaiData, 'save')
+    @patch.object(OaiData, "save")
     def test_oai_data_upsert_raises_error_if_save_failed(self, mock_save):
         # Arrange
         mock_save.side_effect = Exception()
@@ -38,7 +38,7 @@ class TestOaiDataUpsert(TestCase):
 
 
 class TestOaiDataDelete(TestCase):
-    @patch.object(OaiData, 'delete')
+    @patch.object(OaiData, "delete")
     def test_delete_oai_data_raises_exception_if_error(self, mock_delete):
         # Arrange
         oai_data = _create_oai_data()
@@ -50,7 +50,7 @@ class TestOaiDataDelete(TestCase):
 
 
 class TestOaiDataGetById(TestCase):
-    @patch.object(OaiData, 'get_by_id')
+    @patch.object(OaiData, "get_by_id")
     def test_get_by_id_returns_object(self, mock_get_by_id):
         # Arrange
         mock_oai_data = _create_oai_data()
@@ -64,7 +64,7 @@ class TestOaiDataGetById(TestCase):
         # Assert
         self.assertIsInstance(result, OaiData)
 
-    @patch.object(OaiData, 'get_by_id')
+    @patch.object(OaiData, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
         mock_absent_id = ObjectId()
@@ -75,7 +75,7 @@ class TestOaiDataGetById(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             oai_data_api.get_by_id(mock_absent_id)
 
-    @patch.object(OaiData, 'get_by_id')
+    @patch.object(OaiData, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
         mock_absent_id = ObjectId()
@@ -88,7 +88,7 @@ class TestOaiDataGetById(TestCase):
 
 
 class TestOaiDataGetByData(TestCase):
-    @patch.object(OaiData, 'get_by_data')
+    @patch.object(OaiData, "get_by_data")
     def test_get_by_data_returns_object(self, mock_get_by_data):
         # Arrange
         mock_oai_data = _create_oai_data()
@@ -102,8 +102,10 @@ class TestOaiDataGetByData(TestCase):
         # Assert
         self.assertIsInstance(result, OaiData)
 
-    @patch.object(OaiData, 'get_by_data')
-    def test_get_by_data_raises_exception_if_object_does_not_exist(self, mock_get_by_data):
+    @patch.object(OaiData, "get_by_data")
+    def test_get_by_data_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_data
+    ):
         # Arrange
         mock_absent_data = Data()
 
@@ -113,7 +115,7 @@ class TestOaiDataGetByData(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             oai_data_api.get_by_data(mock_absent_data)
 
-    @patch.object(OaiData, 'get_by_data')
+    @patch.object(OaiData, "get_by_data")
     def test_get_by_data_raises_exception_if_internal_error(self, mock_get_by_data):
         # Arrange
         mock_absent_data = Data()
@@ -126,26 +128,32 @@ class TestOaiDataGetByData(TestCase):
 
 
 class TestOaiDataGetAll(TestCase):
-    @patch.object(OaiData, 'get_all')
+    @patch.object(OaiData, "get_all")
     def test_get_all_contains_only_oai_data(self, mock_get_all):
         _generic_get_all_test(self, mock_get_all, oai_data_api.get_all())
 
 
 class TestOaiDataGetAllByTemplate(TestCase):
-    @patch.object(OaiData, 'get_all_by_template')
+    @patch.object(OaiData, "get_all_by_template")
     def test_get_all_by_temlate_contains_only_oai_data(self, mock_get_all):
-        _generic_get_all_test(self, mock_get_all, oai_data_api.get_all_by_template(Template()))
+        _generic_get_all_test(
+            self, mock_get_all, oai_data_api.get_all_by_template(Template())
+        )
 
 
 class TestOaiDataGetAllByStatus(TestCase):
-    @patch.object(OaiData, 'get_all_by_status')
+    @patch.object(OaiData, "get_all_by_status")
     def test_get_all_by_status_contains_only_oai_data(self, mock_get_all):
-        _generic_get_all_test(self, mock_get_all, oai_data_api.get_all_by_status(status.ACTIVE))
+        _generic_get_all_test(
+            self, mock_get_all, oai_data_api.get_all_by_status(status.ACTIVE)
+        )
 
 
 class TestOaiDataGetEarliestDataDate(TestCase):
-    @patch.object(OaiData, 'get_earliest_data_date')
-    def test_get_earliest_data_date_raises_exception_if_internal_error(self, mock_get_earliest_data_date):
+    @patch.object(OaiData, "get_earliest_data_date")
+    def test_get_earliest_data_date_raises_exception_if_internal_error(
+        self, mock_get_earliest_data_date
+    ):
         # Arrange
         mock_absent_data = Data()
 

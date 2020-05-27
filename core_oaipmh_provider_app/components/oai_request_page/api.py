@@ -6,8 +6,7 @@ import string
 
 from core_main_app.commons import exceptions
 from core_oaipmh_provider_app.commons import constants
-from core_oaipmh_provider_app.components.oai_request_page.models import \
-    OaiRequestPage
+from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +30,7 @@ def upsert(oai_request_page_object):
 
     Returns:
     """
+
     def _generate_token(token_length=16):
         """ Generate a random token of a given length.
 
@@ -42,7 +42,7 @@ def upsert(oai_request_page_object):
 
         Returns:
         """
-        return ''.join(
+        return "".join(
             random.choice(string.ascii_lowercase + string.digits)
             for _ in range(token_length)
         )
@@ -54,11 +54,6 @@ def upsert(oai_request_page_object):
             oai_request_page_object.resumption_token = _generate_token()
             return oai_request_page_object.save()
         except Exception as e:
-            logger.warning(
-                "Error while saving OAIRequestPage object: %s" % str(e)
-            )
+            logger.warning("Error while saving OAIRequestPage object: %s" % str(e))
 
     raise exceptions.ApiError("Exceeded number of tries to save OAIRequestPage")
-
-
-

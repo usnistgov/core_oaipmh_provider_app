@@ -17,9 +17,7 @@ CUSTOM_NAME = getattr(settings, "CUSTOM_NAME", "")
 RESULTS_PER_PAGE = getattr(settings, "RESULTS_PER_PAGE", 10)
 
 # OAI_PMH parameters
-OAI_ADMINS = (
-    ("Administrator", "admin@curator.com"),
-)
+OAI_ADMINS = (("Administrator", "admin@curator.com"),)
 OAI_HOST_URI = SERVER_URI
 OAI_NAME = CUSTOM_NAME + " OAI-PMH Server"
 OAI_DELIMITER = ":"
@@ -28,7 +26,12 @@ OAI_GRANULARITY = "YYYY-MM-DDThh:mm:ssZ"  # the finest harvesting granularity su
 OAI_PROTOCOL_VERSION = "2.0"  # the version of the OAI-PMH supported by the repository
 OAI_SCHEME = "oai"
 OAI_REPO_IDENTIFIER = "server-x"
-OAI_SAMPLE_IDENTIFIER = OAI_SCHEME+OAI_DELIMITER+OAI_REPO_IDENTIFIER+OAI_DELIMITER+"id/12345678a123aff6ff5f2d9e"
+OAI_SAMPLE_IDENTIFIER = (
+    OAI_SCHEME
+    + OAI_DELIMITER
+    + OAI_REPO_IDENTIFIER
+    + OAI_DELIMITER
+    + "id/12345678a123aff6ff5f2d9e"
+)
 OAI_DELETED_RECORD = "persistent"  # no; transient; persistent
 OAI_ENABLE_HARVESTING = getattr(settings, "OAI_ENABLE_HARVESTING", False)
-

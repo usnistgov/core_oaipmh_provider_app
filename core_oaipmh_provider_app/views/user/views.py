@@ -18,15 +18,22 @@ from core_main_app.components.template import api as template_api
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.components.workspace import api as workspace_api
 from core_main_app.system import api as system_api
-from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import XSDFlattenerDatabaseOrURL
+from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import (
+    XSDFlattenerDatabaseOrURL,
+)
 from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.commons import status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import \
-    api as oai_provider_metadata_format_api
-from core_oaipmh_provider_app.components.oai_provider_set import api as oai_provider_set_api
-from core_oaipmh_provider_app.components.oai_request_page import api as oai_request_page_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
+from core_oaipmh_provider_app.components.oai_provider_set import (
+    api as oai_provider_set_api,
+)
+from core_oaipmh_provider_app.components.oai_request_page import (
+    api as oai_request_page_api,
+)
 from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
 from core_oaipmh_provider_app.settings import RESULTS_PER_PAGE
@@ -55,16 +62,18 @@ class OAIProviderView(TemplateView):
             response_kwargs["content_type"] = self.content_type
 
         # Add common context data needed for all responses
-        context.update({
-            "now": UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.now()),
-            "verb": self.oai_verb,
-            "identifier": self.identifier,
-            "metadataPrefix": self.metadata_prefix,
-            "url": self.request.build_absolute_uri(self.request.path),
-            "from": self.from_date,
-            "until": self.until_date,
-            "set": self.set,
-        })
+        context.update(
+            {
+                "now": UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.now()),
+                "verb": self.oai_verb,
+                "identifier": self.identifier,
+                "metadataPrefix": self.metadata_prefix,
+                "url": self.request.build_absolute_uri(self.request.path),
+                "from": self.from_date,
+                "until": self.until_date,
+                "set": self.set,
+            }
+        )
 
         # Render the template with the context information
         return super().render_to_response(context, **response_kwargs)
@@ -74,9 +83,7 @@ class OAIProviderView(TemplateView):
 
     def errors(self, errors):
         self.template_name = "core_oaipmh_provider_app/user/xml/error.html"
-        return self.render_to_response({
-            "errors": errors,
-        })
+        return self.render_to_response({"errors": errors,})
 
     def get(self, request, *args, **kwargs):
         try:
@@ -118,8 +125,7 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def identify(self):
@@ -129,6 +135,7 @@ class OAIProviderView(TemplateView):
 
         """
         from core_oaipmh_provider_app import settings
+
         # Template name
         self.template_name = "core_oaipmh_provider_app/user/xml/identify.html"
         # Get settings information from database
@@ -144,7 +151,7 @@ class OAIProviderView(TemplateView):
             "identifier_scheme": settings.OAI_SCHEME,
             "repository_identifier": information.repository_identifier,
             "identifier_delimiter": settings.OAI_DELIMITER,
-            "sample_identifier": settings.OAI_SAMPLE_IDENTIFIER
+            "sample_identifier": settings.OAI_SAMPLE_IDENTIFIER,
         }
 
         return self.render_to_response(identify_data)
@@ -165,8 +172,8 @@ class OAIProviderView(TemplateView):
                 for set_ in sets:
                     item_info = {
                         "setSpec": set_.set_spec,
-                        "setName":  set_.set_name,
-                        "description":  set_.description
+                        "setName": set_.set_name,
+                        "description": set_.description,
                     }
                     items.append(item_info)
 
@@ -177,8 +184,7 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def list_metadata_formats(self):
@@ -190,7 +196,9 @@ class OAIProviderView(TemplateView):
         try:
             items = []
             # self._check_resumption_token_not_implemented()
-            self.template_name = "core_oaipmh_provider_app/user/xml/list_metadata_formats.html"
+            self.template_name = (
+                "core_oaipmh_provider_app/user/xml/list_metadata_formats.html"
+            )
             # If an identifier is provided, we look for its metadata formats
             if self.identifier is not None:
                 record_id = request_checker.check_identifier(self.identifier)
@@ -202,7 +210,9 @@ class OAIProviderView(TemplateView):
                     xslt_metadata_formats = oai_xsl_template_api.get_metadata_formats_by_templates(
                         [record.template]
                     )
-                    metadata_formats = set(metadata_formats).union(xslt_metadata_formats)
+                    metadata_formats = set(metadata_formats).union(
+                        xslt_metadata_formats
+                    )
                 except Exception:
                     raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
             else:
@@ -216,10 +226,10 @@ class OAIProviderView(TemplateView):
                 for metadata_format in metadata_formats:
                     item_info = {
                         "metadataNamespace": metadata_format.metadata_namespace,
-                        "metadataPrefix":  metadata_format.metadata_prefix,
-                        "schema":  oai_provider_metadata_format_api.get_metadata_format_schema_url(
+                        "metadataPrefix": metadata_format.metadata_prefix,
+                        "schema": oai_provider_metadata_format_api.get_metadata_format_schema_url(
                             metadata_format, host_uri
-                        )
+                        ),
                     }
                     items.append(item_info)
 
@@ -229,7 +239,9 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse(
+                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def list_identifiers(self):
         """ Response to ListIdentifiers request.
@@ -276,31 +288,29 @@ class OAIProviderView(TemplateView):
                     self.metadata_prefix
                 )
 
-                metadata_format = \
-                    oai_provider_metadata_format_api.get_by_metadata_prefix(
-                        self.metadata_prefix
-                    )
+                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
+                    self.metadata_prefix
+                )
 
                 page_number = 1
             else:  # if self.resumption_token is not None
-                request_page_object = request_checker.\
-                    check_resumption_token(self.resumption_token)
+                request_page_object = request_checker.check_resumption_token(
+                    self.resumption_token
+                )
 
                 template_id_list = request_page_object.template_id_list
-                metadata_format = oai_provider_metadata_format_api.\
-                    get_by_metadata_prefix(
-                        request_page_object.metadata_format
-                    )
+                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
+                    request_page_object.metadata_format
+                )
                 self.set = request_page_object.oai_set
                 from_date = request_page_object.from_date
                 until_date = request_page_object.until_date
                 page_number = request_page_object.page_number
 
             if len(template_id_list) == 0:
-                template_id_list = oai_xsl_template_api.\
-                    get_template_ids_by_metadata_format(
-                        metadata_format
-                    )
+                template_id_list = oai_xsl_template_api.get_template_ids_by_metadata_format(
+                    metadata_format
+                )
                 use_raw = False
 
             templates_id_from_set = self._get_templates_id_by_set_spec(self.set)
@@ -314,7 +324,7 @@ class OAIProviderView(TemplateView):
                 until_date=until_date,
                 include_metadata=include_metadata,
                 use_raw=use_raw,
-                page_nb=page_number
+                page_nb=page_number,
             )
 
             return self.render_to_response(
@@ -326,14 +336,20 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     @staticmethod
-    def _get_items(template_id_list, metadata_format, oai_set=None,
-                   from_date=None, until_date=None,
-                   include_metadata=False, use_raw=True, page_nb=1):
+    def _get_items(
+        template_id_list,
+        metadata_format,
+        oai_set=None,
+        from_date=None,
+        until_date=None,
+        include_metadata=False,
+        use_raw=True,
+        page_nb=1,
+    ):
         items = []
         output_resumption_token = None
 
@@ -342,8 +358,7 @@ class OAIProviderView(TemplateView):
             # a OAI data associated with it
             public_workspace_list = workspace_api.get_all_public_workspaces()
             data_list = system_api.get_all_data_in_workspaces_for_templates(
-                public_workspace_list,
-                template_id_list
+                public_workspace_list, template_id_list
             )
             oai_data = oai_data_api.get_all_by_data_list(
                 data_list, from_date=from_date, until_date=until_date
@@ -365,7 +380,7 @@ class OAIProviderView(TemplateView):
                         from_date=from_date,
                         until_date=until_date,
                         expiration_date=exp_date,
-                        page_number=page_nb+1
+                        page_number=page_nb + 1,
                     )
                 )
 
@@ -373,44 +388,41 @@ class OAIProviderView(TemplateView):
                     "token": oai_request_page_object.resumption_token,
                     "expiration_date": exp_date,
                     "list_size": oai_data.count(),
-                    "cursor": RESULTS_PER_PAGE * (page_nb - 1)
+                    "cursor": RESULTS_PER_PAGE * (page_nb - 1),
                 }
             elif page_nb != 1:  # If on the last page, send empty token
                 output_resumption_token = {
                     "token": "",
                     "list_size": oai_data.count(),
-                    "cursor": RESULTS_PER_PAGE * (page_nb - 1)
+                    "cursor": RESULTS_PER_PAGE * (page_nb - 1),
                 }
 
             for elt in oai_data_paginator.page(page_nb):
-                identifier = "%s:%s:id/%s" % (settings.OAI_SCHEME,
-                                              settings.OAI_REPO_IDENTIFIER,
-                                              str(elt.data_id))
+                identifier = "%s:%s:id/%s" % (
+                    settings.OAI_SCHEME,
+                    settings.OAI_REPO_IDENTIFIER,
+                    str(elt.data_id),
+                )
                 item_info = {
                     "identifier": identifier,
-                    "last_modified":
-                        UTCdatetime.datetime_to_utc_datetime_iso8601(
-                            elt.oai_date_stamp
-                        ),
-                    "sets":
-                        oai_provider_set_api.get_all_by_template_ids(
-                            [elt.data.template]
-                        ),
-                    "deleted": elt.status == oai_status.DELETED
+                    "last_modified": UTCdatetime.datetime_to_utc_datetime_iso8601(
+                        elt.oai_date_stamp
+                    ),
+                    "sets": oai_provider_set_api.get_all_by_template_ids(
+                        [elt.data.template]
+                    ),
+                    "deleted": elt.status == oai_status.DELETED,
                 }
 
                 # Add data information if needed
                 if include_metadata and elt.status == oai_status.ACTIVE:
-                    xml = re.sub(
-                        r"<\?xml[^?]+\?>", "", elt.data.xml_content
-                    )
+                    xml = re.sub(r"<\?xml[^?]+\?>", "", elt.data.xml_content)
 
                     if not use_raw:
                         # FIXME gets recomputed for every element
-                        xslt = oai_xsl_template_api.\
-                            get_by_template_id_and_metadata_format_id(
-                                elt.data.template, metadata_format
-                            ).xslt
+                        xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                            elt.data.template, metadata_format
+                        ).xslt
 
                         xml = xsl_transformation_api.xsl_transform(xml, xslt.name)
 
@@ -445,8 +457,10 @@ class OAIProviderView(TemplateView):
                     self.metadata_prefix
                 )
                 # Check if the record and the given metadata prefix use the same template.
-                use_raw = metadata_format.is_template and \
-                    oai_data.template == metadata_format.template
+                use_raw = (
+                    metadata_format.is_template
+                    and oai_data.template == metadata_format.template
+                )
                 if oai_data.status != oai_status.DELETED:
                     xml = re.sub(r"<\?xml[^?]+\?>", "", oai_data.data.xml_content)
 
@@ -458,7 +472,9 @@ class OAIProviderView(TemplateView):
                 else:
                     xml = None
             except Exception:
-                raise oai_provider_exceptions.CannotDisseminateFormat(self.metadata_prefix)
+                raise oai_provider_exceptions.CannotDisseminateFormat(
+                    self.metadata_prefix
+                )
 
             record_info = {
                 "identifier": self.identifier,
@@ -469,7 +485,7 @@ class OAIProviderView(TemplateView):
                     [oai_data.template.id]
                 ),
                 "xml": xml,
-                "deleted": oai_data.status == oai_status.DELETED
+                "deleted": oai_data.status == oai_status.DELETED,
             }
 
             return self.render_to_response(record_info)
@@ -478,7 +494,9 @@ class OAIProviderView(TemplateView):
         except oai_provider_exceptions.OAIException as e:
             return self.error(e)
         except Exception as e:
-            return HttpResponse({"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse(
+                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @staticmethod
     def _get_earliest_date():
@@ -534,10 +552,9 @@ def get_xsd(request, title, version_number):
 
     """
     try:
-        template_version = \
-            version_manager_api.get_active_global_version_manager_by_title(
-                title
-            )
+        template_version = version_manager_api.get_active_global_version_manager_by_title(
+            title
+        )
         template = template_api.get(
             version_manager_api.get_version_by_number(
                 template_version, int(version_number)
