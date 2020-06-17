@@ -2,6 +2,7 @@
 Url router for the administration site
 """
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
 from core_oaipmh_provider_app.views.admin import (
@@ -22,7 +23,7 @@ admin_urls = [
     ),
     re_path(
         r"^provider/identity/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditIdentityView.as_view(),
+        staff_member_required(admin_ajax.EditIdentityView.as_view()),
         name="core_oaipmh_provider_app_edit_identity",
     ),
     re_path(
@@ -32,22 +33,22 @@ admin_urls = [
     ),
     re_path(
         r"^provider/metadata_formats/add",
-        admin_ajax.AddMetadataFormatView.as_view(),
+        staff_member_required(admin_ajax.AddMetadataFormatView.as_view()),
         name="core_oaipmh_provider_app_add_metadata_format",
     ),
     re_path(
         r"^provider/metadata_formats/(?P<pk>[\w-]+)/delete/$",
-        admin_ajax.DeleteMetadataFormatView.as_view(),
+        staff_member_required(admin_ajax.DeleteMetadataFormatView.as_view()),
         name="core_oaipmh_provider_app_delete_metadata_format",
     ),
     re_path(
         r"^provider/metadata_formats/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditMetadataFormatView.as_view(),
+        staff_member_required(admin_ajax.EditMetadataFormatView.as_view()),
         name="core_oaipmh_provider_app_edit_metadata_format",
     ),
     re_path(
         r"^provider/metadata_formats/template/add",
-        admin_ajax.AddTemplateMetadataFormatView.as_view(),
+        staff_member_required(admin_ajax.AddTemplateMetadataFormatView.as_view()),
         name="core_oaipmh_provider_app_add_template_metadata_format",
     ),
     re_path(
@@ -57,17 +58,17 @@ admin_urls = [
     ),
     re_path(
         r"^provider/sets/add",
-        admin_ajax.AddSetView.as_view(),
+        staff_member_required(admin_ajax.AddSetView.as_view()),
         name="core_oaipmh_provider_app_add_set",
     ),
     re_path(
         r"^provider/sets/(?P<pk>[\w-]+)/delete/$",
-        admin_ajax.DeleteSetView.as_view(),
+        staff_member_required(admin_ajax.DeleteSetView.as_view()),
         name="core_oaipmh_provider_app_delete_set",
     ),
     re_path(
         r"^provider/sets/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditSetView.as_view(),
+        staff_member_required(admin_ajax.EditSetView.as_view()),
         name="core_oaipmh_provider_app_edit_set",
     ),
     re_path(
@@ -77,17 +78,17 @@ admin_urls = [
     ),
     re_path(
         r"^provider/xslt_template/(?P<oai_metadata_format>[\w-]+)/add/$",
-        admin_ajax.AddTemplateMappingView.as_view(),
+        staff_member_required(admin_ajax.AddTemplateMappingView.as_view()),
         name="core_oaipmh_provider_app_add_template_mapping",
     ),
     re_path(
         r"^provider/xslt_template/(?P<pk>[\w-]+)/delete/$",
-        admin_ajax.DeleteTemplateMappingView.as_view(),
+        staff_member_required(admin_ajax.DeleteTemplateMappingView.as_view()),
         name="core_oaipmh_provider_app_delete_template_mapping",
     ),
     re_path(
         r"^provider/xslt_template/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditTemplateMappingView.as_view(),
+        staff_member_required(admin_ajax.EditTemplateMappingView.as_view()),
         name="core_oaipmh_provider_app_edit_template_mapping",
     ),
 ]

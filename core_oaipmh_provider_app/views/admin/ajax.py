@@ -2,6 +2,7 @@
 """
 import json
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.html import escape
@@ -41,6 +42,7 @@ from core_oaipmh_provider_app.views.admin.forms import (
 )
 
 
+@staff_member_required
 def check_registry(request):
     """ Check the availability of a registry.
     Args:
