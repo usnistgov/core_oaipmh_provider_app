@@ -2,8 +2,9 @@
 """
 import json
 
-from django.urls import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.urls import reverse_lazy
+from django.utils.html import escape
 from requests import ConnectionError
 from rest_framework import status
 
@@ -57,7 +58,9 @@ def check_registry(request):
             content_type="application/javascript",
         )
     except Exception as e:
-        return HttpResponseBadRequest(str(e), content_type="application/javascript")
+        return HttpResponseBadRequest(
+            escape(str(e)), content_type="application/javascript"
+        )
 
     return HttpResponse(
         json.dumps({"is_available": is_available}),

@@ -6,6 +6,7 @@ from io import StringIO
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import HttpResponse
+from django.utils.html import escape
 from django.views.generic import TemplateView
 from rest_framework import status
 
@@ -125,7 +126,8 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": escape(str(e))},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def identify(self):
@@ -184,7 +186,8 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": escape(str(e))},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def list_metadata_formats(self):
@@ -240,7 +243,8 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": escape(str(e))},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def list_identifiers(self):
@@ -336,7 +340,8 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": escape(str(e))},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     @staticmethod
@@ -495,7 +500,8 @@ class OAIProviderView(TemplateView):
             return self.error(e)
         except Exception as e:
             return HttpResponse(
-                {"content": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"content": escape(str(e))},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     @staticmethod
@@ -568,5 +574,5 @@ def get_xsd(request, title, version_number):
     except Exception as e:
         return HttpResponseBadRequest(
             "Impossible to retrieve the schema with the given name and "
-            "version: %s" % str(e)
+            "version: %s" % escape(str(e))
         )
