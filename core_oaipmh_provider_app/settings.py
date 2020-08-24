@@ -17,7 +17,7 @@ CUSTOM_NAME = getattr(settings, "CUSTOM_NAME", "")
 RESULTS_PER_PAGE = getattr(settings, "RESULTS_PER_PAGE", 10)
 
 # OAI_PMH parameters
-OAI_ADMINS = (("Administrator", "admin@curator.com"),)
+OAI_ADMINS = (("Administrator", "admin@example.com"),)
 OAI_HOST_URI = SERVER_URI
 OAI_NAME = CUSTOM_NAME + " OAI-PMH Server"
 OAI_DELIMITER = ":"
