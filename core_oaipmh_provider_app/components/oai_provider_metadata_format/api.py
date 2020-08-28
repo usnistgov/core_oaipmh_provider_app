@@ -24,7 +24,7 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def upsert(oai_provider_metadata_format):
-    """ Create or update an OaiProviderMetadataFormat.
+    """Create or update an OaiProviderMetadataFormat.
 
     Args:
         oai_provider_metadata_format: OaiProviderMetadataFormat to create or update.
@@ -39,7 +39,7 @@ def upsert(oai_provider_metadata_format):
 
 
 def delete(oai_provider_metadata_format):
-    """ Delete an OaiProviderMetadataFormat.
+    """Delete an OaiProviderMetadataFormat.
 
     Args:
         oai_provider_metadata_format: OaiProviderMetadataFormat to delete.
@@ -49,7 +49,7 @@ def delete(oai_provider_metadata_format):
 
 
 def get_by_id(oai_provider_metadata_format_id):
-    """ Get an OaiProviderMetadataFormat by its id.
+    """Get an OaiProviderMetadataFormat by its id.
 
     Args:
         oai_provider_metadata_format_id: Id of the OaiProviderMetadataFormat.
@@ -64,7 +64,7 @@ def get_by_id(oai_provider_metadata_format_id):
 
 
 def get_by_metadata_prefix(metadata_prefix):
-    """ Get an OaiProviderMetadataFormat by its metadata prefix.
+    """Get an OaiProviderMetadataFormat by its metadata prefix.
 
     Args:
         metadata_prefix: metadata_prefix of the OaiProviderMetadataFormat.
@@ -79,7 +79,7 @@ def get_by_metadata_prefix(metadata_prefix):
 
 
 def get_all():
-    """ Get all OaiProviderMetadataFormat.
+    """Get all OaiProviderMetadataFormat.
 
     Returns:
         List of OaiProviderMetadataFormat.
@@ -89,7 +89,7 @@ def get_all():
 
 
 def get_all_custom_metadata_format(order_by_field=None):
-    """ Get all custom OaiProviderMetadataFormat.
+    """Get all custom OaiProviderMetadataFormat.
 
     Args:
         order_by_field: Order by field.
@@ -102,7 +102,7 @@ def get_all_custom_metadata_format(order_by_field=None):
 
 
 def get_all_default_metadata_format(order_by_field=None):
-    """ Get all default OaiProviderMetadataFormat.
+    """Get all default OaiProviderMetadataFormat.
 
     Args:
         order_by_field: Order by field.
@@ -115,7 +115,7 @@ def get_all_default_metadata_format(order_by_field=None):
 
 
 def get_all_template_metadata_format(order_by_field=None):
-    """ Get all OaiProviderMetadataFormat based on a template.
+    """Get all OaiProviderMetadataFormat based on a template.
 
     Args:
         order_by_field: Order by field.
@@ -128,17 +128,17 @@ def get_all_template_metadata_format(order_by_field=None):
 
 
 def get_all_no_template_metadata_format():
-    """ Get all OaiProviderMetadataFormat except the metadata formats based on a template.
+    """Get all OaiProviderMetadataFormat except the metadata formats based on a template.
 
-     Returns:
-         List of metadata format.
+    Returns:
+        List of metadata format.
 
-     """
+    """
     return OaiProviderMetadataFormat.get_all_no_template_metadata_format()
 
 
 def get_all_by_templates(templates):
-    """ Get all OaiProviderMetadataFormat used by a list of templates.
+    """Get all OaiProviderMetadataFormat used by a list of templates.
 
     Returns:
         List of metadata format.
@@ -148,7 +148,7 @@ def get_all_by_templates(templates):
 
 
 def add_metadata_format(metadata_prefix, schema_url):
-    """ Add a new metadata format.
+    """Add a new metadata format.
     Args:
         metadata_prefix: Metadata Prefix.
         schema_url: URL of the schema.
@@ -196,7 +196,7 @@ def add_metadata_format(metadata_prefix, schema_url):
 
 
 def add_template_metadata_format(metadata_prefix, template_id):
-    """ Add a new template metadata format.
+    """Add a new template metadata format.
     Args:
         metadata_prefix: Metadata Prefix.
         template_id: Id of the template.
@@ -252,7 +252,7 @@ def add_template_metadata_format(metadata_prefix, template_id):
 
 
 def get_metadata_format_schema_url(metadata_format, host_uri=None):
-    """ Get the Schema URL.
+    """Get the Schema URL.
     Args:
         metadata_format: OaiProviderMetadataFormat.
         host_uri: Host URI.
@@ -271,7 +271,7 @@ def get_metadata_format_schema_url(metadata_format, host_uri=None):
 
 
 def _get_absolute_uri(title, version_number, host_uri=None):
-    """ Get the absolute URI. Use the host_uri in parameter, otherwise use settings.
+    """Get the absolute URI. Use the host_uri in parameter, otherwise use settings.
     Args:
         title: Metadata Format title.
         version_number: Metadata Format version.
@@ -296,7 +296,7 @@ def _get_absolute_uri(title, version_number, host_uri=None):
 
 
 def _get_simple_template_metadata_format_schema_url(title, version_number):
-    """ Get the simple Schema URL for a template metadata format.
+    """Get the simple Schema URL for a template metadata format.
     Args:
         title: Title of the template.
         version_number: Version of the template
@@ -309,7 +309,7 @@ def _get_simple_template_metadata_format_schema_url(title, version_number):
 
 
 def _get_target_namespace(xml_schema):
-    """ Get the target namespace.
+    """Get the target namespace.
     Args:
         xml_schema:  XML representation of the schema.
 

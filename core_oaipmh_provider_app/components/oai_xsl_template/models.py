@@ -31,7 +31,7 @@ class OaiXslTemplate(Document):
 
     @staticmethod
     def get_by_id(oai_xslt_template_id):
-        """ Returns the object with the given id
+        """Returns the object with the given id
 
         Args:
             oai_xslt_template_id: Object id.
@@ -53,7 +53,7 @@ class OaiXslTemplate(Document):
 
     @staticmethod
     def get_by_template_id_and_metadata_format_id(template_id, metadata_format_id):
-        """ Returns an OaiXslTemplate by its template and metadata_format.
+        """Returns an OaiXslTemplate by its template and metadata_format.
         Args:
             template_id: Template id.
             metadata_format_id: Metadata format id.
@@ -77,32 +77,32 @@ class OaiXslTemplate(Document):
 
     @staticmethod
     def get_all_by_templates(templates):
-        """ Returns all OaiXslTemplate used by a list of templates.
+        """Returns all OaiXslTemplate used by a list of templates.
 
-           Args:
-               templates: List of templates.
+        Args:
+            templates: List of templates.
 
-           Returns:
-               List of OaiXslTemplate.
+        Returns:
+            List of OaiXslTemplate.
 
-           """
+        """
         return OaiXslTemplate.objects(template__in=templates).all()
 
     @staticmethod
     def get_all_by_metadata_format(metadata_format):
-        """ Returns all OaiXslTemplate used by a metadata format.
+        """Returns all OaiXslTemplate used by a metadata format.
 
-           Args:
-               metadata_format: OaiProviderMetadataFormat.
+        Args:
+            metadata_format: OaiProviderMetadataFormat.
 
-           Returns:
-               List of OaiXslTemplate.
+        Returns:
+            List of OaiXslTemplate.
 
-           """
+        """
         return OaiXslTemplate.objects(oai_metadata_format=metadata_format).all()
 
     def save_object(self):
-        """ Custom save.
+        """Custom save.
 
         Returns:
             Saved Instance.

@@ -116,8 +116,8 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
         # Arrange
         mock_absent_id = ObjectId()
 
-        mock_get_by_template_id_and_metadata_format_id.side_effect = exceptions.DoesNotExist(
-            "Error."
+        mock_get_by_template_id_and_metadata_format_id.side_effect = (
+            exceptions.DoesNotExist("Error.")
         )
 
         # Act + Assert
@@ -133,8 +133,8 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
         # Arrange
         mock_absent_id = ObjectId()
 
-        mock_get_by_template_id_and_metadata_format_id.side_effect = exceptions.ModelError(
-            "Error."
+        mock_get_by_template_id_and_metadata_format_id.side_effect = (
+            exceptions.ModelError("Error.")
         )
 
         # Act + Assert
@@ -213,7 +213,7 @@ def _generic_get_all_test(self, mock_get_all, act_function):
 
 
 def _create_oai_xsl_template():
-    """ Get an OaiXslTemplate object.
+    """Get an OaiXslTemplate object.
 
     Returns:
         OaiXslTemplate instance.
@@ -226,7 +226,7 @@ def _create_oai_xsl_template():
 
 
 def _create_mock_oai_xsl_template():
-    """ Mock an OaiXslTemplate.
+    """Mock an OaiXslTemplate.
 
     Returns:
         OaiXslTemplate mock.
@@ -239,7 +239,7 @@ def _create_mock_oai_xsl_template():
 
 
 def _set_oai_xsl_template_fields(oai_xsl_template):
-    """ Set OaiXslTemplate fields.
+    """Set OaiXslTemplate fields.
 
     Returns:
         OaiXslTemplate with assigned fields.

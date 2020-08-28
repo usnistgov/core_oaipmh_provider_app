@@ -17,7 +17,7 @@ from core_oaipmh_provider_app.rest import serializers
 class SetsList(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Get all OaiProviderSet
+        """Get all OaiProviderSet
 
         Args:
 
@@ -41,14 +41,14 @@ class SetsList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Create a OaiProviderSet
+        """Create a OaiProviderSet
 
         Parameters:
 
             {
-                "set_spec": "value", 
-                "set_name":"value", 
-                "templates_manager": ["id1", "id2"], 
+                "set_spec": "value",
+                "set_name":"value",
+                "templates_manager": ["id1", "id2"],
                 "description":"value"
             }
 
@@ -88,7 +88,7 @@ class SetsList(APIView):
 class SetDetail(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request, set_id):
-        """ Get a OaiProviderSet
+        """Get a OaiProviderSet
 
         Args:
 
@@ -122,7 +122,7 @@ class SetDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, set_id):
-        """ Delete a OaiProviderSet
+        """Delete a OaiProviderSet
 
         Args:
 
@@ -156,7 +156,7 @@ class SetDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, set_id):
-        """ Update a OaiProviderSet
+        """Update a OaiProviderSet
 
         Parameters:
 

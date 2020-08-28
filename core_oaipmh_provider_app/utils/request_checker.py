@@ -14,7 +14,7 @@ from core_oaipmh_provider_app import settings
 
 
 def check_bad_argument(oai_verb, data):
-    """ Check OAI Error and Exception - Bad Argument in request.
+    """Check OAI Error and Exception - Bad Argument in request.
     Args:
         oai_verb: Verb.
         data: Data.
@@ -72,7 +72,7 @@ def check_bad_argument(oai_verb, data):
 
 
 def check_illegal_and_required(legal, required, data):
-    """ Check OAI Error and Exception - Illegal and required arguments
+    """Check OAI Error and Exception - Illegal and required arguments
     Args:
         legal: Legal args.
         required: Required args.
@@ -105,7 +105,7 @@ def check_illegal_and_required(legal, required, data):
 
 
 def check_identifier(identifier):
-    """ Check if the identifier matches the pattern and return the record id.
+    """Check if the identifier matches the pattern and return the record id.
     Args:
         identifier: Identifier to check.
 
@@ -131,7 +131,7 @@ def check_identifier(identifier):
 
 
 def check_from(date):
-    """ Check from date.
+    """Check from date.
     Args:
         date:
 
@@ -150,7 +150,7 @@ def check_from(date):
 
 
 def check_until(date):
-    """ Check until date.
+    """Check until date.
     Args:
         date:
 
@@ -169,7 +169,7 @@ def check_until(date):
 
 
 def _check_dates(date):
-    """ Check date in parameter.
+    """Check date in parameter.
     Args:
         date: Date.
 
@@ -187,7 +187,7 @@ def _check_dates(date):
 
 
 def check_resumption_token(resumption_token):
-    """ Check resumption token and return associated OAIRequestPage object
+    """Check resumption token and return associated OAIRequestPage object
 
     Args:
         resumption_token:

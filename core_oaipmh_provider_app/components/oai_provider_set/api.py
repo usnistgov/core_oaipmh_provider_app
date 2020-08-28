@@ -9,7 +9,7 @@ from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProvi
 
 
 def upsert(oai_provider_set):
-    """ Create or update an OaiProviderSet.
+    """Create or update an OaiProviderSet.
 
     Args:
         oai_provider_set:
@@ -22,7 +22,7 @@ def upsert(oai_provider_set):
 
 
 def delete(oai_provider_set):
-    """ Delete an OaiProviderSet.
+    """Delete an OaiProviderSet.
 
     Args:
         oai_provider_set: The OaiProviderSet to delete.
@@ -32,7 +32,7 @@ def delete(oai_provider_set):
 
 
 def get_by_id(oai_provider_set_id):
-    """ Get an OaiProviderSet by its id.
+    """Get an OaiProviderSet by its id.
 
     Args:
         oai_provider_set_id: The OaiProviderSet id.
@@ -45,7 +45,7 @@ def get_by_id(oai_provider_set_id):
 
 
 def get_by_set_spec(set_spec):
-    """ Get an OaiProviderSet by its set_spec.
+    """Get an OaiProviderSet by its set_spec.
 
     Args:
         set_spec: The OaiProviderSet set_spec.
@@ -57,7 +57,7 @@ def get_by_set_spec(set_spec):
 
 
 def get_all(order_by_field=None):
-    """ Get all OaiProviderSet.
+    """Get all OaiProviderSet.
     Args:
         order_by_field: Order by field.
 
@@ -68,7 +68,7 @@ def get_all(order_by_field=None):
 
 
 def get_all_by_templates_manager(templates_manager):
-    """ Get all OaiProviderSet used by a list of templates manager.
+    """Get all OaiProviderSet used by a list of templates manager.
 
     Args:
         templates_manager: List of templates manager.
@@ -83,7 +83,7 @@ def get_all_by_templates_manager(templates_manager):
 
 
 def get_all_by_template_ids(template_ids):
-    """ Get all OaiProviderSet used by a list of templates ids.
+    """Get all OaiProviderSet used by a list of templates ids.
 
     Args:
         template_ids: List of templates ids.

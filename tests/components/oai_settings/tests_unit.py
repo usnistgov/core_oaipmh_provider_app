@@ -54,10 +54,10 @@ class TestOaiSettingsUpsert(TestCase):
 
 
 def _create_oai_settings():
-    """ Get an OaiSettings object.
+    """Get an OaiSettings object.
 
-        Returns:
-            OaiSettings instance.
+    Returns:
+        OaiSettings instance.
 
     """
     oai_settings = OaiSettings()
@@ -67,10 +67,10 @@ def _create_oai_settings():
 
 
 def _create_mock_oai_settings():
-    """ Mock an OaiSettings.
+    """Mock an OaiSettings.
 
-        Returns:
-            OaiSettings mock.
+    Returns:
+        OaiSettings mock.
 
     """
     mock_oai_settings = Mock(spec=OaiSettings)
@@ -80,13 +80,13 @@ def _create_mock_oai_settings():
 
 
 def _set_oai_setting_fields(oai_settings):
-    """ Set OaiSettings fields.
+    """Set OaiSettings fields.
 
-        Args:
-            oai_settings:
+    Args:
+        oai_settings:
 
-        Returns:
-            OaiSettings with assigned fields.
+    Returns:
+        OaiSettings with assigned fields.
 
     """
     oai_settings.repository_name = "Repository"

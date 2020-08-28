@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_by_resumption_token(resumption_token):
-    """ Get request information using resumption token
+    """Get request information using resumption token
 
     Args:
         resumption_token:
@@ -23,7 +23,7 @@ def get_by_resumption_token(resumption_token):
 
 
 def upsert(oai_request_page_object):
-    """ Insert or update a given OAIRequestPage object
+    """Insert or update a given OAIRequestPage object
 
     Args:
         oai_request_page_object:
@@ -32,7 +32,7 @@ def upsert(oai_request_page_object):
     """
 
     def _generate_token(token_length=16):
-        """ Generate a random token of a given length.
+        """Generate a random token of a given length.
 
         Args:
             token_length:

@@ -20,12 +20,11 @@ from core_oaipmh_provider_app.rest import serializers
 
 
 class MetadataFormatsList(APIView):
-    """ List all MetadataFormat, or create a new one
-    """
+    """List all MetadataFormat, or create a new one"""
 
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Return all MetadataFormat
+        """Return all MetadataFormat
 
         Args:
 
@@ -51,7 +50,7 @@ class MetadataFormatsList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new MetadataFormat
+        """Add a new MetadataFormat
 
         Parameters:
 
@@ -95,7 +94,7 @@ class MetadataFormatsList(APIView):
 class MetadataFormatDetail(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request, metadata_format_id):
-        """ Get a MetadataFormat
+        """Get a MetadataFormat
 
         Parameters:
 
@@ -140,7 +139,7 @@ class MetadataFormatDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, metadata_format_id):
-        """ Delete a MetadataFormat
+        """Delete a MetadataFormat
 
         Args:
 
@@ -176,7 +175,7 @@ class MetadataFormatDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, metadata_format_id):
-        """ Update a MetadataFormat
+        """Update a MetadataFormat
 
         Parameters:
 
@@ -235,7 +234,7 @@ class MetadataFormatDetail(APIView):
 class TemplateAsMetadataFormat(APIView):
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new Template as MetadataFormat
+        """Add a new Template as MetadataFormat
 
         Parameters:
 
@@ -277,7 +276,7 @@ class TemplateAsMetadataFormat(APIView):
 class TemplateMetadataFormatXSLT(APIView):
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Map a template, a metadata format and a XSLT. Used for the transformation of the
+        """Map a template, a metadata format and a XSLT. Used for the transformation of the
         template toward the metadata format thanks to the XSLT.
 
         Parameters:
@@ -333,7 +332,7 @@ class TemplateMetadataFormatXSLT(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request):
-        """ Remove the mapping between a template, a metadata format and a XSLT
+        """Remove the mapping between a template, a metadata format and a XSLT
 
         Parameters:
 
@@ -369,8 +368,10 @@ class TemplateMetadataFormatXSLT(APIView):
             # Get metadata format id
             metadata_format_id = serializer.data.get("metadata_format_id")
             # Get mapping
-            oai_xsl_template = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
-                template_id, metadata_format_id
+            oai_xsl_template = (
+                oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                    template_id, metadata_format_id
+                )
             )
             # Delete the mapping
             oai_xsl_template_api.delete(oai_xsl_template)

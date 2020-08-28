@@ -16,8 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def init():
-    """ Init default metadata formats for OAI-PMH
-    """
+    """Init default metadata formats for OAI-PMH"""
     logger.info("START oai provider metadata format discovery.")
 
     try:

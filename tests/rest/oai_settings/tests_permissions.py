@@ -109,7 +109,7 @@ class CheckGetPermission(SimpleTestCase):
 
 
 def _create_mock_http_request(status_code):
-    """ Return a mock HTTP Request
+    """Return a mock HTTP Request
 
     Args:
         status_code:

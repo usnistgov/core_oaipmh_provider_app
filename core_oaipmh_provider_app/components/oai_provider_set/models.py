@@ -24,7 +24,7 @@ class OaiProviderSet(OaiSet):
 
     @staticmethod
     def get_all(order_by_field=None):
-        """ Return all OaiProviderSet.
+        """Return all OaiProviderSet.
         Args:
             order_by_field: Order by field.
         Returns:
@@ -35,7 +35,7 @@ class OaiProviderSet(OaiSet):
 
     @staticmethod
     def get_all_by_templates_manager(templates_manager):
-        """ Get all OaiProviderSet used by a list of templates_manager
+        """Get all OaiProviderSet used by a list of templates_manager
 
         Args:
             templates_manager: List of templates manager
@@ -48,7 +48,7 @@ class OaiProviderSet(OaiSet):
 
     @staticmethod
     def get_by_set_spec(set_spec):
-        """ Get an OaiProviderSet by its set_spec.
+        """Get an OaiProviderSet by its set_spec.
 
         Args:
             set_spec: OaiProviderSet set_spec.

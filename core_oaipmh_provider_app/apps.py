@@ -11,13 +11,12 @@ from core_oaipmh_provider_app.tasks import insert_data_in_oai_data
 
 
 class ProviderAppConfig(AppConfig):
-    """ Core application settings
-    """
+    """Core application settings"""
 
     name = "core_oaipmh_provider_app"
 
     def ready(self):
-        """ Run when the app is ready
+        """Run when the app is ready
 
         Returns:
 

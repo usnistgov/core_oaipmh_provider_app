@@ -268,7 +268,7 @@ def _generic_get_all_test(self, mock_get_all, act_function):
 
 
 def _create_oai_provider_metadata_format():
-    """ Get an OaiProviderMetadataFormat object.
+    """Get an OaiProviderMetadataFormat object.
 
     Returns:
         OaiProviderMetadataFormat instance.
@@ -281,7 +281,7 @@ def _create_oai_provider_metadata_format():
 
 
 def _create_mock_oai_provider_metadata_format(is_template=False):
-    """ Mock an OaiProviderMetadataFormat.
+    """Mock an OaiProviderMetadataFormat.
 
     Returns:
         OaiProviderMetadataFormat mock.
@@ -298,7 +298,7 @@ def _create_mock_oai_provider_metadata_format(is_template=False):
 def _set_oai_provider_metadata_format_fields(
     oai_provider_metadata_format, is_template=False, schema="http://test.com/test.xsd"
 ):
-    """ Set OaiProviderMetadataFormat fields.
+    """Set OaiProviderMetadataFormat fields.
 
     Returns:
         OaiProviderMetadataFormat with assigned fields.

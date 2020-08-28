@@ -149,7 +149,7 @@ def sets_view(request):
 
 
 def _get_template_metadata_format(request, order_field=None):
-    """ Get template metadata format information.
+    """Get template metadata format information.
     Args:
         order_field: Possibility to order by field.
 
@@ -158,8 +158,10 @@ def _get_template_metadata_format(request, order_field=None):
 
     """
     items_template_metadata_format = []
-    template_metadata_formats = oai_metadata_format_api.get_all_template_metadata_format(
-        order_by_field=order_field
+    template_metadata_formats = (
+        oai_metadata_format_api.get_all_template_metadata_format(
+            order_by_field=order_field
+        )
     )
     for template_item in template_metadata_formats:
         host_uri = request.build_absolute_uri("/")
@@ -210,7 +212,7 @@ def xsl_template_view(request, metadata_format_id):
 
 
 def _get_xsl_templates(metadata_format):
-    """ Get template metadata format information.
+    """Get template metadata format information.
     Args:
         metadata_format: OaiProviderMetadataFormat.
 

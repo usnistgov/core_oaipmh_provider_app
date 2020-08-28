@@ -24,8 +24,7 @@ DUMP_OAI_PMH_TEST_PATH = join(OAI_PROVIDER_ROOT, "utils", "tests", "data")
 
 
 class OaiPmhFixtures(FixtureInterface):
-    """ Represent OaiPmh Integration Fixture
-    """
+    """Represent OaiPmh Integration Fixture"""
 
     url = "http://www.server.com"
     harvest_rate = 5000
@@ -57,8 +56,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.insert_oai_set()
 
     def insert_settings(self):
-        """ Insert settings fixtures
-        """
+        """Insert settings fixtures"""
         self.settings = OaiSettings(
             repository_name=self.name,
             repository_identifier=self.identifier,
@@ -66,8 +64,7 @@ class OaiPmhFixtures(FixtureInterface):
         ).save()
 
     def insert_templates(self):
-        """ Template's methods
-        """
+        """Template's methods"""
         saved_templates = []
         list_templates = OaiPmhMock.mock_template()
 
@@ -77,8 +74,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.templates = saved_templates
 
     def insert_template_version_managers(self):
-        """ Insert template version manager fixtures
-        """
+        """Insert template version manager fixtures"""
         saved_template_version_managers = []
         list_template_version_manager = OaiPmhMock.mock_template_version_manager()
 
@@ -88,8 +84,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.template_version_managers = saved_template_version_managers
 
     def insert_workspaces(self):
-        """ Workspace's methods
-        """
+        """Workspace's methods"""
         saved_data = []
         list_data = OaiPmhMock.mock_workspaces()
         for elt in list_data:
@@ -98,8 +93,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.workspaces = saved_data
 
     def insert_record(self):
-        """ Data's methods
-        """
+        """Data's methods"""
         saved_data = []
         self.nb_public_data = 0
         list_data = OaiPmhMock.mock_data()
@@ -113,8 +107,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.data = saved_data
 
     def insert_oai_record(self):
-        """ OaiData's methods
-        """
+        """OaiData's methods"""
         saved_data = []
         list_data = OaiPmhMock.mock_oai_data()
         for elt in list_data:
@@ -129,8 +122,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.oai_data = saved_data
 
     def insert_oai_metadata_format(self):
-        """ OaiPmhProviderMetadataFormat's methods
-        """
+        """OaiPmhProviderMetadataFormat's methods"""
         saved_data = []
         list_data = OaiPmhMock.mock_oai_metadata_format()
         for elt in list_data:
@@ -139,8 +131,7 @@ class OaiPmhFixtures(FixtureInterface):
         self.oai_metadata_formats = saved_data
 
     def insert_oai_set(self):
-        """ Insert OAI sets
-        """
+        """Insert OAI sets"""
         saved_data = []
         list_data = OaiPmhMock.mock_oai_set()
         for elt in list_data:

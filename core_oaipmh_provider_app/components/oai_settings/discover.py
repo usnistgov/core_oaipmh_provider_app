@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def init():
-    """ Init settings for the OAI-PMH feature.
+    """Init settings for the OAI-PMH feature.
     Set the name, identifier and the harvesting information
     """
     logger.info("START oai settings discovery.")

@@ -14,14 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 def init():
-    """ Connect to Data object events.
-    """
+    """Connect to Data object events."""
     connector.connect(post_save_data, signals.post_save, Data)
     connector.connect(post_delete_data, signals.post_delete, Data)
 
 
 def post_save_data(sender, document, **kwargs):
-    """ Method executed after a saving of a Data object.
+    """Method executed after a saving of a Data object.
     Args:
         sender: Class.
         document: OaiData document.
@@ -32,7 +31,7 @@ def post_save_data(sender, document, **kwargs):
 
 
 def post_delete_data(sender, document, **kwargs):
-    """ Method executed after a deletion of a Data object.
+    """Method executed after a deletion of a Data object.
     Args:
         sender: Class.
         document: OaiData document.

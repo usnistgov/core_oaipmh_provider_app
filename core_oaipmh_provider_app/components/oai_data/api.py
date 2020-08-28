@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def upsert(oai_data):
-    """ Create or update an OaiData.
+    """Create or update an OaiData.
 
     Args:
         oai_data: OaiData to create or update.
@@ -25,7 +25,7 @@ def upsert(oai_data):
 
 
 def delete(oai_data):
-    """ Delete an OaiData.
+    """Delete an OaiData.
 
     Args:
         oai_data: OaiData to delete.
@@ -35,7 +35,7 @@ def delete(oai_data):
 
 
 def get_by_id(oai_data_id):
-    """ Get an OaiData by its id.
+    """Get an OaiData by its id.
 
     Args:
         oai_data_id: Id of the OaiData.
@@ -48,7 +48,7 @@ def get_by_id(oai_data_id):
 
 
 def get_by_data(data):
-    """ Get an OaiData by its data.
+    """Get an OaiData by its data.
 
     Args:
         data: Data instance.
@@ -61,7 +61,7 @@ def get_by_data(data):
 
 
 def get_all_by_template(template, from_date=None, until_date=None):
-    """ Get all OaiData used by a template.
+    """Get all OaiData used by a template.
 
     Args:
         template: The template.
@@ -78,7 +78,7 @@ def get_all_by_template(template, from_date=None, until_date=None):
 
 
 def get_all_by_data_list(data_list, from_date=None, until_date=None):
-    """ Get all OaiData from a specific data list.
+    """Get all OaiData from a specific data list.
 
     Args:
         data_list: The template.
@@ -95,7 +95,7 @@ def get_all_by_data_list(data_list, from_date=None, until_date=None):
 
 
 def get_all():
-    """ Get all OaiData.
+    """Get all OaiData.
 
     Returns:
         List of OaiData.
@@ -105,7 +105,7 @@ def get_all():
 
 
 def get_all_by_status(status_):
-    """ Get all OaiData by their status.
+    """Get all OaiData by their status.
 
     Args:
         status_: Status.
@@ -118,7 +118,7 @@ def get_all_by_status(status_):
 
 
 def get_earliest_data_date():
-    """ Get the earliest OaiData date
+    """Get the earliest OaiData date
     Returns:
         Date of the earliest OaiData.
 
@@ -127,7 +127,7 @@ def get_earliest_data_date():
 
 
 def upsert_from_data(document, force_update=False):
-    """ Create or Update an OaiData from a Data document.
+    """Create or Update an OaiData from a Data document.
     Args:
         document: Data document
         force_update: Force the Update of the OaiData (oai_date_stamp).

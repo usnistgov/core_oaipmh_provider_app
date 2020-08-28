@@ -7,7 +7,7 @@ from core_main_app.commons import exceptions
 
 
 class OaiRequestPage(Document):
-    """ Informations about a request sent by a harvester needed a paginated
+    """Informations about a request sent by a harvester needed a paginated
     response.
     """
 

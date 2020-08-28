@@ -24,17 +24,17 @@ class OaiData(Document):
 
     @property
     def data_id(self):
-        """ Get data id even if the reference is broken (Deleted Data).
+        """Get data id even if the reference is broken (Deleted Data).
 
-            Returns:
-                ObjectId: Data id.
+        Returns:
+            ObjectId: Data id.
 
         """
         return self._data["data"].id
 
     @staticmethod
     def get_by_id(oai_data_id):
-        """ Returns the object with the given id
+        """Returns the object with the given id
 
         Args:
             oai_data_id:
@@ -56,7 +56,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_by_data(data):
-        """ Get an OaiData by its data.
+        """Get an OaiData by its data.
 
         Args:
             data: Data instance.
@@ -78,7 +78,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_all_by_data_list_and_timeframe(data_list, from_date, until_date):
-        """ Get all OaiData from a specific data list.
+        """Get all OaiData from a specific data list.
 
         Args:
             data_list: List of data.
@@ -98,7 +98,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_all():
-        """ Return all OaiData.
+        """Return all OaiData.
 
         Returns:
             List of OaiData.
@@ -108,7 +108,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_all_by_template(template, from_date, until_date):
-        """ Get all OaiData used by a template.
+        """Get all OaiData used by a template.
 
         Args:
             template: The template.
@@ -129,7 +129,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_all_by_status(status):
-        """ Get all OaiData by their status.
+        """Get all OaiData by their status.
         Args:
             status: Status.
 
@@ -141,7 +141,7 @@ class OaiData(Document):
 
     @staticmethod
     def get_earliest_data_date():
-        """ Get the earliest OaiData date
+        """Get the earliest OaiData date
         Returns:
             Date of the earliest OaiData.
 

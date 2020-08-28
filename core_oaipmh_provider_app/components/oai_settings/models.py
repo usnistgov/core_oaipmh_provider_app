@@ -17,7 +17,7 @@ class OaiSettings(Document):
 
     @staticmethod
     def get():
-        """ Get the settings.
+        """Get the settings.
 
         Returns: The OaiSettings instance.
 

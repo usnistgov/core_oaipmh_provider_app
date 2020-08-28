@@ -1096,10 +1096,10 @@ class TestListRecords(TestOaiPmhSuite):
 
 
 def _create_mock_oai_settings():
-    """ Mock an OaiSettings.
+    """Mock an OaiSettings.
 
-        Returns:
-            OaiSettings mock.
+    Returns:
+        OaiSettings mock.
 
     """
     mock_oai_settings = Mock(spec=OaiSettings)
@@ -1109,10 +1109,10 @@ def _create_mock_oai_settings():
 
 
 def _create_mock_oai_sets():
-    """ Mock an OaiSet.
+    """Mock an OaiSet.
 
-        Returns:
-            OaiProviderSet mock.
+    Returns:
+        OaiProviderSet mock.
 
     """
     mock_oai_sets = Mock(spec=OaiProviderSet)
@@ -1124,10 +1124,10 @@ def _create_mock_oai_sets():
 
 
 def _create_mock_oai_metadata_format():
-    """ Mock an OaiMetadataFormat.
+    """Mock an OaiMetadataFormat.
 
-        Returns:
-            OaiProviderMetadataFormat mock.
+    Returns:
+        OaiProviderMetadataFormat mock.
 
     """
     mock_oai_metadata_format = Mock(spec=OaiProviderMetadataFormat)
@@ -1138,13 +1138,13 @@ def _create_mock_oai_metadata_format():
 
 
 def _set_oai_setting_fields(oai_settings):
-    """ Set OaiSettings fields.
+    """Set OaiSettings fields.
 
-        Args:
-            oai_settings:
+    Args:
+        oai_settings:
 
-        Returns:
-            OaiSettings with assigned fields.
+    Returns:
+        OaiSettings with assigned fields.
 
     """
     oai_settings.repository_name = "Repository"

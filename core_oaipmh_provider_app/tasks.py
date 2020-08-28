@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def insert_data_in_oai_data():
-    """ Insert XML data into OAI Data to allow for harvesting.
+    """Insert XML data into OAI Data to allow for harvesting.
 
     Launch an asynchronous task when the server is starting.
 
@@ -24,8 +24,7 @@ def insert_data_in_oai_data():
 
 @shared_task(name="insert_data_task")
 def insert_data_task():
-    """ Insert XML data into OAI Data to allow for harvesting.
-    """
+    """Insert XML data into OAI Data to allow for harvesting."""
     logger.info("START OAI Data discovery...")
 
     # Exit early if harvesting is disable

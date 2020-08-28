@@ -185,7 +185,7 @@ class TestOaiProviderSetDelete(TestCase):
 
 
 def _create_oai_provider_set():
-    """ Get an OaiProviderSet object
+    """Get an OaiProviderSet object
 
     Returns:
         OaiProviderSet instance.
@@ -199,7 +199,7 @@ def _create_oai_provider_set():
 
 
 def _create_mock_oai_provider_set():
-    """ Mock an OaiProviderSet.
+    """Mock an OaiProviderSet.
 
     Returns:
         OaiProviderSet mock.
@@ -212,7 +212,7 @@ def _create_mock_oai_provider_set():
 
 
 def _set_oai_provider_set_fields(oai_provider_set):
-    """ Set OaiProviderSet fields.
+    """Set OaiProviderSet fields.
 
     Args:
         oai_provider_set:

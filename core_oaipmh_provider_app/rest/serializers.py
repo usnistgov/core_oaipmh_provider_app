@@ -104,7 +104,7 @@ class TemplateToMFMappingXSLTSerializer(DocumentSerializer):
 
     @staticmethod
     def validate_oai_metadata_format(oai_metadata_format):
-        """ Validate oai_metadata_format field
+        """Validate oai_metadata_format field
 
         Args:
             oai_metadata_format:
@@ -132,9 +132,11 @@ class TemplateToMFMappingXSLTSerializer(DocumentSerializer):
 
     def init_instance(self):
         try:
-            oai_xsl_template = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
-                self.validated_data.get("template", ""),
-                self.validated_data.get("oai_metadata_format", ""),
+            oai_xsl_template = (
+                oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                    self.validated_data.get("template", ""),
+                    self.validated_data.get("oai_metadata_format", ""),
+                )
             )
             self.instance = oai_xsl_template
         except exceptions.DoesNotExist as e:

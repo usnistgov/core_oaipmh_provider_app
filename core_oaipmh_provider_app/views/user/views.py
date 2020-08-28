@@ -84,7 +84,11 @@ class OAIProviderView(TemplateView):
 
     def errors(self, errors):
         self.template_name = "core_oaipmh_provider_app/user/xml/error.html"
-        return self.render_to_response({"errors": errors,})
+        return self.render_to_response(
+            {
+                "errors": errors,
+            }
+        )
 
     def get(self, request, *args, **kwargs):
         try:
@@ -131,7 +135,7 @@ class OAIProviderView(TemplateView):
             )
 
     def identify(self):
-        """ Response to identify request.
+        """Response to identify request.
         Returns:
             XML type response.
 
@@ -159,7 +163,7 @@ class OAIProviderView(TemplateView):
         return self.render_to_response(identify_data)
 
     def list_sets(self):
-        """ Response to ListSets request.
+        """Response to ListSets request.
         Returns:
             XML type response.
 
@@ -191,7 +195,7 @@ class OAIProviderView(TemplateView):
             )
 
     def list_metadata_formats(self):
-        """ Response to ListMetadataFormats request.
+        """Response to ListMetadataFormats request.
         Returns:
             XML type response.
 
@@ -207,11 +211,15 @@ class OAIProviderView(TemplateView):
                 record_id = request_checker.check_identifier(self.identifier)
                 try:
                     record = data_api.get_by_id(record_id, self.request.user)
-                    metadata_formats = oai_provider_metadata_format_api.get_all_by_templates(
-                        [record.template]
+                    metadata_formats = (
+                        oai_provider_metadata_format_api.get_all_by_templates(
+                            [record.template]
+                        )
                     )
-                    xslt_metadata_formats = oai_xsl_template_api.get_metadata_formats_by_templates(
-                        [record.template]
+                    xslt_metadata_formats = (
+                        oai_xsl_template_api.get_metadata_formats_by_templates(
+                            [record.template]
+                        )
                     )
                     metadata_formats = set(metadata_formats).union(
                         xslt_metadata_formats
@@ -248,7 +256,7 @@ class OAIProviderView(TemplateView):
             )
 
     def list_identifiers(self):
-        """ Response to ListIdentifiers request.
+        """Response to ListIdentifiers request.
         Returns:
             XML type response.
 
@@ -257,7 +265,7 @@ class OAIProviderView(TemplateView):
         return self._treatment_list_items()
 
     def list_records(self):
-        """ Response to ListRecords request.
+        """Response to ListRecords request.
         Returns:
            XML type response.
 
@@ -266,7 +274,7 @@ class OAIProviderView(TemplateView):
         return self._treatment_list_items(include_metadata=True)
 
     def _treatment_list_items(self, include_metadata=False):
-        """ Response to ListRecords or ListIdentifiers request.
+        """Response to ListRecords or ListIdentifiers request.
 
         Args:
             include_metadata:
@@ -292,8 +300,10 @@ class OAIProviderView(TemplateView):
                     self.metadata_prefix
                 )
 
-                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
-                    self.metadata_prefix
+                metadata_format = (
+                    oai_provider_metadata_format_api.get_by_metadata_prefix(
+                        self.metadata_prefix
+                    )
                 )
 
                 page_number = 1
@@ -303,8 +313,10 @@ class OAIProviderView(TemplateView):
                 )
 
                 template_id_list = request_page_object.template_id_list
-                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
-                    request_page_object.metadata_format
+                metadata_format = (
+                    oai_provider_metadata_format_api.get_by_metadata_prefix(
+                        request_page_object.metadata_format
+                    )
                 )
                 self.set = request_page_object.oai_set
                 from_date = request_page_object.from_date
@@ -312,8 +324,10 @@ class OAIProviderView(TemplateView):
                 page_number = request_page_object.page_number
 
             if len(template_id_list) == 0:
-                template_id_list = oai_xsl_template_api.get_template_ids_by_metadata_format(
-                    metadata_format
+                template_id_list = (
+                    oai_xsl_template_api.get_template_ids_by_metadata_format(
+                        metadata_format
+                    )
                 )
                 use_raw = False
 
@@ -443,11 +457,11 @@ class OAIProviderView(TemplateView):
         return items, output_resumption_token
 
     def get_record(self):
-        """ Response to GetRecord request.
-       Returns:
-           XML type response.
+        """Response to GetRecord request.
+        Returns:
+            XML type response.
 
-       """
+        """
         try:
             self.template_name = "core_oaipmh_provider_app/user/xml/get_record.html"
             # Check if the identifier pattern is OK.
@@ -458,8 +472,10 @@ class OAIProviderView(TemplateView):
                 raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
 
             try:
-                metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
-                    self.metadata_prefix
+                metadata_format = (
+                    oai_provider_metadata_format_api.get_by_metadata_prefix(
+                        self.metadata_prefix
+                    )
                 )
                 # Check if the record and the given metadata prefix use the same template.
                 use_raw = (
@@ -545,7 +561,7 @@ class OAIProviderView(TemplateView):
 
 
 def get_xsd(request, title, version_number):
-    """ Page that allows to retrieve an XML Schema by its title and version
+    """Page that allows to retrieve an XML Schema by its title and version
     number.
 
     Args:
@@ -558,8 +574,8 @@ def get_xsd(request, title, version_number):
 
     """
     try:
-        template_version = version_manager_api.get_active_global_version_manager_by_title(
-            title
+        template_version = (
+            version_manager_api.get_active_global_version_manager_by_title(title)
         )
         template = template_api.get(
             version_manager_api.get_version_by_number(

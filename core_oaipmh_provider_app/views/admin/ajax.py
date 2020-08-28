@@ -44,7 +44,7 @@ from core_oaipmh_provider_app.views.admin.forms import (
 
 @staff_member_required
 def check_registry(request):
-    """ Check the availability of a registry.
+    """Check the availability of a registry.
     Args:
         request:
 
@@ -265,7 +265,7 @@ class EditTemplateMappingView(EditObjectModalView):
 
     def get_form_kwargs(self):
         """This method is what injects forms with their keyword
-            arguments."""
+        arguments."""
         # grab the current set of form #kwargs
         kwargs = super(EditTemplateMappingView, self).get_form_kwargs()
         # Update the kwargs

@@ -21,7 +21,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
     template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE, blank=True)
 
     def __str__(self):
-        """ String representation of an object.
+        """String representation of an object.
 
         Returns:
             String representation
@@ -31,7 +31,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all():
-        """ Return all OaiProviderMetadataFormat.
+        """Return all OaiProviderMetadataFormat.
 
         Returns:
             List of OaiProviderMetadataFormat.
@@ -41,7 +41,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_custom_metadata_format(order_by_field=None):
-        """ Get all custom OaiProviderMetadataFormat.
+        """Get all custom OaiProviderMetadataFormat.
 
         Args:
         order_by_field: Order by field.
@@ -56,7 +56,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_default_metadata_format(order_by_field=None):
-        """ Get all default OaiProviderMetadataFormat.
+        """Get all default OaiProviderMetadataFormat.
 
         Args:
         order_by_field: Order by field.
@@ -71,7 +71,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_template_metadata_format(order_by_field=None):
-        """ Get all OaiProviderMetadataFormat based on a template.
+        """Get all OaiProviderMetadataFormat based on a template.
 
         Args:
         order_by_field: Order by field.
@@ -86,7 +86,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_no_template_metadata_format():
-        """ Get all OaiProviderMetadataFormat except the metadata formats based on a template.
+        """Get all OaiProviderMetadataFormat except the metadata formats based on a template.
 
         Returns:
             List of metadata format.
@@ -96,7 +96,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_by_templates(templates):
-        """ Get all OaiProviderMetadataFormat used by a list of templates.
+        """Get all OaiProviderMetadataFormat used by a list of templates.
 
         Args:
             The list of templates.
@@ -111,7 +111,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_by_metadata_prefix(metadata_prefix):
-        """ Get an OaiProviderMetadataFormat by its metadata prefix.
+        """Get an OaiProviderMetadataFormat by its metadata prefix.
 
         Args:
             metadata_prefix: OaiProviderMetadataFormat metadata prefix.

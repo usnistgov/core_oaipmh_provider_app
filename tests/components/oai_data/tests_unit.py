@@ -179,7 +179,7 @@ def _generic_get_all_test(self, mock_get_all, act_function):
 
 
 def _create_oai_data():
-    """ Get an OaiData object.
+    """Get an OaiData object.
 
     Returns:
         OaiData instance.
@@ -192,7 +192,7 @@ def _create_oai_data():
 
 
 def _create_mock_oai_data():
-    """ Mock an OaiData.
+    """Mock an OaiData.
 
     Returns:
         OaiData mock.
@@ -205,7 +205,7 @@ def _create_mock_oai_data():
 
 
 def _set_oai_data_fields(oai_data):
-    """ Set OaiData fields.
+    """Set OaiData fields.
 
     Returns:
         OaiData with assigned fields.

@@ -52,7 +52,7 @@ class EditIdentityForm(DocumentForm):
 
 class MetadataFormatForm(DocumentForm):
     """
-        A metadata format form.
+    A metadata format form.
     """
 
     metadata_prefix = forms.CharField(
@@ -75,7 +75,7 @@ class MetadataFormatForm(DocumentForm):
 
 class EditMetadataFormatForm(DocumentForm):
     """
-       A metadata format edit form.
+    A metadata format edit form.
     """
 
     metadata_prefix = forms.CharField(
@@ -92,7 +92,7 @@ class EditMetadataFormatForm(DocumentForm):
 
 class TemplateMetadataFormatForm(DocumentForm):
     """
-        A template metadata format form.
+    A template metadata format form.
     """
 
     metadata_prefix = forms.CharField(
@@ -121,7 +121,7 @@ class TemplateMetadataFormatForm(DocumentForm):
 
 class SetForm(DocumentForm):
     """
-       A Set edit form.
+    A Set edit form.
     """
 
     set_spec = forms.CharField(
@@ -161,7 +161,7 @@ class SetForm(DocumentForm):
 
 class MappingXSLTForm(DocumentForm):
     """
-       A MappingXSLTForm form.
+    A MappingXSLTForm form.
     """
 
     oai_metadata_format = forms.ModelChoiceField(
@@ -199,7 +199,7 @@ class MappingXSLTForm(DocumentForm):
 
 
 def _get_templates_versions():
-    """ Get templates versions.
+    """Get templates versions.
 
     Returns:
         List of templates versions.
@@ -220,7 +220,7 @@ def _get_templates_versions():
 
 
 def _get_templates_manager():
-    """ Get templates manager.
+    """Get templates manager.
 
     Returns:
         List of templates manager.
@@ -234,7 +234,7 @@ def _get_templates_manager():
 
 
 def _get_xsl_transformation():
-    """ Get XSLT.
+    """Get XSLT.
 
     Returns:
         List of XSLT.

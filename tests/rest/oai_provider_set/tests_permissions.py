@@ -208,7 +208,7 @@ class SetDetailPatchPermission(SimpleTestCase):
 
 
 def _create_mock_provider():
-    """ Return a mock OaiProviderSet
+    """Return a mock OaiProviderSet
 
     Returns:
 

@@ -87,8 +87,8 @@ class MetadataFormatsListPostPermission(SimpleTestCase):
     ):
         oai_provider_metadata_format_serializer_data.return_value = True
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
-        oai_provider_metadata_format_serializer_save.return_value = _create_mock_http_response(
-            status.HTTP_201_CREATED
+        oai_provider_metadata_format_serializer_save.return_value = (
+            _create_mock_http_response(status.HTTP_201_CREATED)
         )
         oai_provider_metadata_format_serializer_is_valid.return_value = {}
 
@@ -266,8 +266,8 @@ class TemplateAsMetadataFormatPostPermission(SimpleTestCase):
         template_metadata_format_serializer_is_valid,
     ):
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
-        template_metadata_format_serializer_save.return_value = _create_mock_http_response(
-            status.HTTP_201_CREATED
+        template_metadata_format_serializer_save.return_value = (
+            _create_mock_http_response(status.HTTP_201_CREATED)
         )
         template_metadata_format_serializer_is_valid.return_value = {}
 
@@ -350,8 +350,8 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
         template_to_mf_mapping_xslt_serializer_is_valid,
     ):
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
-        template_to_mf_mapping_xslt_serializer_save.return_value = _create_mock_http_response(
-            status.HTTP_201_CREATED
+        template_to_mf_mapping_xslt_serializer_save.return_value = (
+            _create_mock_http_response(status.HTTP_201_CREATED)
         )
         template_to_mf_mapping_xslt_serializer_is_valid.return_value = {}
         template_to_mf_mapping_xslt_serializer_data.return_value = {
@@ -373,7 +373,7 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
 
 
 def _create_mock_http_response(status_code):
-    """ Return a mock HTTP Response
+    """Return a mock HTTP Response
 
     Args:
         status_code:
@@ -387,7 +387,7 @@ def _create_mock_http_response(status_code):
 
 
 def _create_mock_oai_provider_metadata_format():
-    """ Return a mock Oai Provider Metadata Format
+    """Return a mock Oai Provider Metadata Format
 
     Returns:
 
@@ -397,7 +397,7 @@ def _create_mock_oai_provider_metadata_format():
 
 
 def _create_mock_oai_xsl_template():
-    """ Return a mock Oai XSL Template
+    """Return a mock Oai XSL Template
 
     Returns:
 

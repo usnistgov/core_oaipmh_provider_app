@@ -18,7 +18,7 @@ from core_oaipmh_provider_app.rest import serializers
 class Settings(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Return the OAI-PMH server settings
+        """Return the OAI-PMH server settings
 
         Args:
 
@@ -42,7 +42,7 @@ class Settings(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request):
-        """ Edit the OAI-PMH server settings
+        """Edit the OAI-PMH server settings
 
         Parameters:
 
@@ -93,7 +93,7 @@ class Settings(APIView):
 class Check(APIView):
     @method_decorator(api_staff_member_required())
     def get(self, request):
-        """ Check if the registry is available to answer OAI-PMH requests
+        """Check if the registry is available to answer OAI-PMH requests
 
         Args:
 
