@@ -94,7 +94,7 @@ class AddMetadataFormatView(AddObjectModalView):
         # Save treatment.
         try:
             oai_provider_metadata_format_api.add_metadata_format(
-                self.object.metadata_prefix, self.object.schema
+                self.object.metadata_prefix, self.object.schema, request=self.request
             )
         except Exception as e:
             form.add_error(None, str(e))
@@ -120,7 +120,7 @@ class EditMetadataFormatView(EditObjectModalView):
     def _save(self, form):
         # Save treatment.
         try:
-            oai_provider_metadata_format_api.upsert(self.object)
+            oai_provider_metadata_format_api.upsert(self.object, request=self.request)
         except NotUniqueError:
             form.add_error(
                 None,
@@ -141,10 +141,17 @@ class AddTemplateMetadataFormatView(AddObjectModalView):
         # Save treatment.
         try:
             oai_provider_metadata_format_api.add_template_metadata_format(
-                self.object.metadata_prefix, self.object.template.id
+                self.object.metadata_prefix, self.object.template.id, self.request
             )
         except Exception as e:
             form.add_error(None, str(e))
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddTemplateMetadataFormatView, self).get_form_kwargs(
+            *args, **kwargs
+        )
+        kwargs["request"] = self.request
+        return kwargs
 
 
 class AddSetView(AddObjectModalView):
@@ -162,6 +169,11 @@ class AddSetView(AddObjectModalView):
             oai_provider_set_api.upsert(self.object)
         except Exception as e:
             form.add_error(None, str(e))
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddSetView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
 
 
 class DeleteSetView(DeleteObjectModalView):
@@ -197,6 +209,11 @@ class EditSetView(EditObjectModalView):
 
         return initial
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(EditSetView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
+
 
 class AddTemplateMappingView(AddObjectModalView):
     form_class = MappingXSLTForm
@@ -215,6 +232,11 @@ class AddTemplateMappingView(AddObjectModalView):
         initial["oai_metadata_format"] = self.kwargs.pop("oai_metadata_format")
 
         return initial
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddTemplateMappingView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
 
     def get_success_url(self):
         return reverse_lazy(
@@ -270,6 +292,7 @@ class EditTemplateMappingView(EditObjectModalView):
         kwargs = super(EditTemplateMappingView, self).get_form_kwargs()
         # Update the kwargs
         kwargs["edit_mode"] = True
+        kwargs["request"] = self.request
 
         return kwargs
 

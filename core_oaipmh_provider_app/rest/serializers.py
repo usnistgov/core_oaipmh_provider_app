@@ -37,7 +37,7 @@ class TemplateMetadataFormatSerializer(BasicSerializer):
 
     def create(self, validated_data):
         return oai_provider_metadata_format_api.add_template_metadata_format(
-            **validated_data
+            **validated_data, request=self.context["request"]
         )
 
 
@@ -60,13 +60,17 @@ class OaiProviderMetadataFormatSerializer(DocumentSerializer):
         )
 
     def create(self, validated_data):
-        return oai_provider_metadata_format_api.add_metadata_format(**validated_data)
+        return oai_provider_metadata_format_api.add_metadata_format(
+            **validated_data, request=self.context["request"]
+        )
 
 
 class UpdateMetadataFormatSerializer(BasicSerializer):
     def update(self, instance, validated_data):
         instance.metadata_prefix = validated_data.get("metadata_prefix")
-        return oai_provider_metadata_format_api.upsert(instance)
+        return oai_provider_metadata_format_api.upsert(
+            instance, request=self.context["request"]
+        )
 
     metadata_prefix = CharField(required=True)
 
@@ -90,7 +94,8 @@ class OaiProviderSetSerializer(DocumentSerializer):
         templates_manager = validated_data.get("templates_manager", [])
         if len(templates_manager) > 0:
             templates_manager = [
-                version_manager_api.get(id_) for id_ in templates_manager
+                version_manager_api.get(id_, request=self.context["request"])
+                for id_ in templates_manager
             ]
             instance.templates_manager = templates_manager
         instance.description = validated_data.get("description", instance.description)

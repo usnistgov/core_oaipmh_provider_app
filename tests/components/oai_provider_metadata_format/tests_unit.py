@@ -5,6 +5,8 @@ from mock.mock import Mock, patch
 
 import core_oaipmh_provider_app.components.oai_provider_metadata_format.api as provider_metadata_format_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
@@ -17,11 +19,13 @@ class TestOaiProviderMetadataFormatUpsert(TestCase):
     @patch.object(OaiProviderMetadataFormat, "save")
     def test_oai_provider_metadata_format_upsert_returns_object(self, mock_save):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_save.return_value = self.mock_oai_provider_metadata_format
 
         # Act
         result = provider_metadata_format_api.upsert(
-            self.mock_oai_provider_metadata_format
+            self.mock_oai_provider_metadata_format, request=mock_request
         )
 
         # Assert

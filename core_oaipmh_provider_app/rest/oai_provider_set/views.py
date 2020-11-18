@@ -32,7 +32,9 @@ class SetsList(APIView):
         """
         try:
             sets = oai_provider_set_api.get_all()
-            serializer = serializers.OaiProviderSetSerializer(sets, many=True)
+            serializer = serializers.OaiProviderSetSerializer(
+                sets, many=True, context={"request": request}
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -67,7 +69,9 @@ class SetsList(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.OaiProviderSetSerializer(data=request.data)
+            serializer = serializers.OaiProviderSetSerializer(
+                data=request.data, context={"request": request}
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
@@ -106,7 +110,9 @@ class SetDetail(APIView):
         """
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
-            serializer = serializers.OaiProviderSetSerializer(set_)
+            serializer = serializers.OaiProviderSetSerializer(
+                set_, context={"request": request}
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
@@ -186,7 +192,7 @@ class SetDetail(APIView):
             set_ = oai_provider_set_api.get_by_id(set_id)
             # Build serializer
             serializer = serializers.OaiProviderSetSerializer(
-                instance=set_, data=request.data
+                instance=set_, data=request.data, context={"request": request}
             )
             # Validate data
             serializer.is_valid(True)

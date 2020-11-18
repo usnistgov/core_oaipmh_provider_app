@@ -40,7 +40,7 @@ class MetadataFormatsList(APIView):
         try:
             metadata_formats = oai_provider_metadata_format_api.get_all()
             serializer = serializers.OaiProviderMetadataFormatSerializer(
-                metadata_formats, many=True
+                metadata_formats, many=True, context={"request": request}
             )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -75,7 +75,7 @@ class MetadataFormatsList(APIView):
         try:
             # Build serializer
             serializer = serializers.OaiProviderMetadataFormatSerializer(
-                data=request.data
+                data=request.data, context={"request": request}
             )
             # Validate data
             serializer.is_valid(True)
@@ -122,7 +122,7 @@ class MetadataFormatDetail(APIView):
                 metadata_format_id
             )
             serializer = serializers.OaiProviderMetadataFormatSerializer(
-                metadata_format
+                metadata_format, context={"request": request}
             )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -205,7 +205,9 @@ class MetadataFormatDetail(APIView):
             )
             # Build serializer
             serializer = serializers.UpdateMetadataFormatSerializer(
-                instance=metadata_format, data=request.data
+                instance=metadata_format,
+                data=request.data,
+                context={"request": request},
             )
             # Validate data
             serializer.is_valid(True)
@@ -258,7 +260,9 @@ class TemplateAsMetadataFormat(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.TemplateMetadataFormatSerializer(data=request.data)
+            serializer = serializers.TemplateMetadataFormatSerializer(
+                data=request.data, context={"request": request}
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data

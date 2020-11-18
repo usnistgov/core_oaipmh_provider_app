@@ -5,17 +5,19 @@ from os.path import join
 
 from django.contrib.staticfiles import finders
 
-from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
-    api as oai_provider_metadata_format_api,
-)
-from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
-    OaiProviderMetadataFormat,
-)
+from core_main_app.utils.requests_utils.access_control import SYSTEM_REQUEST
 
 logger = logging.getLogger(__name__)
 
 
 def init():
+    from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+        api as oai_provider_metadata_format_api,
+    )
+    from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+        OaiProviderMetadataFormat,
+    )
+
     """Init default metadata formats for OAI-PMH"""
     logger.info("START oai provider metadata format discovery.")
 
@@ -48,7 +50,9 @@ def init():
                     is_template=False,
                 )
 
-                oai_provider_metadata_format_api.upsert(oai_dublin_core)
+                oai_provider_metadata_format_api.upsert(
+                    oai_dublin_core, request=SYSTEM_REQUEST
+                )
     except Exception as e:
         logger.error("ERROR : Impossible to init the metadata formats: %s" % str(e))
 

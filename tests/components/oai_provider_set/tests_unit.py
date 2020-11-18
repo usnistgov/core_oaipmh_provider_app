@@ -6,6 +6,8 @@ from mock.mock import Mock, patch
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
 
@@ -150,6 +152,8 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
         self, mock_get_all_by_templates, mock_get_all_by_version_ids
     ):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         template_id = ObjectId()
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
         mock_oai_provider_set2 = _create_mock_oai_provider_set()
@@ -164,7 +168,7 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
         ]
 
         # Act
-        result = provider_set_api.get_all_by_template_ids([template_id])
+        result = provider_set_api.get_all_by_template_ids([template_id], mock_request)
 
         # Assert
         self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))

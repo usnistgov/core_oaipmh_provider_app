@@ -111,12 +111,13 @@ class TemplateMetadataFormatForm(DocumentForm):
         fields = ["metadata_prefix", "template"]
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
         super(TemplateMetadataFormatForm, self).__init__(*args, **kwargs)
-        self.fields["template"].choices = _get_templates_versions()
+        self.fields["template"].choices = _get_templates_versions(request=self.request)
 
     def clean_template(self):
         data = self.cleaned_data["template"]
-        return template_api.get(data)
+        return template_api.get(data, request=self.request)
 
 
 class SetForm(DocumentForm):
@@ -155,8 +156,11 @@ class SetForm(DocumentForm):
         fields = ["set_spec", "set_name", "templates_manager", "description"]
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request")
         super(SetForm, self).__init__(*args, **kwargs)
-        self.fields["templates_manager"].choices = _get_templates_manager()
+        self.fields["templates_manager"].choices = _get_templates_manager(
+            request=request
+        )
 
 
 class MappingXSLTForm(DocumentForm):
@@ -182,9 +186,10 @@ class MappingXSLTForm(DocumentForm):
         fields = ["oai_metadata_format", "template", "xslt"]
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
         edit_mode = kwargs.pop("edit_mode", None)
         super(MappingXSLTForm, self).__init__(*args, **kwargs)
-        self.fields["template"].choices = _get_templates_versions()
+        self.fields["template"].choices = _get_templates_versions(request=self.request)
         self.fields["xslt"].choices = _get_xsl_transformation()
         if edit_mode:
             self.fields["template"].widget = forms.HiddenInput()
@@ -195,10 +200,10 @@ class MappingXSLTForm(DocumentForm):
 
     def clean_template(self):
         data = self.cleaned_data["template"]
-        return template_api.get(data)
+        return template_api.get(data, request=self.request)
 
 
-def _get_templates_versions():
+def _get_templates_versions(request):
     """Get templates versions.
 
     Returns:
@@ -207,10 +212,12 @@ def _get_templates_versions():
     """
     templates = []
     try:
-        list_ = template_version_manager_api.get_active_global_version_manager()
+        list_ = template_version_manager_api.get_active_global_version_manager(
+            request=request
+        )
         for elt in list_:
             for version in elt.versions:
-                template = template_api.get(version)
+                template = template_api.get(version, request=request)
                 version_name = template.display_name
                 templates.append((version, version_name))
     except exceptions.DoesNotExist as e:
@@ -219,15 +226,20 @@ def _get_templates_versions():
     return templates
 
 
-def _get_templates_manager():
+def _get_templates_manager(request):
     """Get templates manager.
+
+    Args:
+        request:
 
     Returns:
         List of templates manager.
 
     """
     templates_manager = []
-    list_ = template_version_manager_api.get_active_global_version_manager()
+    list_ = template_version_manager_api.get_active_global_version_manager(
+        request=request
+    )
     for elt in list_:
         templates_manager.append((elt.id, elt.title))
     return templates_manager

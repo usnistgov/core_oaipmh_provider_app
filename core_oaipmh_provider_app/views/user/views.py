@@ -343,6 +343,7 @@ class OAIProviderView(TemplateView):
                 include_metadata=include_metadata,
                 use_raw=use_raw,
                 page_nb=page_number,
+                request=self.request,
             )
 
             return self.render_to_response(
@@ -368,6 +369,7 @@ class OAIProviderView(TemplateView):
         include_metadata=False,
         use_raw=True,
         page_nb=1,
+        request=None,
     ):
         items = []
         output_resumption_token = None
@@ -428,7 +430,7 @@ class OAIProviderView(TemplateView):
                         elt.oai_date_stamp
                     ),
                     "sets": oai_provider_set_api.get_all_by_template_ids(
-                        [elt.data.template]
+                        [elt.data.template], request=request
                     ),
                     "deleted": elt.status == oai_status.DELETED,
                 }
@@ -503,7 +505,7 @@ class OAIProviderView(TemplateView):
                     oai_data.oai_date_stamp
                 ),
                 "sets": oai_provider_set_api.get_all_by_template_ids(
-                    [oai_data.template.id]
+                    [oai_data.template.id], request=self.request
                 ),
                 "xml": xml,
                 "deleted": oai_data.status == oai_status.DELETED,
@@ -575,15 +577,19 @@ def get_xsd(request, title, version_number):
     """
     try:
         template_version = (
-            version_manager_api.get_active_global_version_manager_by_title(title)
+            version_manager_api.get_active_global_version_manager_by_title(
+                title, request=request
+            )
         )
         template = template_api.get(
             version_manager_api.get_version_by_number(
-                template_version, int(version_number)
-            )
+                template_version, int(version_number), request=request
+            ),
+            request=request,
         )
-        flatten = XSDFlattenerDatabaseOrURL(template.content)
-        content_encoded = flatten.get_flat()
+        content_encoded = XSDFlattenerDatabaseOrURL(
+            template.content, request=request
+        ).get_flat()
         file_obj = StringIO(content_encoded)
 
         return HttpResponse(file_obj, content_type="text/xml")

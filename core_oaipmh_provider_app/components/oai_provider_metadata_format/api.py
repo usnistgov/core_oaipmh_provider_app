@@ -23,18 +23,19 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
-def upsert(oai_provider_metadata_format):
+def upsert(oai_provider_metadata_format, request):
     """Create or update an OaiProviderMetadataFormat.
 
     Args:
         oai_provider_metadata_format: OaiProviderMetadataFormat to create or update.
+        request:
 
     Returns:
         OaiProviderMetadataFormat instance.
 
 
     """
-    is_schema_valid(oai_provider_metadata_format.xml_schema)
+    is_schema_valid(oai_provider_metadata_format.xml_schema, request=request)
     return oai_provider_metadata_format.save_object()
 
 
@@ -147,11 +148,12 @@ def get_all_by_templates(templates):
     return OaiProviderMetadataFormat.get_all_by_templates(templates)
 
 
-def add_metadata_format(metadata_prefix, schema_url):
+def add_metadata_format(metadata_prefix, schema_url, request):
     """Add a new metadata format.
     Args:
         metadata_prefix: Metadata Prefix.
         schema_url: URL of the schema.
+        request:
 
     Returns: Response.
 
@@ -169,7 +171,7 @@ def add_metadata_format(metadata_prefix, schema_url):
                 metadata_namespace=target_namespace,
                 is_template=False,
             )
-            upsert(obj)
+            upsert(obj, request=request)
             content = OaiPmhMessage.get_message_labelled(
                 "Metadata format added with success."
             )
@@ -195,22 +197,25 @@ def add_metadata_format(metadata_prefix, schema_url):
         )
 
 
-def add_template_metadata_format(metadata_prefix, template_id):
+def add_template_metadata_format(metadata_prefix, template_id, request):
     """Add a new template metadata format.
     Args:
         metadata_prefix: Metadata Prefix.
         template_id: Id of the template.
+        request:
 
     Returns: Response.
 
     """
     try:
-        template = template_api.get(template_id)
-        version_manager = version_manager_api.get_from_version(template)
+        template = template_api.get(template_id, request=request)
+        version_manager = version_manager_api.get_from_version(
+            template, request=request
+        )
         xml_schema = template.content
         target_namespace = _get_target_namespace(xml_schema)
         version_number = version_manager_api.get_version_number(
-            version_manager, template_id
+            version_manager, template_id, request=request
         )
         schema_url = _get_simple_template_metadata_format_schema_url(
             version_manager.title, version_number
@@ -224,7 +229,7 @@ def add_template_metadata_format(metadata_prefix, template_id):
             metadata_namespace=target_namespace,
             template=template,
         )
-        upsert(obj)
+        upsert(obj, request=request)
         content = OaiPmhMessage.get_message_labelled(
             "Metadata format added with success."
         )
