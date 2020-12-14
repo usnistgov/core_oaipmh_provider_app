@@ -159,7 +159,12 @@ def add_metadata_format(metadata_prefix, schema_url, request):
 
     """
     try:
-        http_response = send_get_request(schema_url)
+        # TODO: refactor send request with cookies (same code in other apps)
+        try:
+            session_id = request.session.session_key
+        except:
+            session_id = None
+        http_response = send_get_request(schema_url, cookies={"sessionid": session_id})
         if http_response.status_code == status.HTTP_200_OK:
             xml_schema = http_response.text
             target_namespace = _get_target_namespace(xml_schema)
