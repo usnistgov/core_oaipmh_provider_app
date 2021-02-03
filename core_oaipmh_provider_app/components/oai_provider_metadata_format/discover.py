@@ -5,7 +5,7 @@ from os.path import join
 
 from django.contrib.staticfiles import finders
 
-from core_main_app.utils.requests_utils.access_control import SYSTEM_REQUEST
+from core_oaipmh_provider_app.system import api as system_api
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,7 @@ def init():
                     is_template=False,
                 )
 
-                oai_provider_metadata_format_api.upsert(
-                    oai_dublin_core, request=SYSTEM_REQUEST
-                )
+                system_api.upsert_oai_provider_metadata_format(oai_dublin_core)
     except Exception as e:
         logger.error("ERROR : Impossible to init the metadata formats: %s" % str(e))
 
