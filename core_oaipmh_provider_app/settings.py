@@ -40,3 +40,9 @@ OAI_SAMPLE_IDENTIFIER = (
 )
 OAI_DELETED_RECORD = "persistent"  # no; transient; persistent
 OAI_ENABLE_HARVESTING = getattr(settings, "OAI_ENABLE_HARVESTING", False)
+
+CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = getattr(
+    settings, "CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT", False
+)
+""" :py:class:`bool`: Can anonymous user access public document.
+"""

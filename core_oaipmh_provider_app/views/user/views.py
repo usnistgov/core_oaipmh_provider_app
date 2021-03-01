@@ -37,7 +37,10 @@ from core_oaipmh_provider_app.components.oai_request_page import (
 )
 from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
 from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
-from core_oaipmh_provider_app.settings import RESULTS_PER_PAGE
+from core_oaipmh_provider_app.settings import (
+    RESULTS_PER_PAGE,
+    CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT,
+)
 from core_oaipmh_provider_app.utils import request_checker
 
 logger = logging.getLogger(__name__)
@@ -228,7 +231,10 @@ class OAIProviderView(TemplateView):
                     raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
             else:
                 # No identifier provided. We return all metadata formats available
-                metadata_formats = oai_provider_metadata_format_api.get_all()
+                if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
+                    metadata_formats = oai_provider_metadata_format_api.get_all()
+                else:
+                    metadata_formats = []
 
             if len(metadata_formats) == 0:
                 raise oai_provider_exceptions.NoMetadataFormat

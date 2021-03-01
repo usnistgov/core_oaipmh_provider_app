@@ -46,3 +46,5 @@ TEMPLATES = [
 ]
 
 ROOT_URLCONF = "core_oaipmh_provider_app.urls"
+
+CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = True
