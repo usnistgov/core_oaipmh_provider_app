@@ -88,11 +88,11 @@ class OaiData(Document):
         Returns:
             List of OaiData instance.
         """
-        q_list = {Q(data__in=data_list)}
+        q_list = [Q(data__in=data_list)]
         if from_date:
-            q_list.add(Q(oai_date_stamp__gte=from_date))
+            q_list.append(Q(oai_date_stamp__gte=from_date))
         if until_date:
-            q_list.add(Q(oai_date_stamp__lte=until_date))
+            q_list.append(Q(oai_date_stamp__lte=until_date))
 
         return OaiData.objects(reduce(operator.and_, q_list)).all()
 
@@ -119,11 +119,11 @@ class OaiData(Document):
             List of OaiData.
 
         """
-        q_list = {Q(template=template)}
+        q_list = [Q(template=template)]
         if from_date:
-            q_list.add(Q(oai_date_stamp__gte=from_date))
+            q_list.append(Q(oai_date_stamp__gte=from_date))
         if until_date:
-            q_list.add(Q(oai_date_stamp__lte=until_date))
+            q_list.append(Q(oai_date_stamp__lte=until_date))
 
         return OaiData.objects(reduce(operator.and_, q_list)).all()
 
