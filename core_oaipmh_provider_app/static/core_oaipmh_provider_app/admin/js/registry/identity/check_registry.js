@@ -6,7 +6,7 @@ checkStatus = function()
     let $registryTd = $("#Status");
     let url = $registryTd.attr("url");
 
-    $registryTd.html('<i class="fa fa-spinner fa-spin"></i>');
+    $registryTd.html('<i class="fas fa-spinner fa-spin"></i>');
 
     $.ajax({
         url : checkRegistryGetUrl,
@@ -19,16 +19,16 @@ checkStatus = function()
         success: function(data){
             if ("is_available" in data && data.is_available)
             {
-                $registryTd.html('<i class="fa fa-signal"></i> Available');
+                $registryTd.html('<i class="fas fa-signal"></i> Available');
                 $registryTd.css("color", "#5cb85c");
             }
             else {
-                $registryTd.html('<i class="fa fa-signal"></i> Unavailable');
+                $registryTd.html('<i class="fas fa-signal"></i> Unavailable');
                 $registryTd.css("color", "#d9534f");
             }
         },
         error:function(data){
-            $registryTd.html('<i class="fa fa-warning"></i> '+data.responseText);
+            $registryTd.html('<i class="fas fa-warning"></i> '+data.responseText);
             $registryTd.css("color", "#d9534f");
         },
     });
