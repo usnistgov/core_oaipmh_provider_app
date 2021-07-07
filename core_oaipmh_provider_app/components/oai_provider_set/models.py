@@ -23,6 +23,27 @@ class OaiProviderSet(OaiSet):
     meta = {"indexes": [{"fields": ["templates_manager", "set_spec"]}]}
 
     @staticmethod
+    def get_by_id(oai_set_id):
+        """Get an OaiSet by its id.
+
+        Args:
+            oai_set_id: OaiSet id.
+
+        Returns: The OaiSet instance.
+
+        Raises:
+            DoesNotExist: The set doesn't exist
+            ModelError: Internal error during the process
+
+        """
+        try:
+            return OaiProviderSet.objects().get(pk=str(oai_set_id))
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(str(e))
+        except Exception as e:
+            raise exceptions.ModelError(str(e))
+
+    @staticmethod
     def get_all(order_by_field=None):
         """Return all OaiProviderSet.
         Args:
