@@ -2,9 +2,8 @@
 """
 from datetime import datetime
 
-from bson.objectid import ObjectId
 from django.http.request import HttpRequest
-from mock.mock import patch, Mock
+from unittest.mock import patch, Mock
 from rest_framework import status
 from rest_framework.status import HTTP_200_OK
 
@@ -12,7 +11,9 @@ import core_main_app.components.xsl_transformation.api as xsl_transformation_api
 from core_main_app.commons import exceptions as common_exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template.models import Template
+from core_main_app.components.workspace import api as workspace_api
 from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.system import api as system_api
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.commons import exceptions, status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -36,8 +37,6 @@ from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTe
 from core_oaipmh_provider_app.utils import request_checker
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
-from core_main_app.components.workspace import api as workspace_api
-from core_main_app.system import api as system_api
 
 
 class TestServerGeneral(TestOaiPmhSuite):
@@ -321,7 +320,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
         mock_request.return_value = ""
         mock_get_templates_id.return_value = []
         mock_get_by_metadata_prefix.return_value = []
-        mock_get_template_ids.return_value = [ObjectId()]
+        mock_get_template_ids.return_value = [1]
         mock_get_by_set_spec.side_effect = common_exceptions.DoesNotExist("")
         data = {
             "verb": "ListIdentifiers",
@@ -360,7 +359,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_get_templates_id.return_value = [ObjectId()]
+        mock_get_templates_id.return_value = [1]
         mock_get_by_metadata_prefix.return_value = []
         mock_get_templates_id_by_set_spec.return_value = []
         mock_get_all_by_template.return_value = []
@@ -450,7 +449,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
         mock_get_all.return_value = []
-        mock_check_identifier.return_value = ObjectId()
+        mock_check_identifier.return_value = 1
         mock_get_by_id.side_effect = common_exceptions.DoesNotExist("")
         data = {"verb": "ListMetadataFormats", "identifier": "dummy"}
 
@@ -517,8 +516,8 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_check_identifier.return_value = ObjectId()
-        mock_get_by_id.return_value.template = ObjectId()
+        mock_check_identifier.return_value = 1
+        mock_get_by_id.return_value.template = 1
         list_metadata_formats = [_create_mock_oai_metadata_format()]
         mock_get_all_by_templates.return_value = list_metadata_formats
         mock_get_get_metadata_formats_by_templates.return_value = []
@@ -608,7 +607,7 @@ class TestGetRecord(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_check_identifier.return_value = ObjectId()
+        mock_check_identifier.return_value = 1
         mock_get_by_data.side_effect = common_exceptions.DoesNotExist("")
         data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
 
@@ -641,7 +640,7 @@ class TestGetRecord(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_check_identifier.return_value = ObjectId()
+        mock_check_identifier.return_value = 1
         mock_get_by_data.return_value = object()
         mock_get_by_metadata_prefix.side_effect = common_exceptions.DoesNotExist("")
         data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
@@ -679,7 +678,7 @@ class TestGetRecord(TestOaiPmhSuite):
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
         mock_oai_template = Mock(spec=Template)
-        mock_oai_template.id = ObjectId()
+        mock_oai_template.id = 1
 
         mock_metadata_format = Mock(spec=OaiProviderMetadataFormat)
         mock_metadata_format.is_template = True
@@ -702,7 +701,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_check_identifier.return_value = ObjectId()
+        mock_check_identifier.return_value = 1
         mock_get_by_data.return_value = mock_oai_data
         mock_get_by_metadata_prefix.return_value = mock_metadata_format
         mock_get_all_by_template_ids.return_value = ""
@@ -746,7 +745,7 @@ class TestGetRecord(TestOaiPmhSuite):
             </body>
         """
         mock_oai_template = Mock(spec=Template)
-        mock_oai_template.id = ObjectId()
+        mock_oai_template.id = 1
 
         mock_metadata_format = Mock(spec=OaiProviderMetadataFormat)
         mock_metadata_format.is_template = False  # Will trigger use_raw = False
@@ -771,7 +770,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_check_identifier.return_value = ObjectId()
+        mock_check_identifier.return_value = 1
         mock_get_by_data.return_value = mock_oai_data
         mock_get_by_metadata_prefix.return_value = mock_metadata_format
         mock_get_all_by_template_ids.return_value = ""
@@ -900,7 +899,7 @@ class TestListRecords(TestOaiPmhSuite):
         mock_request.return_value = ""
         mock_get_templates_id.return_value = []
         mock_get_by_metadata_prefix.return_value = []
-        mock_get_template_ids.return_value = [ObjectId()]
+        mock_get_template_ids.return_value = [1]
         mock_get_by_set_spec.side_effect = common_exceptions.DoesNotExist("")
         data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
 
@@ -935,7 +934,7 @@ class TestListRecords(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_get_templates_id.return_value = [ObjectId()]
+        mock_get_templates_id.return_value = [1]
         mock_get_by_metadata_prefix.return_value = []
         mock_get_templates_id_by_set_spec.return_value = []
         mock_get_all_by_template.return_value = []
@@ -980,7 +979,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_get_templates_id.return_value = [ObjectId()]
+        mock_get_templates_id.return_value = [1]
         mock_get_by_metadata_prefix.return_value = []
         mock_get_templates_id_by_set_spec.return_value = []
 
@@ -1054,7 +1053,7 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
         mock_get_templates_id.return_value = []
-        mock_get_template_ids_by_metadata_format.return_value = [ObjectId()]
+        mock_get_template_ids_by_metadata_format.return_value = [1]
         mock_get_by_metadata_prefix.return_value = []
         mock_get_templates_id_by_set_spec.return_value = []
 

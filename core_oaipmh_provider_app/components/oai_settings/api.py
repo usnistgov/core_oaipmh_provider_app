@@ -15,7 +15,8 @@ def upsert(oai_settings):
     Returns: The OaiSettings instance.
 
     """
-    return oai_settings.save()
+    oai_settings.save()
+    return oai_settings
 
 
 def get():

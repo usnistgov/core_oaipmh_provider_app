@@ -4,10 +4,9 @@
 import logging
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import CharField, ListField
-from rest_framework_mongoengine.serializers import DocumentSerializer
+from rest_framework.serializers import CharField, ListField, ModelSerializer
 
-import core_main_app.components.version_manager.api as version_manager_api
+import core_main_app.components.template_version_manager.api as template_version_manager_api
 from core_main_app.commons import exceptions
 from core_main_app.commons.serializers import BasicSerializer
 from core_main_app.components.xsl_transformation import api as oai_xslt_api
@@ -41,7 +40,7 @@ class TemplateMetadataFormatSerializer(BasicSerializer):
         )
 
 
-class OaiProviderMetadataFormatSerializer(DocumentSerializer):
+class OaiProviderMetadataFormatSerializer(ModelSerializer):
     schema_url = CharField(required=True, write_only=True)
 
     class Meta(object):
@@ -68,25 +67,39 @@ class OaiProviderMetadataFormatSerializer(DocumentSerializer):
 class UpdateMetadataFormatSerializer(BasicSerializer):
     def update(self, instance, validated_data):
         instance.metadata_prefix = validated_data.get("metadata_prefix")
-        return oai_provider_metadata_format_api.upsert(
+        oai_provider_metadata_format_api.upsert(
             instance, request=self.context["request"]
         )
+
+        return instance
 
     metadata_prefix = CharField(required=True)
 
 
-class OaiProviderSetSerializer(DocumentSerializer):
-    templates_manager = ListField(child=CharField(), required=True)
-
+class OaiProviderSetSerializer(ModelSerializer):
     class Meta(object):
         model = OaiProviderSet
-        fields = ["id", "set_spec", "set_name", "description", "templates_manager"]
+        fields = [
+            "id",
+            "set_spec",
+            "set_name",
+            "description",
+            "templates_manager",
+        ]
         depth = 1
 
         read_only_fields = ("id",)
 
     def create(self, validated_data):
-        return oai_provider_set_api.upsert(OaiProviderSet(**validated_data))
+        templates_manager = validated_data.get("templates_manager", [])
+
+        if "templates_manager" in validated_data.keys():
+            del validated_data["templates_manager"]
+
+        oai_provider_set = oai_provider_set_api.upsert(OaiProviderSet(**validated_data))
+        oai_provider_set.templates_manager.set(templates_manager)
+
+        return oai_provider_set
 
     def update(self, instance, validated_data):
         instance.set_spec = validated_data.get("set_spec", instance.set_spec)
@@ -94,15 +107,17 @@ class OaiProviderSetSerializer(DocumentSerializer):
         templates_manager = validated_data.get("templates_manager", [])
         if len(templates_manager) > 0:
             templates_manager = [
-                version_manager_api.get(id_, request=self.context["request"])
+                template_version_manager_api.get_by_id(
+                    id_, request=self.context["request"]
+                )
                 for id_ in templates_manager
             ]
-            instance.templates_manager = templates_manager
+            instance.templates_manager.set(templates_manager)
         instance.description = validated_data.get("description", instance.description)
         return oai_provider_set_api.upsert(instance)
 
 
-class TemplateToMFMappingXSLTSerializer(DocumentSerializer):
+class TemplateToMFMappingXSLTSerializer(ModelSerializer):
     class Meta(object):
         model = OaiXslTemplate
         fields = "__all__"
@@ -157,7 +172,7 @@ class TemplateToMFUnMappingXSLTSerializer(BasicSerializer):
     metadata_format_id = CharField(required=True)
 
 
-class SettingsSerializer(DocumentSerializer):
+class SettingsSerializer(ModelSerializer):
     class Meta(object):
         model = OaiSettings
         fields = "__all__"

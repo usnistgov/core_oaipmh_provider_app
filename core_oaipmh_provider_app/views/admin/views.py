@@ -137,7 +137,7 @@ def sets_view(request):
         DeleteObjectModalView.get_modal_html_path(),
     ]
 
-    context = {"sets": oai_provider_set_api.get_all(order_by_field="set_spec")}
+    context = {"sets": oai_provider_set_api.get_all(order_by_field=["set_spec"])}
 
     return admin_render(
         request,

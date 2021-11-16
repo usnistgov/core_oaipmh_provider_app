@@ -1,7 +1,7 @@
+from random import randint
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_provider_app.components.oai_provider_metadata_format.api as provider_metadata_format_api
 from core_main_app.commons import exceptions
@@ -48,7 +48,7 @@ class TestOaiProviderMetadataFormatGetById(TestCase):
     def test_get_by_id_return_object(self, mock_get_by_id):
         # Arrange
         mock_oai_provider_metadata_format = _create_mock_oai_provider_metadata_format()
-        mock_oai_provider_metadata_format.id = ObjectId()
+        mock_oai_provider_metadata_format.id = randint(1, 100)
 
         mock_get_by_id.return_value = mock_oai_provider_metadata_format
 
@@ -61,7 +61,7 @@ class TestOaiProviderMetadataFormatGetById(TestCase):
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -72,7 +72,7 @@ class TestOaiProviderMetadataFormatGetById(TestCase):
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -102,7 +102,7 @@ class TestOaiProviderMetadataFormatGetByMetadataPrefix(TestCase):
         self, mock_get
     ):
         # Arrange
-        mock_absent_metadata_prefix = ObjectId()
+        mock_absent_metadata_prefix = randint(1, 100)
 
         mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -115,7 +115,7 @@ class TestOaiProviderMetadataFormatGetByMetadataPrefix(TestCase):
     @patch.object(OaiProviderMetadataFormat, "get_by_metadata_prefix")
     def test_get_by_metadata_prefix_raises_exception_if_internal_error(self, mock_get):
         # Arrange
-        mock_absent_metadata_prefix = ObjectId()
+        mock_absent_metadata_prefix = randint(1, 100)
 
         mock_get.side_effect = exceptions.ModelError("Error.")
 

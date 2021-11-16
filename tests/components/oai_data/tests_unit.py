@@ -1,8 +1,8 @@
 from datetime import datetime
+from random import randint
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
 from core_main_app.commons import exceptions
@@ -54,7 +54,7 @@ class TestOaiDataGetById(TestCase):
     def test_get_by_id_returns_object(self, mock_get_by_id):
         # Arrange
         mock_oai_data = _create_oai_data()
-        mock_oai_data.id = ObjectId()
+        mock_oai_data.id = randint(1, 100)
 
         mock_get_by_id.return_value = mock_oai_data
 
@@ -67,7 +67,7 @@ class TestOaiDataGetById(TestCase):
     @patch.object(OaiData, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -78,7 +78,7 @@ class TestOaiDataGetById(TestCase):
     @patch.object(OaiData, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -155,13 +155,11 @@ class TestOaiDataGetEarliestDataDate(TestCase):
         self, mock_get_earliest_data_date
     ):
         # Arrange
-        mock_absent_data = Data()
-
         mock_get_earliest_data_date.side_effect = exceptions.ModelError("Error.")
 
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
-            oai_data_api.get_by_data(mock_absent_data)
+            oai_data_api.get_earliest_data_date()
 
 
 def _generic_get_all_test(self, mock_get_all, act_function):

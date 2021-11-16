@@ -1,6 +1,7 @@
 """ Int Test Rest OaiProviderSet
 """
-from bson.objectid import ObjectId
+from random import randint
+
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
@@ -63,7 +64,7 @@ class TestAddSet(MongoIntegrationBaseTestCase):
         self.data = {
             "set_spec": "oai_dummy",
             "set_name": "dummy set",
-            "templates_manager": [str(ObjectId()), str(ObjectId())],
+            "templates_manager": [],
             "description": "The description",
         }
         self.nb_sets = len(OaiProviderSet.objects.all())
@@ -119,7 +120,7 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
             "set_spec": self.new_set_spec,
             "set_name": self.new_set_name,
             "description": self.new_description,
-            "templates_manager": [str(self.new_template_version.id)],
+            "templates_manager": [self.new_template_version.pk],
         }
 
     def test_update_set(self):
@@ -147,6 +148,8 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
             self.new_description,
         )
         self.assertEqual(
-            OaiProviderSet.objects.get(pk=self.first_set.id).templates_manager,
+            list(
+                OaiProviderSet.objects.get(pk=self.first_set.id).templates_manager.all()
+            ),
             [self.new_template_version],
         )

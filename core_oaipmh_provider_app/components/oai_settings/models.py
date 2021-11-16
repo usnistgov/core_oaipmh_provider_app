@@ -1,19 +1,18 @@
 """
 OaiSettings model
 """
-
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 
 
-class OaiSettings(Document):
+class OaiSettings(models.Model):
     """Represents the settings for Oai-Pmh Provider"""
 
-    repository_name = fields.StringField()
-    repository_identifier = fields.StringField()
-    enable_harvesting = fields.BooleanField()
+    repository_name = models.CharField(max_length=255)
+    repository_identifier = models.CharField(max_length=255)
+    enable_harvesting = models.BooleanField()
 
     @staticmethod
     def get():
@@ -28,7 +27,7 @@ class OaiSettings(Document):
         """
         try:
             return OaiSettings.objects.get()
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))

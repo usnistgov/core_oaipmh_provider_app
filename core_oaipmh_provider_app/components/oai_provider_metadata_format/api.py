@@ -213,10 +213,8 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
 
     """
     try:
-        template = template_api.get(template_id, request=request)
-        version_manager = version_manager_api.get_from_version(
-            template, request=request
-        )
+        template = template_api.get_by_id(template_id, request=request)
+        version_manager = template.version_manager
         xml_schema = template.content
         target_namespace = _get_target_namespace(xml_schema)
         version_number = version_manager_api.get_version_number(

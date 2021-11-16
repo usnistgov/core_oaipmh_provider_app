@@ -9,7 +9,7 @@
 {% endblock %}
 {% block box_tools %}
 <div class="btn-group float-right">
-    {% url 'admin:core_oaipmh_provider_app_add_metadata_format' as add_url %}
+    {% url 'core-admin:core_oaipmh_provider_app_add_metadata_format' as add_url %}
     {% include 'core_main_app/common/buttons/add.html' with label='Add Metadata Format' %}
 </div>
 {% endblock %}
@@ -27,13 +27,13 @@
             <td>{{ metadata_format.schema }}</td>
             <td>{{ metadata_format.metadata_namespace }}</td>
             <td>
-                {% url 'admin:core_oaipmh_provider_app_edit_metadata_format' metadata_format.id as edit_url %}
+                {% url 'core-admin:core_oaipmh_provider_app_edit_metadata_format' metadata_format.id as edit_url %}
                 {% include 'core_main_app/common/buttons/edit.html' %}
-                {% url 'admin:core_oaipmh_provider_app_delete_metadata_format' metadata_format.id as delete_url %}
+                {% url 'core-admin:core_oaipmh_provider_app_delete_metadata_format' metadata_format.id as delete_url %}
                 {% include 'core_main_app/common/buttons/delete.html' %}
                 <span>
                     <a class="btn btn-secondary mapping-metadata_format-btn"
-                       href="{% url 'admin:core_oaipmh_provider_app_xslt_template_mapping' metadata_format.id %}">
+                       href="{% url 'core-admin:core_oaipmh_provider_app_xslt_template_mapping' metadata_format.id %}">
                         <i class="fas fa-random"></i> Mapping
                     </a>
                 </span>
@@ -43,7 +43,7 @@
         <tr>
             <td class="empty add" colspan="4">
                 There are currently no Metadata Formats. Please
-                <a href="{% url 'admin:core_oaipmh_provider_app_add_metadata_format' %}">add a new one</a>.
+                <a href="{% url 'core-admin:core_oaipmh_provider_app_add_metadata_format' %}">add a new one</a>.
             </td>
         </tr>
     {% endfor %}

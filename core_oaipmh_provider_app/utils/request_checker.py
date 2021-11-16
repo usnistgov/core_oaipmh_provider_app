@@ -6,11 +6,11 @@ import re
 from datetime import datetime
 
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+from core_oaipmh_common_app.utils import UTCdatetime
+from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_request_page import (
     api as oai_request_page_api,
 )
-from core_oaipmh_common_app.utils import UTCdatetime
-from core_oaipmh_provider_app import settings
 
 
 def check_bad_argument(oai_verb, data):

@@ -1,10 +1,10 @@
 """ Unit Test Rest OaiProviderMetadataFormat
 """
+from random import randint
 
 import requests
-from bson.objectid import ObjectId
-from django.test.testcases import SimpleTestCase
-from mock.mock import patch, Mock
+from django.test.testcases import SimpleTestCase, TestCase
+from unittest.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -28,7 +28,7 @@ from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
 class TestSelectMetadataFormat(SimpleTestCase):
     def setUp(self):
         super(TestSelectMetadataFormat, self).setUp()
-        self.param = {"metadata_format_id": str(ObjectId())}
+        self.param = {"metadata_format_id": randint(1, 100)}
 
     def test_select_metadata_format_unauthorized(self):
         # Arrange
@@ -152,7 +152,7 @@ class TestAddMetadataFormat(SimpleTestCase):
 class TestAddTemplateMetadataFormat(SimpleTestCase):
     def setUp(self):
         super(TestAddTemplateMetadataFormat, self).setUp()
-        self.data = {"metadata_prefix": "oai_test", "template_id": str(ObjectId())}
+        self.data = {"metadata_prefix": "oai_test", "template_id": randint(1, 100)}
         self.bad_data = {}
 
     def test_add_template_metadata_format_unauthorized(self):
@@ -180,7 +180,7 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch.object(template_api, "get")
+    @patch.object(template_api, "get_by_id")
     def test_add_template_metadata_format_raises_exception_if_template_does_not_exist(
         self, mock_get_by_id
     ):
@@ -202,7 +202,7 @@ class TestUpdateMetadataFormat(SimpleTestCase):
     def setUp(self):
         super(TestUpdateMetadataFormat, self).setUp()
         self.data = {"metadata_prefix": "oai_update"}
-        self.param = {"metadata_format_id": str(ObjectId())}
+        self.param = {"metadata_format_id": randint(1, 100)}
         self.bad_data = {}
 
     def test_update_metadata_format_unauthorized(self):
@@ -249,13 +249,13 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class TestTemplateToMetadataFormatMappingXslt(SimpleTestCase):
+class TestTemplateToMetadataFormatMappingXslt(TestCase):
     def setUp(self):
         super(TestTemplateToMetadataFormatMappingXslt, self).setUp()
         self.data = {
-            "template": str(ObjectId()),
-            "oai_metadata_format": str(ObjectId()),
-            "xslt": str(ObjectId()),
+            "template": randint(1, 100),
+            "oai_metadata_format": randint(1, 100),
+            "xslt": randint(1, 100),
         }
         self.bad_data = {}
 
@@ -371,8 +371,8 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
     def setUp(self):
         super(TestTemplateToMetadataFormatUnMappingXslt, self).setUp()
         self.data = {
-            "template_id": str(ObjectId()),
-            "metadata_format_id": str(ObjectId()),
+            "template_id": randint(1, 100),
+            "metadata_format_id": randint(1, 100),
         }
         self.bad_data = {}
 
@@ -417,7 +417,7 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
 class TestDeleteMetadataFormat(SimpleTestCase):
     def setUp(self):
         super(TestDeleteMetadataFormat, self).setUp()
-        self.param = {"metadata_format_id": str(ObjectId())}
+        self.param = {"metadata_format_id": randint(1, 100)}
 
     def test_delete_metadata_format_unauthorized(self):
         # Act

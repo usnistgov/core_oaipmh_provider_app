@@ -16,6 +16,9 @@ import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_templ
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.components.workspace import api as workspace_api
 from core_main_app.system import api as system_api
@@ -174,7 +177,7 @@ class OAIProviderView(TemplateView):
         self.template_name = "core_oaipmh_provider_app/user/xml/list_sets.html"
         items = []
         try:
-            sets = oai_provider_set_api.get_all("set_spec")
+            sets = oai_provider_set_api.get_all(["set_spec"])
             if len(sets) == 0:
                 raise oai_provider_exceptions.NoSetHierarchy
             else:
@@ -382,7 +385,7 @@ class OAIProviderView(TemplateView):
 
         try:
             # FIXME filtering public data is needed since all data has
-            # a OAI data associated with it
+            #   a OAI data associated with it
             public_workspace_list = workspace_api.get_all_public_workspaces()
             data_list = system_api.get_all_data_in_workspaces_for_templates(
                 public_workspace_list, template_id_list
@@ -436,7 +439,7 @@ class OAIProviderView(TemplateView):
                         elt.oai_date_stamp
                     ),
                     "sets": oai_provider_set_api.get_all_by_template_ids(
-                        [elt.data.template], request=request
+                        [elt.data.template.pk], request=request
                     ),
                     "deleted": elt.status == oai_status.DELETED,
                 }
@@ -583,11 +586,11 @@ def get_xsd(request, title, version_number):
     """
     try:
         template_version = (
-            version_manager_api.get_active_global_version_manager_by_title(
+            template_version_manager_api.get_active_global_version_manager_by_title(
                 title, request=request
             )
         )
-        template = template_api.get(
+        template = template_api.get_by_id(
             version_manager_api.get_version_by_number(
                 template_version, int(version_number), request=request
             ),

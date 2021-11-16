@@ -19,12 +19,11 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
-from django_mongoengine.forms import DocumentForm
 
 logger = logging.getLogger(__name__)
 
 
-class EditIdentityForm(DocumentForm):
+class EditIdentityForm(forms.ModelForm):
     repository_name = forms.CharField(
         label="Name",
         widget=forms.TextInput(
@@ -33,7 +32,7 @@ class EditIdentityForm(DocumentForm):
     )
 
     enable_harvesting = forms.BooleanField(
-        label="Enable Harvesting ?",
+        label="Enable Harvesting?",
         required=False,
         initial=False,
         widget=forms.CheckboxInput(),
@@ -46,11 +45,11 @@ class EditIdentityForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiSettings
+        model = OaiSettings
         fields = ["repository_name", "repository_identifier", "enable_harvesting"]
 
 
-class MetadataFormatForm(DocumentForm):
+class MetadataFormatForm(forms.ModelForm):
     """
     A metadata format form.
     """
@@ -69,11 +68,11 @@ class MetadataFormatForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiProviderMetadataFormat
+        model = OaiProviderMetadataFormat
         fields = ["metadata_prefix", "schema"]
 
 
-class EditMetadataFormatForm(DocumentForm):
+class EditMetadataFormatForm(forms.ModelForm):
     """
     A metadata format edit form.
     """
@@ -86,11 +85,11 @@ class EditMetadataFormatForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiProviderMetadataFormat
+        model = OaiProviderMetadataFormat
         fields = ["metadata_prefix"]
 
 
-class TemplateMetadataFormatForm(DocumentForm):
+class TemplateMetadataFormatForm(forms.ModelForm):
     """
     A template metadata format form.
     """
@@ -107,7 +106,7 @@ class TemplateMetadataFormatForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiProviderMetadataFormat
+        model = OaiProviderMetadataFormat
         fields = ["metadata_prefix", "template"]
 
     def __init__(self, *args, **kwargs):
@@ -117,10 +116,10 @@ class TemplateMetadataFormatForm(DocumentForm):
 
     def clean_template(self):
         data = self.cleaned_data["template"]
-        return template_api.get(data, request=self.request)
+        return template_api.get_by_id(data, request=self.request)
 
 
-class SetForm(DocumentForm):
+class SetForm(forms.ModelForm):
     """
     A Set edit form.
     """
@@ -152,8 +151,13 @@ class SetForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiProviderSet
-        fields = ["set_spec", "set_name", "templates_manager", "description"]
+        model = OaiProviderSet
+        fields = [
+            "set_spec",
+            "set_name",
+            "templates_manager",
+            "description",
+        ]
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request")
@@ -163,7 +167,7 @@ class SetForm(DocumentForm):
         )
 
 
-class MappingXSLTForm(DocumentForm):
+class MappingXSLTForm(forms.ModelForm):
     """
     A MappingXSLTForm form.
     """
@@ -182,7 +186,7 @@ class MappingXSLTForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiXslTemplate
+        model = OaiXslTemplate
         fields = ["oai_metadata_format", "template", "xslt"]
 
     def __init__(self, *args, **kwargs):
@@ -200,7 +204,7 @@ class MappingXSLTForm(DocumentForm):
 
     def clean_template(self):
         data = self.cleaned_data["template"]
-        return template_api.get(data, request=self.request)
+        return template_api.get_by_id(data, request=self.request)
 
 
 def _get_templates_versions(request):
@@ -217,7 +221,7 @@ def _get_templates_versions(request):
         )
         for elt in list_:
             for version in elt.versions:
-                template = template_api.get(version, request=request)
+                template = template_api.get_by_id(version, request=request)
                 version_name = template.display_name
                 templates.append((version, version_name))
     except exceptions.DoesNotExist as e:

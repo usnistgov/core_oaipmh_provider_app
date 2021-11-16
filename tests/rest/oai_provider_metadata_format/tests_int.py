@@ -1,8 +1,8 @@
 """ Int Test Rest OaiProviderMetadataFormat
 """
+from unittest.mock import Mock, patch
 
-import requests
-from mock.mock import patch
+from requests import Response
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
@@ -10,6 +10,9 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
@@ -76,13 +79,16 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
         }
         self.nb_metadata_formats = len(OaiProviderMetadataFormat.objects.all())
 
-    @patch.object(requests, "get")
-    def test_add_metadata_format(self, mock_get):
+    @patch.object(oai_provider_metadata_format_api, "send_get_request")
+    def test_add_metadata_format(self, mock_send_get_request):
         # Arrange
-        text = "<schema xmlns='http://www.w3.org/2001/XMLSchema'></schema>"
-        mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = text
+        mock_http_response = Mock(spec=Response)
+        mock_http_response.status_code = status.HTTP_200_OK
+        mock_http_response.text = (
+            "<schema xmlns='http://www.w3.org/2001/XMLSchema'></schema>"
+        )
         user = create_mock_user("1", is_staff=True)
+        mock_send_get_request.return_value = mock_http_response
 
         # Act
         response = RequestMock.do_request_post(

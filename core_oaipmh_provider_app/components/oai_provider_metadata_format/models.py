@@ -1,10 +1,8 @@
 """
 OaiProviderMetadataFormat model
 """
-
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models, IntegrityError
 
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template.models import Template
@@ -16,18 +14,11 @@ from core_oaipmh_common_app.components.oai_metadata_format.models import (
 class OaiProviderMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Provider"""
 
-    is_default = fields.BooleanField(blank=True)
-    is_template = fields.BooleanField(blank=True)
-    template = fields.ReferenceField(Template, reverse_delete_rule=CASCADE, blank=True)
-
-    def __str__(self):
-        """String representation of an object.
-
-        Returns:
-            String representation
-
-        """
-        return self.metadata_prefix
+    is_default = models.BooleanField(blank=True)
+    is_template = models.BooleanField(blank=True)
+    template = models.ForeignKey(
+        Template, on_delete=models.CASCADE, blank=True, null=True
+    )
 
     @staticmethod
     def get_all():
@@ -37,7 +28,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of OaiProviderMetadataFormat.
 
         """
-        return OaiProviderMetadataFormat.objects().all()
+        return OaiProviderMetadataFormat.objects.all()
 
     @staticmethod
     def get_all_custom_metadata_format(order_by_field=None):
@@ -50,7 +41,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(
+        return OaiProviderMetadataFormat.objects.filter(
             is_default=False, is_template=False
         ).order_by(order_by_field)
 
@@ -65,7 +56,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_default=True).order_by(
+        return OaiProviderMetadataFormat.objects.filter(is_default=True).order_by(
             order_by_field
         )
 
@@ -80,7 +71,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_template=True).order_by(
+        return OaiProviderMetadataFormat.objects.filter(is_template=True).order_by(
             order_by_field
         )
 
@@ -92,7 +83,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(is_template=False or None).all()
+        return OaiProviderMetadataFormat.objects.filter(is_template=False or None).all()
 
     @staticmethod
     def get_all_by_templates(templates):
@@ -105,7 +96,7 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects(
+        return OaiProviderMetadataFormat.objects.filter(
             template__in=templates, is_template=True
         ).all()
 
@@ -124,23 +115,19 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
 
         """
         try:
-            return OaiProviderMetadataFormat.objects().get(
+            return OaiProviderMetadataFormat.objects.get(
                 metadata_prefix=metadata_prefix
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
 
-    def save_object(self):
-        """Custom save
+    def __str__(self):
+        """String representation of an object.
 
         Returns:
+            String representation
 
         """
-        try:
-            return self.save()
-        except mongoengine_errors.NotUniqueError as e:
-            raise exceptions.NotUniqueError(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        return self.metadata_prefix

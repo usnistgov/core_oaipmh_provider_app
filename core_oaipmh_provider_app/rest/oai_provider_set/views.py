@@ -174,11 +174,10 @@ class SetDetail(APIView):
             }
 
         Args:
-
             request: HTTP request
+            set_id:
 
         Returns:
-
             - code: 200
               content: Success message
             - code: 400

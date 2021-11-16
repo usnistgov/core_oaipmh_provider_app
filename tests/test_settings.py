@@ -14,11 +14,26 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # Local apps
     "tests",
+    "core_main_app",
+    "core_oaipmh_common_app",
+    "core_oaipmh_provider_app",
 ]
 
 OAI_PROVIDER_ROOT = dirname(realpath(__file__))
 
 ALLOWED_HOSTS = ["testserver"]
+
+# IN-MEMORY TEST DATABASE
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
+    },
+}
 
 MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -48,3 +63,7 @@ TEMPLATES = [
 ROOT_URLCONF = "core_oaipmh_provider_app.urls"
 
 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = True
+
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

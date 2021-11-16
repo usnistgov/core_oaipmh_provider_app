@@ -1,7 +1,6 @@
 """ Integrations tests for user views
 """
-from mock import PropertyMock
-from mock.mock import patch
+from unittest.mock import patch, PropertyMock
 from rest_framework import status
 
 from core_main_app.components.data.models import Data

@@ -3,8 +3,7 @@
 
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_main_app.commons import exceptions
@@ -58,7 +57,7 @@ class TestOaiXslTemplateGetById(TestCase):
     def test_get_by_id_returns_object(self, mock_get_by_id):
         # Arrange
         mock_oai_xsl_template = _create_oai_xsl_template()
-        mock_oai_xsl_template.id = ObjectId()
+        mock_oai_xsl_template.id = 1
 
         mock_get_by_id.return_value = mock_oai_xsl_template
 
@@ -71,7 +70,7 @@ class TestOaiXslTemplateGetById(TestCase):
     @patch.object(OaiXslTemplate, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -82,7 +81,7 @@ class TestOaiXslTemplateGetById(TestCase):
     @patch.object(OaiXslTemplate, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -96,8 +95,8 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
     def test_get_by_id_returns_object(self, mock_get_by_id_and_metadata_format_id):
         # Arrange
         mock_oai_xsl_template = _create_oai_xsl_template()
-        template_id = ObjectId()
-        metadata_format_id = ObjectId()
+        template_id = 1
+        metadata_format_id = 1
 
         mock_get_by_id_and_metadata_format_id.return_value = mock_oai_xsl_template
 
@@ -114,7 +113,7 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
         self, mock_get_by_template_id_and_metadata_format_id
     ):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_template_id_and_metadata_format_id.side_effect = (
             exceptions.DoesNotExist("Error.")
@@ -131,7 +130,7 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
         self, mock_get_by_template_id_and_metadata_format_id
     ):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_template_id_and_metadata_format_id.side_effect = (
             exceptions.ModelError("Error.")
@@ -246,7 +245,7 @@ def _set_oai_xsl_template_fields(oai_xsl_template):
 
     """
     oai_xsl_template.template = Template()
-    oai_xsl_template.template.id = ObjectId()
+    oai_xsl_template.template.id = 1
     oai_xsl_template.xslt = XslTransformation()
     oai_xsl_template.oai_metadata_format = OaiProviderMetadataFormat()
 

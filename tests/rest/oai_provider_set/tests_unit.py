@@ -1,9 +1,8 @@
 """ Unit Test Rest OaiProviderSet
 """
 
-from bson.objectid import ObjectId
 from django.test.testcases import SimpleTestCase
-from mock.mock import patch
+from unittest.mock import patch
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -21,7 +20,7 @@ from core_oaipmh_provider_app.rest.oai_provider_set import (
 class TestSelectSet(SimpleTestCase):
     def setUp(self):
         super(TestSelectSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        self.param = {"set_id": 1}
         self.bad_data = {}
 
     def test_select_set_unauthorized(self):
@@ -108,7 +107,7 @@ class TestAddSet(SimpleTestCase):
 class TestUpdateSet(SimpleTestCase):
     def setUp(self):
         super(TestUpdateSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        self.param = {"set_id": 1}
         self.data = {
             "set_spec": "oai_dummy",
             "set_name": "dummy",
@@ -148,7 +147,7 @@ class TestUpdateSet(SimpleTestCase):
 class TestDeleteSet(SimpleTestCase):
     def setUp(self):
         super(TestDeleteSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        self.param = {"set_id": 1}
 
     def test_delete_set_unauthorized(self):
         # Act

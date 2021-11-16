@@ -1,6 +1,6 @@
 from unittest.case import TestCase
 
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_provider_app.components.oai_settings.api as settings_api
 from core_main_app.commons import exceptions

@@ -5,32 +5,22 @@ OaiData model
 import operator
 from functools import reduce
 
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.visitor import Q
+from django.db import models
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
 
 
-class OaiData(Document):
+class OaiData(models.Model):
     """Represents a data for Oai-Pmh Provider"""
 
-    data = fields.ReferenceField(Data, blank=False)
-    oai_date_stamp = fields.DateTimeField(blank=False, default=None)
-    status = fields.StringField(blank=False)
-    template = fields.ReferenceField(Template, blank=False)
-
-    @property
-    def data_id(self):
-        """Get data id even if the reference is broken (Deleted Data).
-
-        Returns:
-            ObjectId: Data id.
-
-        """
-        return self._data["data"].id
+    data = models.ForeignKey(Data, blank=False, on_delete=models.CASCADE)
+    oai_date_stamp = models.DateTimeField(blank=False, default=None)
+    status = models.CharField(blank=False, max_length=200)
+    template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
 
     @staticmethod
     def get_by_id(oai_data_id):
@@ -49,7 +39,7 @@ class OaiData(Document):
         """
         try:
             return OaiData.objects.get(pk=str(oai_data_id))
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -71,7 +61,7 @@ class OaiData(Document):
         """
         try:
             return OaiData.objects.get(data=data)
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -94,7 +84,7 @@ class OaiData(Document):
         if until_date:
             q_list.append(Q(oai_date_stamp__lte=until_date))
 
-        return OaiData.objects(reduce(operator.and_, q_list)).all()
+        return OaiData.objects.filter(reduce(operator.and_, q_list)).all()
 
     @staticmethod
     def get_all():
@@ -104,7 +94,7 @@ class OaiData(Document):
             List of OaiData.
 
         """
-        return OaiData.objects().all()
+        return OaiData.objects.all()
 
     @staticmethod
     def get_all_by_template(template, from_date, until_date):
@@ -125,7 +115,7 @@ class OaiData(Document):
         if until_date:
             q_list.append(Q(oai_date_stamp__lte=until_date))
 
-        return OaiData.objects(reduce(operator.and_, q_list)).all()
+        return OaiData.objects.filter(reduce(operator.and_, q_list)).all()
 
     @staticmethod
     def get_all_by_status(status):
@@ -137,7 +127,7 @@ class OaiData(Document):
             List of OaiData.
 
         """
-        return OaiData.objects(status=status).all()
+        return OaiData.objects.filter(status=status).all()
 
     @staticmethod
     def get_earliest_data_date():
@@ -147,7 +137,7 @@ class OaiData(Document):
 
         """
         try:
-            earliest_record = OaiData.objects().order_by("oai_date_stamp").first()
+            earliest_record = OaiData.objects.order_by("oai_date_stamp").first()
 
             return earliest_record.oai_date_stamp
         except Exception as ex:

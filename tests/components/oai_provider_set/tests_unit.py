@@ -1,11 +1,15 @@
+from random import randint
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
-import core_main_app.components.template_version_manager.api as template_version_manager_api
+import core_main_app.components.template.api as template_api
 import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
 from core_main_app.commons import exceptions
+from core_main_app.components.template.models import Template
+from core_main_app.components.template_version_manager.models import (
+    TemplateVersionManager,
+)
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
@@ -41,7 +45,7 @@ class TestOaiProviderSetGetById(TestCase):
     def test_get_by_id_return_object(self, mock_get_by_id):
         # Arrange
         mock_oai_provider_set = _create_mock_oai_provider_set()
-        mock_oai_provider_set.id = ObjectId()
+        mock_oai_provider_set.id = randint(1, 100)
 
         mock_get_by_id.return_value = mock_oai_provider_set
 
@@ -54,7 +58,7 @@ class TestOaiProviderSetGetById(TestCase):
     @patch.object(OaiProviderSet, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -65,7 +69,7 @@ class TestOaiProviderSetGetById(TestCase):
     @patch.object(OaiProviderSet, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = randint(1, 100)
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -91,7 +95,7 @@ class TestOaiProviderSetGetBySetSpec(TestCase):
     @patch.object(OaiProviderSet, "get_by_set_spec")
     def test_get_by_set_spec_raises_exception_if_object_does_not_exist(self, mock_get):
         # Arrange
-        mock_absent_set_spec = ObjectId()
+        mock_absent_set_spec = randint(1, 100)
 
         mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -102,7 +106,7 @@ class TestOaiProviderSetGetBySetSpec(TestCase):
     @patch.object(OaiProviderSet, "get_by_set_spec")
     def test_get_by_set_spec_raises_exception_if_internal_error(self, mock_get):
         # Arrange
-        mock_absent_set_spec = ObjectId()
+        mock_absent_set_spec = randint(1, 100)
 
         mock_get.side_effect = exceptions.ModelError("Error.")
 
@@ -146,26 +150,25 @@ class TestOaiProviderSetGetAllByTemplatesManager(TestCase):
 
 
 class TestOaiProviderSetGetAllByTemplates(TestCase):
-    @patch.object(template_version_manager_api, "get_all_by_version_ids")
     @patch.object(OaiProviderSet, "get_all_by_templates_manager")
+    @patch.object(template_api, "get_by_id")
     def test_get_all_by_templates_return_object(
-        self, mock_get_all_by_templates, mock_get_all_by_version_ids
+        self,
+        mock_template_api_get_by_id,
+        mock_oai_provider_set_get_all_by_templates_manager,
     ):
         # Arrange
         mock_user = create_mock_user("1", is_superuser=True)
         mock_request = create_mock_request(user=mock_user)
-        template_id = ObjectId()
+        template_id = randint(1, 100)
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
         mock_oai_provider_set2 = _create_mock_oai_provider_set()
 
-        mock_get_all_by_version_ids.return_value = [
-            mock_oai_provider_set1.templates_manager,
-            mock_oai_provider_set2.templates_manager,
-        ]
-        mock_get_all_by_templates.return_value = [
+        mock_oai_provider_set_get_all_by_templates_manager.return_value = [
             mock_oai_provider_set1,
             mock_oai_provider_set2,
         ]
+        mock_template_api_get_by_id.return_value = _create_mock_template()
 
         # Act
         result = provider_set_api.get_all_by_template_ids([template_id], mock_request)
@@ -188,6 +191,22 @@ class TestOaiProviderSetDelete(TestCase):
             provider_set_api.delete(oai_provider_set)
 
 
+def _create_mock_template():
+    mock_template = Mock(spec=Template)
+    mock_template.version_manager = 1
+
+    return mock_template
+
+
+def _create_template_version_manager():
+    template_version_manager = TemplateVersionManager(
+        title=f"template{randint(1, 100) * randint(1, 100)}", user=1
+    )
+    template_version_manager.save()
+
+    return template_version_manager
+
+
 def _create_oai_provider_set():
     """Get an OaiProviderSet object
 
@@ -195,9 +214,13 @@ def _create_oai_provider_set():
         OaiProviderSet instance.
 
     """
+    templates_manager = [
+        _create_template_version_manager().id,
+        _create_template_version_manager().id,
+    ]
 
     oai_provider_set = OaiProviderSet()
-    _set_oai_provider_set_fields(oai_provider_set)
+    _set_oai_provider_set_fields(oai_provider_set, templates_manager)
 
     return oai_provider_set
 
@@ -209,13 +232,15 @@ def _create_mock_oai_provider_set():
         OaiProviderSet mock.
 
     """
+    templates_manager = [randint(1, 100), randint(1, 100)]
+
     mock_oai_provider_set = Mock(spec=OaiProviderSet)
-    _set_oai_provider_set_fields(mock_oai_provider_set)
+    _set_oai_provider_set_fields(mock_oai_provider_set, templates_manager)
 
     return mock_oai_provider_set
 
 
-def _set_oai_provider_set_fields(oai_provider_set):
+def _set_oai_provider_set_fields(oai_provider_set, templates_manager):
     """Set OaiProviderSet fields.
 
     Args:
@@ -227,7 +252,9 @@ def _set_oai_provider_set_fields(oai_provider_set):
     """
     oai_provider_set.set_spec = "oai_test"
     oai_provider_set.set_name = "test"
-    oai_provider_set.templates_manager = [ObjectId(), ObjectId()]
     oai_provider_set.description = "OaiSet description"
+
+    oai_provider_set.save()
+    oai_provider_set.templates_manager.set(templates_manager)
 
     return oai_provider_set

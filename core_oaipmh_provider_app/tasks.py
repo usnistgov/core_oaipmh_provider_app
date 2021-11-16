@@ -3,7 +3,7 @@
 import json
 import logging
 
-from celery import shared_task
+from celery import shared_task, current_app
 
 from core_main_app.system import api as data_system_api
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -19,7 +19,13 @@ def insert_data_in_oai_data():
 
     Returns:
     """
-    insert_data_task.apply_async()
+    if current_app.backend.is_async:
+        insert_data_task.apply_async()
+    else:
+        logger.warning(
+            "Task 'insert_data_task' has been disabled since broker has no async "
+            "capabilities"
+        )
 
 
 @shared_task(name="insert_data_task")
