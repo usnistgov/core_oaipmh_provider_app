@@ -214,13 +214,8 @@ def _create_oai_provider_set():
         OaiProviderSet instance.
 
     """
-    templates_manager = [
-        _create_template_version_manager().id,
-        _create_template_version_manager().id,
-    ]
-
     oai_provider_set = OaiProviderSet()
-    _set_oai_provider_set_fields(oai_provider_set, templates_manager)
+    _set_oai_provider_set_fields(oai_provider_set)
 
     return oai_provider_set
 
@@ -232,15 +227,13 @@ def _create_mock_oai_provider_set():
         OaiProviderSet mock.
 
     """
-    templates_manager = [randint(1, 100), randint(1, 100)]
-
     mock_oai_provider_set = Mock(spec=OaiProviderSet)
-    _set_oai_provider_set_fields(mock_oai_provider_set, templates_manager)
+    _set_oai_provider_set_fields(mock_oai_provider_set)
 
     return mock_oai_provider_set
 
 
-def _set_oai_provider_set_fields(oai_provider_set, templates_manager):
+def _set_oai_provider_set_fields(oai_provider_set):
     """Set OaiProviderSet fields.
 
     Args:
@@ -253,8 +246,5 @@ def _set_oai_provider_set_fields(oai_provider_set, templates_manager):
     oai_provider_set.set_spec = "oai_test"
     oai_provider_set.set_name = "test"
     oai_provider_set.description = "OaiSet description"
-
-    oai_provider_set.save()
-    oai_provider_set.templates_manager.set(templates_manager)
 
     return oai_provider_set

@@ -60,7 +60,7 @@ def get_by_id(oai_provider_metadata_format_id):
 
     """
     return OaiProviderMetadataFormat.get_by_id(
-        oai_metadata_format_id=oai_provider_metadata_format_id
+        oai_provider_metadata_format_id=oai_provider_metadata_format_id
     )
 
 

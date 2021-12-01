@@ -21,6 +21,17 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
     )
 
     @staticmethod
+    def get_by_id(oai_provider_metadata_format_id):
+        try:
+            return OaiProviderMetadataFormat.objects.get(
+                pk=oai_provider_metadata_format_id
+            )
+        except ObjectDoesNotExist as e:
+            raise exceptions.DoesNotExist(str(e))
+        except Exception as e:
+            raise exceptions.ModelError(str(e))
+
+    @staticmethod
     def get_all():
         """Return all OaiProviderMetadataFormat.
 
