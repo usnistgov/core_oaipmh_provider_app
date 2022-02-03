@@ -392,7 +392,7 @@ class OAIProviderView(TemplateView):
             )
             oai_data = oai_data_api.get_all_by_data_list(
                 data_list, from_date=from_date, until_date=until_date
-            )
+            ).order_by("pk")
 
             oai_data_paginator = Paginator(oai_data, RESULTS_PER_PAGE)
 

@@ -18,9 +18,13 @@ class OaiData(models.Model):
     """Represents a data for Oai-Pmh Provider"""
 
     data = models.ForeignKey(Data, blank=False, on_delete=models.CASCADE)
-    oai_date_stamp = models.DateTimeField(blank=False, default=None)
+    oai_date_stamp = models.DateTimeField(blank=False, null=True, default=None)
     status = models.CharField(blank=False, max_length=200)
     template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Oai data"
+        verbose_name_plural = "Oai data"
 
     @staticmethod
     def get_by_id(oai_data_id):
@@ -142,3 +146,11 @@ class OaiData(models.Model):
             return earliest_record.oai_date_stamp
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
+
+    def __str__(self):
+        """Return OAIData object as string
+
+        Returns:
+
+        """
+        return f"{self.data.title} ({self.pk})"

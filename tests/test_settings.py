@@ -12,6 +12,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.sites",
+    # Extra apps
+    "django_celery_beat",
     # Local apps
     "tests",
     "core_main_app",
@@ -67,3 +69,5 @@ CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

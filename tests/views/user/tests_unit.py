@@ -36,6 +36,7 @@ from core_oaipmh_provider_app.components.oai_xsl_template import (
 from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
 from core_oaipmh_provider_app.utils import request_checker
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
+from tests.utils.mocks import MockQuerySet
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 
@@ -997,9 +998,12 @@ class TestListRecords(TestOaiPmhSuite):
         )
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
+        mock_oai_data_qs = MockQuerySet()
+        mock_oai_data_qs.item_list = [mock_oai_data]
+
         mock_get_all_public_workspaces.return_value = []
         mock_get_all_data_in_workspaces_for_templates.return_value = []
-        mock_get_all_by_data_list.return_value = [mock_oai_data]
+        mock_get_all_by_data_list.return_value = mock_oai_data_qs
         mock_get_all_by_template_ids.return_value = []
 
         data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
@@ -1075,9 +1079,12 @@ class TestListRecords(TestOaiPmhSuite):
         )
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
+        mock_oai_data_qs = MockQuerySet()
+        mock_oai_data_qs.item_list = [mock_oai_data]
+
         mock_get_all_public_workspaces.return_value = []
         mock_get_all_data_in_workspaces_for_templates.return_value = []
-        mock_get_all_by_data_list.return_value = [mock_oai_data]
+        mock_get_all_by_data_list.return_value = mock_oai_data_qs
         mock_get_all_by_template_ids.return_value = []
         mock_xsl_transform.return_value = mock_cleaned_xml
 

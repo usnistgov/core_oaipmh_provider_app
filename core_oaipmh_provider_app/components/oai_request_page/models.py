@@ -14,10 +14,10 @@ class OaiRequestPage(models.Model):
     resumption_token = models.CharField(max_length=255, blank=False, unique=True)
     metadata_format = models.CharField(max_length=255, blank=False)
     template_id_list = models.JSONField(default=list, blank=False)
-    oai_set = models.CharField(max_length=255, blank=True, default=None)
-    from_date = models.DateTimeField(blank=True, default=None)
-    until_date = models.DateTimeField(blank=True, default=None)
-    expiration_date = models.DateTimeField(blank=False, default=None)
+    oai_set = models.CharField(max_length=255, blank=True, null=True, default=None)
+    from_date = models.DateTimeField(blank=True, null=True, default=None)
+    until_date = models.DateTimeField(blank=True, null=True, default=None)
+    expiration_date = models.DateTimeField(blank=False, null=True, default=None)
     page_number = models.IntegerField(blank=False)
 
     @staticmethod
