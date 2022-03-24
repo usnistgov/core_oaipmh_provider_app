@@ -94,6 +94,10 @@ class Migration(migrations.Migration):
                 ("repository_identifier", models.CharField(max_length=255)),
                 ("enable_harvesting", models.BooleanField()),
             ],
+            options={
+                "verbose_name": "Oai settings",
+                "verbose_name_plural": "Oai settings",
+            },
         ),
         migrations.CreateModel(
             name="OaiData",

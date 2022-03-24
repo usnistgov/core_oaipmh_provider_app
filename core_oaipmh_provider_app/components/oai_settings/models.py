@@ -14,6 +14,10 @@ class OaiSettings(models.Model):
     repository_identifier = models.CharField(max_length=255)
     enable_harvesting = models.BooleanField()
 
+    class Meta:
+        verbose_name = "Oai settings"
+        verbose_name_plural = "Oai settings"
+
     @staticmethod
     def get():
         """Get the settings.
