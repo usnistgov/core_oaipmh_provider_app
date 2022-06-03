@@ -87,7 +87,7 @@ class OaiPmhFixtures(FixtureInterface):
         )
 
         for template in list_templates:
-            template.save()
+            template.save_template()
             saved_templates.append(template)
 
         self.templates = saved_templates
