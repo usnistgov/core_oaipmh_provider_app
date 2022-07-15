@@ -2,9 +2,6 @@
 OaiProviderSet API
 """
 
-from core_main_app.components.template_version_manager import (
-    api as template_version_manager_api,
-)
 from core_main_app.components.template import (
     api as template_api,
 )

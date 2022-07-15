@@ -4,7 +4,7 @@
 import logging
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import CharField, ListField, ModelSerializer
+from rest_framework.serializers import CharField, ModelSerializer
 
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 from core_main_app.commons import exceptions

@@ -225,7 +225,6 @@ class TestOaiProviderMetadataFormatDelete(TestCase):
 class TestOaiProviderMetadataFormatGetMetadataFormatSchemaUrl(TestCase):
     def test_get_metadata_format_schema_url_returns(self):
         # Arrange
-        schema = ""
         mock_oai_provider_metadata_format1 = _create_mock_oai_provider_metadata_format(
             is_template=False
         )

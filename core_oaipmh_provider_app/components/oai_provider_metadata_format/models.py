@@ -2,7 +2,7 @@
 OaiProviderMetadataFormat model
 """
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models, IntegrityError
+from django.db import models
 
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template.models import Template

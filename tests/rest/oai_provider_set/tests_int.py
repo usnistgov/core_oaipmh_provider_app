@@ -1,8 +1,8 @@
 """ Int Test Rest OaiProviderSet
 """
-from random import randint
 
 from rest_framework import status
+from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
@@ -13,7 +13,6 @@ from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProvi
 from core_oaipmh_provider_app.rest.oai_provider_set import (
     views as rest_oai_provider_set,
 )
-from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
 class TestSelectSet(MongoIntegrationBaseTestCase):
