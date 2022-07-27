@@ -12,6 +12,7 @@ class ProviderAppConfig(AppConfig):
     """Core application settings"""
 
     name = "core_oaipmh_provider_app"
+    verbose_name = "Core OAI-PMH Provider App"
 
     def ready(self):
         """Run when the app is ready
