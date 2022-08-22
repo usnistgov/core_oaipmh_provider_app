@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 ]
 
 OAI_PROVIDER_ROOT = dirname(realpath(__file__))
+OAI_ADMINS = ["admin@example.com"]
 
 ALLOWED_HOSTS = ["testserver"]
 

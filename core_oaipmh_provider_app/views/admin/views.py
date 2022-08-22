@@ -43,7 +43,7 @@ def identity_view(request):
             reverse("core_oaipmh_provider_app_server_index")
         ),
         "protocol_version": settings.OAI_PROTOCOL_VERSION,
-        "admins": (email for name, email in settings.OAI_ADMINS),
+        "admins": settings.OAI_ADMINS,
         "deleted": settings.OAI_DELETED_RECORD,
         "granularity": settings.OAI_GRANULARITY,
         "identifier_scheme": settings.OAI_SCHEME,

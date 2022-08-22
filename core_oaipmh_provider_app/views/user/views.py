@@ -156,7 +156,7 @@ class OAIProviderView(TemplateView):
         identify_data = {
             "name": information.repository_name,
             "protocol_version": settings.OAI_PROTOCOL_VERSION,
-            "admins": (email for name, email in settings.OAI_ADMINS),
+            "admins": settings.OAI_ADMINS,
             "earliest_date": self._get_earliest_date(),
             "deleted": settings.OAI_DELETED_RECORD,
             "granularity": settings.OAI_GRANULARITY,

@@ -2,6 +2,8 @@
 """
 import logging
 
+from core_main_app.commons.exceptions import CoreError
+
 logger = logging.getLogger(__name__)
 
 
@@ -13,6 +15,16 @@ def init():
     from core_oaipmh_provider_app import settings
     from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
     from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
+
+    # Check if OAI_ADMINS setting is set
+    if not settings.OAI_ADMINS:
+        raise CoreError(
+            "The OAI-PMH provider app is improperly configured: OAI_ADMINS not set."
+            "Please set OAI_ADMINS in the project settings "
+            '(e.g. OAI_ADMINS = ["admin1@example.com", "admin2@example.com"])'
+            "or using an environment variable "
+            "(e.g. OAI_ADMINS=admin1@example.com,admin2@example.com). "
+        )
 
     logger.info("START oai settings discovery.")
 
