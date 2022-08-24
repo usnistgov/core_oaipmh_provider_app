@@ -22,9 +22,16 @@ class OaiRequestPage(models.Model):
 
     @staticmethod
     def get_by_resumption_token(resumption_token):
+        """get_by_resumption_token
+
+        Args:
+            resumption_token
+
+        Returns:
+        """
         try:
             return OaiRequestPage.objects.get(resumption_token=resumption_token)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))

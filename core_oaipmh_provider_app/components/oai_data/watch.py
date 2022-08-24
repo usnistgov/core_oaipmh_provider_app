@@ -47,9 +47,8 @@ def post_delete_data(sender, instance, **kwargs):
         oai_data_api.upsert(oai_data)
     except exceptions.DoesNotExist:
         logger.warning(
-            "post_delete_data: no oai data found for the given document: {0}".format(
-                str(instance.pk)
-            )
+            "post_delete_data: no oai data found for the given document: %s",
+            str(instance.pk),
         )
-    except Exception as e:
-        logger.warning("post_delete_data threw an exception: {0}".format(str(e)))
+    except Exception as exception:
+        logger.warning("post_delete_data threw an exception: %s", str(exception))

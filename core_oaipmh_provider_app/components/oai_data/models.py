@@ -23,6 +23,8 @@ class OaiData(models.Model):
     template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
 
     class Meta:
+        """Meta"""
+
         verbose_name = "Oai data"
         verbose_name_plural = "Oai data"
 
@@ -43,8 +45,8 @@ class OaiData(models.Model):
         """
         try:
             return OaiData.objects.get(pk=str(oai_data_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
@@ -65,8 +67,8 @@ class OaiData(models.Model):
         """
         try:
             return OaiData.objects.get(data=data)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 

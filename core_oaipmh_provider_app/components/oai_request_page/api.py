@@ -55,7 +55,9 @@ def upsert(oai_request_page_object):
             oai_request_page_object.save()
 
             return oai_request_page_object
-        except Exception as e:
-            logger.warning("Error while saving OAIRequestPage object: %s" % str(e))
+        except Exception as exception:
+            logger.warning(
+                "Error while saving OAIRequestPage object: %s", str(exception)
+            )
 
     raise exceptions.ApiError("Exceeded number of tries to save OAIRequestPage")

@@ -5,8 +5,8 @@ Check OAI-PMH request utils.
 import re
 from datetime import datetime
 
-import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
 from core_oaipmh_common_app.utils import UTCdatetime
+import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_request_page import (
     api as oai_request_page_api,
@@ -117,10 +117,10 @@ def check_identifier(identifier):
 
     """
     # Check if the identifier pattern is OK.
-    p = re.compile(
+    pattern = re.compile(
         "%s:%s:id/(.*)" % (settings.OAI_SCHEME, settings.OAI_REPO_IDENTIFIER)
     )
-    id_matches = p.search(identifier)
+    id_matches = pattern.search(identifier)
     if id_matches:
         # If yes, we retrieve the record ID
         record_id = id_matches.group(1)
@@ -182,8 +182,8 @@ def _check_dates(date):
     """
     try:
         return UTCdatetime.utc_datetime_iso8601_to_datetime(date)
-    except Exception as e:
-        raise e
+    except Exception as exception:
+        raise exception
 
 
 def check_resumption_token(resumption_token):

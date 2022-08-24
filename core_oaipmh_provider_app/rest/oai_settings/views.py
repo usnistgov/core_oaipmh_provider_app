@@ -7,15 +7,17 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 from core_main_app.utils.decorators import api_staff_member_required
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
+import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 
 
 class Settings(APIView):
+    """Settings"""
+
     @method_decorator(api_staff_member_required())
     def get(self, request):
         """Return the OAI-PMH server settings
@@ -36,8 +38,8 @@ class Settings(APIView):
             serializer = serializers.SettingsSerializer(settings_)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -83,14 +85,16 @@ class Settings(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Check(APIView):
+    """Check"""
+
     @method_decorator(api_staff_member_required())
     def get(self, request):
         """Check if the registry is available to answer OAI-PMH requests
@@ -117,6 +121,6 @@ class Check(APIView):
             )
 
             return Response(content, status=http_response.status_code)
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

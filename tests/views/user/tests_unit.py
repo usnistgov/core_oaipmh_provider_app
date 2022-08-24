@@ -2,8 +2,8 @@
 """
 from datetime import datetime
 
-from django.http.request import HttpRequest
 from unittest.mock import patch, Mock
+from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.status import HTTP_200_OK
 
@@ -41,11 +41,17 @@ from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 
 class TestServerGeneral(TestOaiPmhSuite):
+    """Test Server General"""
+
     def setUp(self):
-        super(TestServerGeneral, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
 
     def test_no_setting(self):
+        """test_no_setting"""
+
         # Act
         response = RequestMock.do_request_get(
             OAIProviderView.as_view(), None, data=self.data
@@ -56,6 +62,8 @@ class TestServerGeneral(TestOaiPmhSuite):
 
     @patch.object(oai_settings_api, "get")
     def test_no_harvesting(self, mock_get):
+        """test_no_harvesting"""
+
         # Arrange
         mock_get.return_value.enable_harvesting = False
 
@@ -70,6 +78,8 @@ class TestServerGeneral(TestOaiPmhSuite):
     @patch.object(oai_settings_api, "get")
     @patch.object(HttpRequest, "build_absolute_uri")
     def test_no_verb(self, mock_get, mock_request):
+        """test_no_verb"""
+
         # Arrange
         mock_get.return_value.enable_harvesting = True
         mock_request.return_value = ""
@@ -88,6 +98,8 @@ class TestServerGeneral(TestOaiPmhSuite):
     @patch.object(oai_settings_api, "get")
     @patch.object(HttpRequest, "build_absolute_uri")
     def test_bad_verb(self, mock_get, mock_request):
+        """test_bad_verb"""
+
         # Arrange
         mock_get.return_value.enable_harvesting = True
         mock_request.return_value = ""
@@ -106,9 +118,13 @@ class TestServerGeneral(TestOaiPmhSuite):
 
 
 class TestIdentify(TestOaiPmhSuite):
+    """Test Identify"""
+
     @patch.object(oai_settings_api, "get")
     @patch.object(HttpRequest, "build_absolute_uri")
     def test_illegal_argument(self, mock_get, mock_request):
+        """test_illegal_argument"""
+
         # Arrange
         mock_get.return_value.enable_harvesting = True
         mock_request.return_value = ""
@@ -127,9 +143,13 @@ class TestIdentify(TestOaiPmhSuite):
 
 
 class TestListSets(TestOaiPmhSuite):
+    """Test List Sets"""
+
     @patch.object(oai_settings_api, "get")
     @patch.object(HttpRequest, "build_absolute_uri")
     def test_duplicate_argument(self, mock_get, mock_request):
+        """test_duplicate_argument"""
+
         # Arrange
         mock_get.return_value.enable_harvesting = True
         mock_request.return_value = ""
@@ -149,6 +169,8 @@ class TestListSets(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_identify(self, mock_get, mock_request):
+        """test_identify"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -167,6 +189,8 @@ class TestListSets(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_sets_no_sets(self, mock_get, mock_request, mock_get_all):
+        """test_list_sets_no_sets"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_get_all.return_value = []
@@ -188,6 +212,8 @@ class TestListSets(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_sets(self, mock_get, mock_request, mock_get_all):
+        """test_list_sets"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         list_oai_sets = [_create_mock_oai_sets(), _create_mock_oai_sets()]
@@ -207,11 +233,15 @@ class TestListSets(TestOaiPmhSuite):
 
 
 class TestListIdentifiers(TestOaiPmhSuite):
+    """Test List Identifiers"""
+
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_identifiers_error_metadata_prefix_missing(
         self, mock_get, mock_request
     ):
+        """test_list_identifiers_error_metadata_prefix_missing"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -231,6 +261,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_identifiers_error_date_until(self, mock_get, mock_request):
+        """test_list_identifiers_error_date_until"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -254,6 +286,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_identifiers_error_date_from(self, mock_get, mock_request):
+        """test_list_identifiers_error_date_from"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -280,6 +314,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
     def test_list_identifiers_no_metadata_format(
         self, mock_get, mock_request, mock_get_by_metadata_prefix
     ):
+        """test_list_identifiers_no_metadata_format"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -316,6 +352,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
         mock_get_template_ids,
         mock_get_by_set_spec,
     ):
+        """test_list_identifiers_no_set_or_bad_set"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -357,6 +395,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
         mock_get_templates_id_by_set_spec,
         mock_get_all_by_template,
     ):
+        """test_list_identifiers_no_xml_data"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -385,10 +425,14 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
 
 class TestListMetadataFormats(TestOaiPmhSuite):
+    """Test List Metadata Formats"""
+
     @patch.object(oai_provider_metadata_format_api, "get_all")
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_metadata_format_no_data(self, mock_get, mock_request, mock_get_all):
+        """test_list_metadata_format_no_data"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -414,6 +458,8 @@ class TestListMetadataFormats(TestOaiPmhSuite):
     def test_list_metadata_format_bad_identifier(
         self, mock_get, mock_request, mock_get_all
     ):
+        """test_list_metadata_format_bad_identifier"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -446,6 +492,8 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         mock_check_identifier,
         mock_get_by_id,
     ):
+        """test_list_metadata_format_identifier_does_not_exist"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -474,6 +522,8 @@ class TestListMetadataFormats(TestOaiPmhSuite):
     def test_list_metadata_format_identifier(
         self, mock_get, mock_request, mock_get_all, mock_get_metadata_format_schema_url
     ):
+        """test_list_metadata_format_identifier"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -514,6 +564,8 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         mock_get_get_metadata_formats_by_templates,
         mock_get_metadata_format_schema_url,
     ):
+        """test_list_metadata_format_identifier_with_identifier"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -539,9 +591,13 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
 
 class TestGetRecord(TestOaiPmhSuite):
+    """Test Get Record"""
+
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_get_record_missing_identifier(self, mock_get, mock_request):
+        """test_get_record_missing_identifier"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -561,6 +617,8 @@ class TestGetRecord(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_get_record_missing_metadata_prefix(self, mock_get, mock_request):
+        """test_get_record_missing_metadata_prefix"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -580,6 +638,8 @@ class TestGetRecord(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_get_record_bad_identifier(self, mock_get, mock_request):
+        """test_get_record_bad_identifier"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -605,6 +665,8 @@ class TestGetRecord(TestOaiPmhSuite):
     def test_get_record_identifier_does_not_exist(
         self, mock_get, mock_request, mock_check_identifier, mock_get_by_data
     ):
+        """test_get_record_identifier_does_not_exist"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -638,6 +700,8 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_get_by_data,
         mock_get_by_metadata_prefix,
     ):
+        """test_get_record_metadata_format_does_not_exist"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -676,6 +740,8 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_get_by_metadata_prefix,
         mock_get_all_by_template_ids,
     ):
+        """test_get_record_with_xml_decl_use_raw"""
+
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
         mock_oai_template = Mock(spec=Template)
@@ -737,6 +803,8 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_get_by_template_id_and_metadata_format_id,
         mock_xsl_transform,
     ):
+        """test_get_record_with_xml_decl_not_raw"""
+
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
         mock_cleaned_xml = """
@@ -792,9 +860,13 @@ class TestGetRecord(TestOaiPmhSuite):
 
 
 class TestListRecords(TestOaiPmhSuite):
+    """Test List Records"""
+
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_records_error_metadata_prefix_missing(self, mock_get, mock_request):
+        """test_list_records_error_metadata_prefix_missing"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -814,6 +886,8 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_records_error_date_until(self, mock_get, mock_request):
+        """test_list_records_error_date_until"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -833,6 +907,8 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_records_error_date_from(self, mock_get, mock_request):
+        """test_list_records_error_date_from"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -859,6 +935,8 @@ class TestListRecords(TestOaiPmhSuite):
     def test_list_records_no_metadata_format(
         self, mock_get, mock_request, mock_get_by_metadata_prefix
     ):
+        """test_list_records_no_metadata_format"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -895,6 +973,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_template_ids,
         mock_get_by_set_spec,
     ):
+        """test_list_records_no_set_or_bad_set"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -932,6 +1012,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_templates_id_by_set_spec,
         mock_get_all_by_template,
     ):
+        """test_list_records_no_xml_data"""
+
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
@@ -975,6 +1057,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_all_by_data_list,
         mock_get_all_by_template_ids,
     ):
+        """test_list_record_with_xml_decl_use_raw"""
+
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
 
@@ -1045,6 +1129,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_all_by_template_ids,
         mock_xsl_transform,
     ):
+        """test_list_record_with_xml_decl_not_raw"""
+
         # Arrange
         xml_decl = "<?xml version='1.0' encoding='UTF-8'?>"
         mock_cleaned_xml = """

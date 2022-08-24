@@ -46,6 +46,7 @@ class OaiPmhFixtures(FixtureInterface):
     nb_public_data = 0
 
     def insert_data(self):
+        """Insert data"""
         self.insert_settings()
         self.insert_workspaces()
         self.insert_template_version_managers()
@@ -166,14 +167,31 @@ class OaiPmhFixtures(FixtureInterface):
         self.oai_sets = saved_data
 
 
-class OaiPmhMock(object):
+class OaiPmhMock:
+    """OaiPmh Mock"""
+
     @staticmethod
     def load_json_data(filename):
+        """load_json_data
+
+        Args:
+            filename:
+
+        Returns:
+        """
         with open(join(DUMP_OAI_PMH_TEST_PATH, filename)) as fp:
             return json.load(fp)
 
     @staticmethod
     def mock_template(version="", template_version_manager_map=None):
+        """mock_template
+
+        Args:
+            version:
+            template_version_manager_map:
+
+        Returns:
+        """
         list_templates = list()
         for template_data in OaiPmhMock.load_json_data(f"template{version}.json"):
             template_version_manager_data = template_data["version_manager"]
@@ -193,23 +211,53 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_template_version_manager(version=""):
+        """mock_template_version_manager
+
+        Args:
+            version:
+
+        Returns:
+        """
         data_json = OaiPmhMock.load_json_data(f"template_version_manager{version}.json")
         list_templates = [TemplateVersionManager(**x) for x in data_json]
         return list_templates
 
     @staticmethod
     def mock_oai_first_template(version=""):
+        """mock_oai_first_template
+
+        Args:
+            version:
+
+        Returns:
+        """
         list_templates = OaiPmhMock.mock_template(version)
         return list_templates[0]
 
     @staticmethod
     def mock_workspaces(version=""):
+        """mock_workspaces
+
+        Args:
+            version:
+
+        Returns:
+        """
         data_json = OaiPmhMock.load_json_data(f"workspaces{version}.json")
         list_data = [Workspace(**x) for x in data_json]
         return list_data
 
     @staticmethod
     def mock_data(version="", template_map=None, workspace_map=None):
+        """mock_data
+
+        Args:
+            version:
+            template_map:
+            workspace_map:
+
+        Returns:
+        """
         data_list = list()
         for json_data in OaiPmhMock.load_json_data(f"data{version}.json"):
             template_id = json_data["template"]
@@ -234,6 +282,15 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_data(version="", template_map=None, data_map=None):
+        """mock_oai_data
+
+        Args:
+            version:
+            template_map:
+            data_map:
+
+        Returns:
+        """
         list_data = list()
 
         for data_json in OaiPmhMock.load_json_data(f"oai_data{version}.json"):
@@ -255,6 +312,14 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_metadata_format(version="", template_map=None):
+        """mock_oai_metadata_format
+
+        Args:
+            version:
+            template_map:
+
+        Returns:
+        """
         list_metadata_format = list()
 
         for oai_metadata_format_data in OaiPmhMock.load_json_data(
@@ -276,11 +341,26 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_first_metadata_format(version=""):
+        """mock_oai_first_metadata_format
+
+        Args:
+            version:
+
+        Returns:
+        """
         list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(version)
         return list_oai_metadata_formats[0]
 
     @staticmethod
     def mock_oai_set(version="", template_version_manager_map=None):
+        """mock_oai_set
+
+        Args:
+            version:
+            template_version_manager_map:
+
+        Returns:
+        """
         list_set = list()
 
         for oai_set_data in OaiPmhMock.load_json_data(f"oai_set{version}.json"):
@@ -307,5 +387,12 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_first_set(version=""):
+        """mock_oai_first_set
+
+        Args:
+            version:
+
+        Returns:
+        """
         list_oai_sets = OaiPmhMock.mock_oai_set(version)
         return list_oai_sets[0]["object"]

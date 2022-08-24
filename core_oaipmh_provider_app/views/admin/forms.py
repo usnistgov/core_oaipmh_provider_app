@@ -24,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class EditIdentityForm(forms.ModelForm):
+    """Edit Identity Form"""
+
     repository_name = forms.CharField(
         label="Name",
         widget=forms.TextInput(
@@ -44,7 +46,9 @@ class EditIdentityForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiSettings
         fields = ["repository_name", "repository_identifier", "enable_harvesting"]
 
@@ -67,7 +71,9 @@ class MetadataFormatForm(forms.ModelForm):
         widget=forms.URLInput(attrs={"class": "form-control"}),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiProviderMetadataFormat
         fields = ["metadata_prefix", "schema"]
 
@@ -84,7 +90,9 @@ class EditMetadataFormatForm(forms.ModelForm):
         ),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiProviderMetadataFormat
         fields = ["metadata_prefix"]
 
@@ -105,13 +113,15 @@ class TemplateMetadataFormatForm(forms.ModelForm):
         label="Template", widget=forms.Select(attrs={"class": "form-control"})
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiProviderMetadataFormat
         fields = ["metadata_prefix", "template"]
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
-        super(TemplateMetadataFormatForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["template"].choices = _get_templates_versions(request=self.request)
 
     def clean_template(self):
@@ -150,7 +160,9 @@ class SetForm(forms.ModelForm):
         ),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiProviderSet
         fields = [
             "set_spec",
@@ -161,7 +173,7 @@ class SetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request")
-        super(SetForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["templates_manager"].choices = _get_templates_manager(
             request=request
         )
@@ -185,14 +197,16 @@ class MappingXSLTForm(forms.ModelForm):
         label="XSLT", widget=forms.Select(attrs={"class": "form-control"})
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiXslTemplate
         fields = ["oai_metadata_format", "template", "xslt"]
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         edit_mode = kwargs.pop("edit_mode", None)
-        super(MappingXSLTForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["template"].choices = _get_templates_versions(request=self.request)
         self.fields["xslt"].choices = _get_xsl_transformation()
         if edit_mode:
@@ -224,8 +238,8 @@ def _get_templates_versions(request):
                 template = template_api.get_by_id(version, request=request)
                 version_name = template.display_name
                 templates.append((version, version_name))
-    except exceptions.DoesNotExist as e:
-        logger.warning("_get_templates_versions threw an exception: {0}".format(str(e)))
+    except exceptions.DoesNotExist as exception:
+        logger.warning("_get_templates_versions threw an exception: %s", str(exception))
 
     return templates
 

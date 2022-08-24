@@ -1,3 +1,6 @@
+""" Admin views
+"""
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse
 
@@ -22,6 +25,14 @@ from core_oaipmh_provider_app.components.oai_xsl_template import (
 
 @staff_member_required
 def identity_view(request):
+    """identity_view
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     assets = {
         "js": [
             {
@@ -66,6 +77,14 @@ def identity_view(request):
 
 @staff_member_required
 def metadata_formats_view(request):
+    """metadata_formats_view
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     assets = {
         "js": [
             AddObjectModalView.get_modal_js_path(),
@@ -111,6 +130,14 @@ def metadata_formats_view(request):
 
 @staff_member_required
 def sets_view(request):
+    """sets_view
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     assets = {
         "js": [
             {
@@ -181,6 +208,15 @@ def _get_template_metadata_format(request, order_field=None):
 
 @staff_member_required
 def xsl_template_view(request, metadata_format_id):
+    """xsl_template_view
+
+    Args:
+        request:
+        metadata_format_id:
+
+    Returns:
+
+    """
     assets = {
         "js": [
             AddObjectModalView.get_modal_js_path(),

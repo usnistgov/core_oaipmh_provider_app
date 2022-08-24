@@ -9,6 +9,8 @@ BAD_RESUMPTION_TOKEN = "badResumptionToken"
 
 
 class OAIExceptions(Exception):
+    """OAI Exceptions"""
+
     def __init__(self, errors):
         self.message = "Error"
         self.code = "OAIExceptions"
@@ -19,6 +21,8 @@ class OAIExceptions(Exception):
 
 
 class OAIException(Exception):
+    """OAI Exception"""
+
     def __init__(self):
         self.message = "Error"
         self.code = "OAIException"
@@ -28,6 +32,8 @@ class OAIException(Exception):
 
 
 class BadArgument(OAIException):
+    """Bad Argument"""
+
     def __init__(self, custom_message):
         if custom_message:
             self.message = custom_message
@@ -40,6 +46,8 @@ class BadArgument(OAIException):
 
 
 class BadResumptionToken(OAIException):
+    """Bad Resumption Token"""
+
     def __init__(self, resumption_token):
         self.message = (
             "The value of the resumptionToken argument (%s) is invalid or expired."
@@ -49,12 +57,16 @@ class BadResumptionToken(OAIException):
 
 
 class BadVerb(OAIException):
+    """Bad Verb"""
+
     def __init__(self, message):
         self.message = message
         self.code = BAD_VERB
 
 
 class CannotDisseminateFormat(OAIException):
+    """Cannot Disseminate Format"""
+
     def __init__(self, metadata_prefix):
         self.message = (
             "The metadata format identified by the value given for the metadataPrefix argument"
@@ -64,6 +76,8 @@ class CannotDisseminateFormat(OAIException):
 
 
 class IdDoesNotExist(OAIException):
+    """Id Does Not Exist"""
+
     def __init__(self, identifier):
         self.message = (
             "The value of the identifier argument (%s) is unknown or illegal in this "
@@ -73,6 +87,8 @@ class IdDoesNotExist(OAIException):
 
 
 class NoRecordsMatch(OAIException):
+    """No Records Match"""
+
     def __init__(self):
         self.message = (
             "The combination of the values of the from, until, set and metadataPrefix arguments "
@@ -82,12 +98,16 @@ class NoRecordsMatch(OAIException):
 
 
 class NoMetadataFormat(OAIException):
+    """No Metadata Format"""
+
     def __init__(self):
         self.message = "There are no metadata formats available for the specified item."
         self.code = NO_METADATA_FORMAT
 
 
 class NoSetHierarchy(OAIException):
+    """No Set Hierarchy"""
+
     def __init__(self):
         self.message = "The repository does not support sets."
         self.code = NO_SET_HIERARCHY

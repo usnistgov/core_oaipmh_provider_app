@@ -23,15 +23,21 @@ from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
 class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
+    """Test Select Metadata Format"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestSelectMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {
             "metadata_format_id": str(OaiPmhMock().mock_oai_first_metadata_format().id)
         }
 
     def test_select_metadata_format_returns(self):
+        """test_select_metadata_format_returns"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 
@@ -47,13 +53,19 @@ class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
 
 
 class TestSelectAllMetadataFormats(MongoIntegrationBaseTestCase):
+    """Test Select All Metadata Formats"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestSelectAllMetadataFormats, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_all_metadata_formats(self):
+        """test_select_all_metadata_formats"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 
@@ -69,10 +81,14 @@ class TestSelectAllMetadataFormats(MongoIntegrationBaseTestCase):
 
 
 class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
+    """Test Add Metadata Format"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestAddMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "metadata_prefix": "oai_test",
             "schema_url": "http://www.dummy.org",
@@ -81,6 +97,8 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
 
     @patch.object(oai_provider_metadata_format_api, "send_get_request")
     def test_add_metadata_format(self, mock_send_get_request):
+        """test_add_metadata_format"""
+
         # Arrange
         mock_http_response = Mock(spec=Response)
         mock_http_response.status_code = status.HTTP_200_OK
@@ -105,10 +123,14 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
 
 
 class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
+    """Test Add Template Metadata Format"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestAddTemplateMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "metadata_prefix": "oai_test",
             "template_id": str(OaiPmhMock.mock_oai_first_template().id),
@@ -116,6 +138,8 @@ class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
         self.nb_template_metadata_formats = len(OaiProviderMetadataFormat.objects.all())
 
     def test_add_template_metadata_format(self):
+        """test_add_template_metadata_format"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 
@@ -135,16 +159,22 @@ class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
 
 
 class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
+    """Test Delete Metadata Format"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestDeleteMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {
             "metadata_format_id": str(OaiPmhMock().mock_oai_first_metadata_format().id)
         }
         self.nb_metadata_formats = len(OaiProviderMetadataFormat.objects.all())
 
     def test_delete_metadata_format(self):
+        """test_delete_metadata_format"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 
@@ -163,10 +193,14 @@ class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
 
 
 class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
+    """Test Update Metadata Format"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestUpdateMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.first_metadata_format = OaiPmhMock.mock_oai_first_metadata_format()
         self.new_metadata_prefix = "{0}_new".format(
             self.first_metadata_format.metadata_prefix
@@ -175,6 +209,8 @@ class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
         self.data = {"metadata_prefix": self.new_metadata_prefix}
 
     def test_update_metadata_format(self):
+        """test_update_metadata_format"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 

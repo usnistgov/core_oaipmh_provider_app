@@ -33,10 +33,10 @@ class OaiProviderSet(OaiSet):
         """
         try:
             return OaiProviderSet.objects.get(pk=str(oai_set_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all(order_by_field=None):
@@ -49,10 +49,10 @@ class OaiProviderSet(OaiSet):
         """
         if not order_by_field:
             return OaiProviderSet.objects.all()
-        else:
-            return OaiProviderSet.objects.order_by(
-                *[field.replace("+", "") for field in order_by_field]
-            )
+
+        return OaiProviderSet.objects.order_by(
+            *[field.replace("+", "") for field in order_by_field]
+        )
 
     @staticmethod
     def get_all_by_templates_manager(templates_manager):
@@ -86,7 +86,7 @@ class OaiProviderSet(OaiSet):
         """
         try:
             return OaiProviderSet.objects.get(set_spec=set_spec)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))

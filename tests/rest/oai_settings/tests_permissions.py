@@ -13,12 +13,18 @@ from core_oaipmh_provider_app.rest.serializers import SettingsSerializer
 
 
 class SettingsGetPermission(SimpleTestCase):
+    """SettingsGetPermission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_get(settings_views.Settings.as_view(), None)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(
@@ -32,6 +38,8 @@ class SettingsGetPermission(SimpleTestCase):
     def test_staff_returns_http_200(
         self, oai_settings_serializer_data, oai_settings_get
     ):
+        """test_staff_returns_http_200"""
+
         oai_settings_serializer_data.return_value = True
         oai_settings_get.return_value = {}
         mock_user = create_mock_user("1", is_staff=True)
@@ -44,12 +52,18 @@ class SettingsGetPermission(SimpleTestCase):
 
 
 class SettingsPatchPermission(SimpleTestCase):
+    """Settings Patch Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_patch(settings_views.Settings.as_view(), None)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_patch(
@@ -69,6 +83,8 @@ class SettingsPatchPermission(SimpleTestCase):
         oai_settings_serializer_is_valid,
         oai_settings_get,
     ):
+        """test_staff_returns_http_200"""
+
         oai_settings_serializer_data.return_value = True
         oai_settings_serializer_save.return_value = None
         oai_settings_serializer_is_valid.return_value = {}
@@ -83,12 +99,18 @@ class SettingsPatchPermission(SimpleTestCase):
 
 
 class CheckGetPermission(SimpleTestCase):
+    """Check Get Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_get(settings_views.Check.as_view(), None)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(settings_views.Check.as_view(), mock_user)
@@ -97,6 +119,8 @@ class CheckGetPermission(SimpleTestCase):
 
     @patch("requests.get")
     def test_staff_returns_http_200(self, mock_send_get_request):
+        """test_staff_returns_http_200"""
+
         mock_send_get_request.return_value = _create_mock_http_request(
             status_code=HTTP_200_OK
         )

@@ -38,7 +38,7 @@ def init():
             enable_harvesting=settings.OAI_ENABLE_HARVESTING,
         )
         oai_settings_api.upsert(oai_settings)
-    except Exception as e:
-        logger.error("Impossible to init the settings: %s" % str(e))
+    except Exception as exception:
+        logger.error("Impossible to init the settings: %s", str(exception))
 
     logger.info("FINISH oai settings discovery.")

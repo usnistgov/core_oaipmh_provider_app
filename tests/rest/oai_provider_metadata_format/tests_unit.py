@@ -2,9 +2,9 @@
 """
 from random import randint
 
+from unittest.mock import patch, Mock
 import requests
 from django.test.testcases import SimpleTestCase, TestCase
-from unittest.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -26,11 +26,17 @@ from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
 
 
 class TestSelectMetadataFormat(SimpleTestCase):
+    """Test Select Metadata Format"""
+
     def setUp(self):
-        super(TestSelectMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"metadata_format_id": randint(1, 100)}
 
     def test_select_metadata_format_unauthorized(self):
+        """test_select_metadata_format_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -46,6 +52,8 @@ class TestSelectMetadataFormat(SimpleTestCase):
 
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
     def test_select_metadata_format_not_found(self, mock_get_by_id):
+        """test_select_metadata_format_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -61,11 +69,17 @@ class TestSelectMetadataFormat(SimpleTestCase):
 
 
 class TestSelectAllMetadataFormats(SimpleTestCase):
+    """Test Select All Metadata Formats"""
+
     def setUp(self):
-        super(TestSelectAllMetadataFormats, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_all_metadata_formats_unauthorized(self):
+        """test_select_all_metadata_formats_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -81,8 +95,12 @@ class TestSelectAllMetadataFormats(SimpleTestCase):
 
 
 class TestAddMetadataFormat(SimpleTestCase):
+    """Test Add Metadata Format"""
+
     def setUp(self):
-        super(TestAddMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "metadata_prefix": "oai_test",
             "schema_url": "http://www.dummy.org",
@@ -90,6 +108,8 @@ class TestAddMetadataFormat(SimpleTestCase):
         self.bad_data = {}
 
     def test_add_metadata_format_unauthorized(self):
+        """test_add_metadata_format_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -104,6 +124,8 @@ class TestAddMetadataFormat(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_metadata_format_serializer_invalid(self):
+        """test_add_metadata_format_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_provider_metadata_format.MetadataFormatsList.as_view(),
@@ -116,6 +138,8 @@ class TestAddMetadataFormat(SimpleTestCase):
 
     @patch.object(requests, "get")
     def test_add_metadata_format_raises_exception_if_bad_schema_url(self, mock_get):
+        """test_add_metadata_format_raises_exception_if_bad_schema_url"""
+
         # Arrange
         text = "<test>Hello</test>"
         mock_get.return_value.status_code = status.HTTP_404_NOT_FOUND
@@ -133,6 +157,8 @@ class TestAddMetadataFormat(SimpleTestCase):
 
     @patch.object(requests, "get")
     def test_add_metadata_format_raises_exception_if_bad_xml(self, mock_get):
+        """test_add_metadata_format_raises_exception_if_bad_xml"""
+
         # Arrange
         text = "<test>Hello/test>"
         mock_get.return_value.status_code = status.HTTP_200_OK
@@ -150,12 +176,18 @@ class TestAddMetadataFormat(SimpleTestCase):
 
 
 class TestAddTemplateMetadataFormat(SimpleTestCase):
+    """Test Add Template Metadata Format"""
+
     def setUp(self):
-        super(TestAddTemplateMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {"metadata_prefix": "oai_test", "template_id": randint(1, 100)}
         self.bad_data = {}
 
     def test_add_template_metadata_format_unauthorized(self):
+        """test_add_template_metadata_format_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -170,6 +202,8 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_template_metadata_format_serializer_invalid(self):
+        """test_add_template_metadata_format_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_provider_metadata_format.TemplateAsMetadataFormat.as_view(),
@@ -184,6 +218,8 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
     def test_add_template_metadata_format_raises_exception_if_template_does_not_exist(
         self, mock_get_by_id
     ):
+        """test_add_template_metadata_format_raises_exception_if_template_does_not_exist"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -199,13 +235,19 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
 
 
 class TestUpdateMetadataFormat(SimpleTestCase):
+    """Test Update Metadata Format"""
+
     def setUp(self):
-        super(TestUpdateMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {"metadata_prefix": "oai_update"}
         self.param = {"metadata_format_id": randint(1, 100)}
         self.bad_data = {}
 
     def test_update_metadata_format_unauthorized(self):
+        """test_update_metadata_format_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
@@ -219,6 +261,8 @@ class TestUpdateMetadataFormat(SimpleTestCase):
 
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
     def test_update_metadata_format_serializer_invalid(self, mock_metadata_format):
+        """test_update_metadata_format_serializer_invalid"""
+
         # Arrange
         mock_metadata_format.return_value = Mock(spec=OaiProviderMetadataFormat())
         # Act
@@ -234,6 +278,8 @@ class TestUpdateMetadataFormat(SimpleTestCase):
 
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
     def test_update_metadata_format_not_found(self, mock_get_by_id):
+        """test_update_metadata_format_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -250,8 +296,12 @@ class TestUpdateMetadataFormat(SimpleTestCase):
 
 
 class TestTemplateToMetadataFormatMappingXslt(TestCase):
+    """Test Template To Metadata Format Mapping Xslt"""
+
     def setUp(self):
-        super(TestTemplateToMetadataFormatMappingXslt, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "template": randint(1, 100),
             "oai_metadata_format": randint(1, 100),
@@ -260,6 +310,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
         self.bad_data = {}
 
     def test_template_to_metadata_format_mapping_xslt_unauthorized(self):
+        """test_template_to_metadata_format_mapping_xslt_unauthorized"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_provider_metadata_format.TemplateMetadataFormatXSLT.as_view(),
@@ -271,6 +323,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_template_to_metadata_format_mapping_xslt_serializer_invalid(self):
+        """test_template_to_metadata_format_mapping_xslt_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_provider_metadata_format.TemplateMetadataFormatXSLT.as_view(),
@@ -285,6 +339,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
     def test_template_to_metadata_format_mapping_xslt_template_not_found(
         self, mock_get_by_id
     ):
+        """test_template_to_metadata_format_mapping_xslt_template_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -303,6 +359,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
     def test_template_to_metadata_format_mapping_xslt_oai_xslt_template_not_found(
         self, mock_get_template, mock_get_by_id
     ):
+        """test_template_to_metadata_format_mapping_xslt_oai_xslt_template_not_found"""
+
         # Arrange
         mock_get_template.return_value = Mock(spec=Template)
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
@@ -323,6 +381,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
     def test_template_to_metadata_format_mapping_xslt_metadata_format_not_found(
         self, mock_get_xslt, mock_get_template, mock_get_by_id
     ):
+        """test_template_to_metadata_format_mapping_xslt_metadata_format_not_found"""
+
         # Arrange
         mock_get_xslt.return_value = Mock(spec=XslTransformation)
         mock_get_template.return_value = Mock(spec=Template)
@@ -344,6 +404,8 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
     def test_template_to_metadata_format_mapping_xslt_impossible_temp_meta_form(
         self, mock_get_xslt, mock_get_template, mock_get_meta_form
     ):
+        """test_template_to_metadata_format_mapping_xslt_impossible_temp_meta_form"""
+
         # Arrange
         mock_get_xslt.return_value = Mock(spec=XslTransformation)
         mock_get_template.return_value = Mock(spec=Template)
@@ -368,8 +430,12 @@ class TestTemplateToMetadataFormatMappingXslt(TestCase):
 
 
 class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
+    """Test Template To Metadata Format UnMapping Xslt"""
+
     def setUp(self):
-        super(TestTemplateToMetadataFormatUnMappingXslt, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "template_id": randint(1, 100),
             "metadata_format_id": randint(1, 100),
@@ -377,6 +443,8 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         self.bad_data = {}
 
     def test_template_to_metadata_format_unmapping_xslt_unauthorized(self):
+        """test_template_to_metadata_format_unmapping_xslt_unauthorized"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_provider_metadata_format.TemplateMetadataFormatXSLT.as_view(),
@@ -388,6 +456,8 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_template_to_metadata_format_unmapping_xslt_serializer_invalid(self):
+        """test_template_to_metadata_format_unmapping_xslt_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_provider_metadata_format.TemplateMetadataFormatXSLT.as_view(),
@@ -400,6 +470,8 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
 
     @patch.object(OaiXslTemplate, "get_by_template_id_and_metadata_format_id")
     def test_template_to_metadata_format_unmapping_xslt_not_found(self, mock_get_by_id):
+        """test_template_to_metadata_format_unmapping_xslt_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -415,11 +487,17 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
 
 
 class TestDeleteMetadataFormat(SimpleTestCase):
+    """Test Delete Metadata Format"""
+
     def setUp(self):
-        super(TestDeleteMetadataFormat, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"metadata_format_id": randint(1, 100)}
 
     def test_delete_metadata_format_unauthorized(self):
+        """test_delete_metadata_format_unauthorized"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
@@ -432,6 +510,8 @@ class TestDeleteMetadataFormat(SimpleTestCase):
 
     @patch.object(oai_provider_metadata_format_api, "get_by_id")
     def test_delete_metadata_format_not_found(self, mock_get_by_id):
+        """test_delete_metadata_format_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 

@@ -26,10 +26,10 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             return OaiProviderMetadataFormat.objects.get(
                 pk=oai_provider_metadata_format_id
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():
@@ -129,10 +129,10 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             return OaiProviderMetadataFormat.objects.get(
                 metadata_prefix=metadata_prefix
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     def __str__(self):
         """String representation of an object.

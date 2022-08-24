@@ -6,15 +6,18 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-import core_oaipmh_provider_app.components.oai_provider_set.api as oai_provider_set_api
+
 from core_main_app.commons import exceptions
 from core_main_app.utils.decorators import api_staff_member_required
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
+import core_oaipmh_provider_app.components.oai_provider_set.api as oai_provider_set_api
 
 
 class SetsList(APIView):
+    """Sets List"""
+
     @method_decorator(api_staff_member_required())
     def get(self, request):
         """Get all OaiProviderSet
@@ -37,8 +40,8 @@ class SetsList(APIView):
             )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -82,14 +85,16 @@ class SetsList(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SetDetail(APIView):
+    """Set Detail"""
+
     @method_decorator(api_staff_member_required())
     def get(self, request, set_id):
         """Get a OaiProviderSet
@@ -120,10 +125,10 @@ class SetDetail(APIView):
                 "No Set found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -154,10 +159,10 @@ class SetDetail(APIView):
                 "No Set found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -208,8 +213,8 @@ class SetDetail(APIView):
                 "No Set found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -24,6 +24,8 @@ class OaiXslTemplate(models.Model):
     )
 
     class Meta:
+        """Meta"""
+
         unique_together = ("oai_metadata_format", "xslt", "template")
 
     @staticmethod
@@ -43,8 +45,8 @@ class OaiXslTemplate(models.Model):
         """
         try:
             return OaiXslTemplate.objects.get(pk=str(oai_xslt_template_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
@@ -67,10 +69,10 @@ class OaiXslTemplate(models.Model):
             return OaiXslTemplate.objects.get(
                 template=template_id, oai_metadata_format=metadata_format_id
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all_by_templates(templates):
@@ -107,7 +109,7 @@ class OaiXslTemplate(models.Model):
         """
         try:
             return self.save()
-        except IntegrityError as e:
-            raise exceptions.NotUniqueError(str(e))
+        except IntegrityError as exception:
+            raise exceptions.NotUniqueError(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
