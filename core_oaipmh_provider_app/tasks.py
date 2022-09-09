@@ -4,6 +4,7 @@ import json
 import logging
 
 from celery import shared_task, current_app
+from django.core import serializers
 
 from core_main_app.system import api as data_system_api
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -42,8 +43,10 @@ def insert_data_task():
     try:
         # Retrieve the Data ids in OAI Data
         oai_data = oai_data_api.get_all()
-        oai_data_ids = oai_data.only("data").to_json()
-        registered_data_id = [data["data"]["$oid"] for data in json.loads(oai_data_ids)]
+        oai_data_ids = serializers.serialize("json", oai_data.only("data"))
+        registered_data_id = [
+            data["fields"]["data"] for data in json.loads(oai_data_ids)
+        ]
 
         # Retrieve all data not registered in OAI and insert them in OAI data
         data = data_system_api.get_all_except(registered_data_id)
