@@ -44,8 +44,8 @@ class MetadataFormatsList(APIView):
             )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -84,14 +84,16 @@ class MetadataFormatsList(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class MetadataFormatDetail(APIView):
+    """Metadata Format Detail"""
+
     @method_decorator(api_staff_member_required())
     def get(self, request, metadata_format_id):
         """Get a MetadataFormat
@@ -131,10 +133,10 @@ class MetadataFormatDetail(APIView):
                 "No Metadata Format found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -167,10 +169,10 @@ class MetadataFormatDetail(APIView):
                 "No Metadata Format found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -226,14 +228,16 @@ class MetadataFormatDetail(APIView):
                 "No Metadata Format found with the given id."
             )
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TemplateAsMetadataFormat(APIView):
+    """Template As Metadata Format"""
+
     @method_decorator(api_staff_member_required())
     def post(self, request):
         """Add a new Template as MetadataFormat
@@ -270,10 +274,10 @@ class TemplateAsMetadataFormat(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -325,13 +329,13 @@ class TemplateMetadataFormatXSLT(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions.DoesNotExist as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions.DoesNotExist as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -384,11 +388,11 @@ class TemplateMetadataFormatXSLT(APIView):
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except exceptions.DoesNotExist as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions.DoesNotExist as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except exceptions_oai.OAIAPIException as e:
-            return e.response()
-        except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(str(e))
+        except exceptions_oai.OAIAPIException as exception:
+            return exception.response()
+        except Exception as exception:
+            content = OaiPmhMessage.get_message_labelled(str(exception))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -1,3 +1,6 @@
+""" Test settings
+"""
+
 import os
 from os.path import dirname, realpath, join
 
@@ -12,13 +15,31 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.sites",
+    # Extra apps
+    "django_celery_beat",
     # Local apps
     "tests",
+    "core_main_app",
+    "core_oaipmh_common_app",
+    "core_oaipmh_provider_app",
 ]
 
 OAI_PROVIDER_ROOT = dirname(realpath(__file__))
+OAI_ADMINS = ["admin@example.com"]
 
 ALLOWED_HOSTS = ["testserver"]
+
+# IN-MEMORY TEST DATABASE
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
+    },
+}
 
 MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -48,3 +69,8 @@ TEMPLATES = [
 ROOT_URLCONF = "core_oaipmh_provider_app.urls"
 
 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = True
+
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

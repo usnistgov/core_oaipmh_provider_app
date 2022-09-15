@@ -2,7 +2,7 @@
 """
 import requests
 from django.test.testcases import SimpleTestCase
-from mock.mock import patch
+from unittest.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -11,11 +11,17 @@ from core_oaipmh_provider_app.rest.oai_settings import views as rest_oai_setting
 
 
 class TestSelect(SimpleTestCase):
+    """Test Select"""
+
     def setUp(self):
-        super(TestSelect, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_unauthorized(self):
+        """test_select_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -29,11 +35,17 @@ class TestSelect(SimpleTestCase):
 
 
 class TestCheckRegistry(SimpleTestCase):
+    """Test Check Registry"""
+
     def setUp(self):
-        super(TestCheckRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_check_registry_unauthorized(self):
+        """test_check_registry_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -47,6 +59,8 @@ class TestCheckRegistry(SimpleTestCase):
 
     @patch.object(requests, "get")
     def test_check_registry_available(self, mock_get):
+        """test_check_registry_available"""
+
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
         user = create_mock_user("1", is_staff=True)
@@ -61,6 +75,8 @@ class TestCheckRegistry(SimpleTestCase):
 
     @patch.object(requests, "get")
     def test_check_registry_unavailable(self, mock_get):
+        """test_check_registry_unavailable"""
+
         # Arrange
         mock_get.return_value.status_code = status.HTTP_404_NOT_FOUND
         user = create_mock_user("1", is_staff=True)
@@ -75,8 +91,12 @@ class TestCheckRegistry(SimpleTestCase):
 
 
 class TestUpdate(SimpleTestCase):
+    """Test Update"""
+
     def setUp(self):
-        super(TestUpdate, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "repository_name": "value",
             "repository_identifier": "value",
@@ -84,6 +104,8 @@ class TestUpdate(SimpleTestCase):
         }
 
     def test_update_unauthorized(self):
+        """test_update_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_settings.Settings.as_view(),

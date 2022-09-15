@@ -5,10 +5,27 @@ from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
+from core_main_app.admin import core_admin_site
+from core_main_app.utils.admin_site.view_only_admin import ViewOnlyAdmin
+from core_oaipmh_provider_app.components.oai_data.models import OaiData
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+    OaiProviderMetadataFormat,
+)
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
+from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
 from core_oaipmh_provider_app.views.admin import (
     ajax as admin_ajax,
     views as admin_views,
 )
+
+admin.site.register(OaiData, ViewOnlyAdmin)
+admin.site.register(OaiProviderMetadataFormat, ViewOnlyAdmin)
+admin.site.register(OaiProviderSet, ViewOnlyAdmin)
+admin.site.register(OaiRequestPage, ViewOnlyAdmin)
+admin.site.register(OaiSettings, ViewOnlyAdmin)
+admin.site.register(OaiXslTemplate, ViewOnlyAdmin)
 
 admin_urls = [
     re_path(
@@ -93,5 +110,5 @@ admin_urls = [
     ),
 ]
 
-urls = admin.site.get_urls()
-admin.site.get_urls = lambda: admin_urls + urls
+urls = core_admin_site.get_urls()
+core_admin_site.get_urls = lambda: admin_urls + urls

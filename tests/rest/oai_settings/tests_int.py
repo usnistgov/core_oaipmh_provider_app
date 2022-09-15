@@ -14,13 +14,19 @@ from tests.utils.fixtures.fixtures import OaiPmhFixtures
 
 
 class TestSelect(MongoIntegrationBaseTestCase):
+    """Test Select"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestSelect, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_returns(self):
+        """test_select_returns"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 
@@ -34,10 +40,14 @@ class TestSelect(MongoIntegrationBaseTestCase):
 
 
 class TestUpdateSettings(MongoIntegrationBaseTestCase):
+    """Test Update Settings"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestUpdateSettings, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.new_repository_name = "{0}_new".format(
             self.fixture.settings.repository_name
         )
@@ -54,6 +64,8 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
         }
 
     def test_update(self):
+        """test_update"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
 

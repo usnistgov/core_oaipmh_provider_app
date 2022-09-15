@@ -6,19 +6,19 @@ from os.path import join
 from django.contrib.staticfiles import finders
 
 from core_oaipmh_provider_app.system import api as system_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+    OaiProviderMetadataFormat,
+)
 
 logger = logging.getLogger(__name__)
 
 
 def init():
-    from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
-        api as oai_provider_metadata_format_api,
-    )
-    from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
-        OaiProviderMetadataFormat,
-    )
-
     """Init default metadata formats for OAI-PMH"""
+
     logger.info("START oai provider metadata format discovery.")
 
     try:
@@ -29,8 +29,8 @@ def init():
             metadata_namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/"
             with open(
                 finders.find(join("core_oaipmh_provider_app", "xsd", "oai_dc.xsd"))
-            ) as f:
-                xml_schema = f.read()
+            ) as file:
+                xml_schema = file.read()
                 simpledc_path = finders.find(
                     join("core_oaipmh_provider_app", "xsd", "simpledc20021212.xsd")
                 )
@@ -51,7 +51,9 @@ def init():
                 )
 
                 system_api.upsert_oai_provider_metadata_format(oai_dublin_core)
-    except Exception as e:
-        logger.error("ERROR : Impossible to init the metadata formats: %s" % str(e))
+    except Exception as exception:
+        logger.error(
+            "ERROR : Impossible to init the metadata formats: %s", str(exception)
+        )
 
     logger.info("FINISH oai provider metadata format discovery.")

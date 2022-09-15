@@ -1,9 +1,9 @@
 """ Unit Test Rest OaiProviderSet
 """
 
-from bson.objectid import ObjectId
+from unittest.mock import patch
 from django.test.testcases import SimpleTestCase
-from mock.mock import patch
+
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -19,12 +19,18 @@ from core_oaipmh_provider_app.rest.oai_provider_set import (
 
 
 class TestSelectSet(SimpleTestCase):
+    """Test Select Set"""
+
     def setUp(self):
-        super(TestSelectSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        """setUp"""
+
+        super().setUp()
+        self.param = {"set_id": 1}
         self.bad_data = {}
 
     def test_select_set_unauthorized(self):
+        """test_select_set_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -38,6 +44,8 @@ class TestSelectSet(SimpleTestCase):
 
     @patch.object(OaiProviderSet, "get_by_id")
     def test_select_set_not_found(self, mock_get_by_id):
+        """test_select_set_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -53,11 +61,17 @@ class TestSelectSet(SimpleTestCase):
 
 
 class TestSelectAllSet(SimpleTestCase):
+    """Test Select All Set"""
+
     def setUp(self):
-        super(TestSelectAllSet, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_all_sets_unauthorized(self):
+        """test_select_all_sets_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -71,8 +85,12 @@ class TestSelectAllSet(SimpleTestCase):
 
 
 class TestAddSet(SimpleTestCase):
+    """Test Add Set"""
+
     def setUp(self):
-        super(TestAddSet, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {
             "set_spec": "oai_dummy",
             "set_name": "dummy",
@@ -82,6 +100,8 @@ class TestAddSet(SimpleTestCase):
         self.bad_data = {}
 
     def test_add_set_unauthorized(self):
+        """test_add_set_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -94,6 +114,8 @@ class TestAddSet(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_set_serializer_invalid(self):
+        """test_add_set_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_provider_set.SetsList.as_view(),
@@ -106,9 +128,13 @@ class TestAddSet(SimpleTestCase):
 
 
 class TestUpdateSet(SimpleTestCase):
+    """Test Update Set"""
+
     def setUp(self):
-        super(TestUpdateSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        """setUp"""
+
+        super().setUp()
+        self.param = {"set_id": 1}
         self.data = {
             "set_spec": "oai_dummy",
             "set_name": "dummy",
@@ -117,6 +143,8 @@ class TestUpdateSet(SimpleTestCase):
         }
 
     def test_update_set_unauthorized(self):
+        """test_update_set_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_provider_set.SetDetail.as_view(),
@@ -130,6 +158,8 @@ class TestUpdateSet(SimpleTestCase):
 
     @patch.object(OaiProviderSet, "get_by_id")
     def test_update_set_not_found(self, mock_get_by_id):
+        """test_update_set_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -146,11 +176,17 @@ class TestUpdateSet(SimpleTestCase):
 
 
 class TestDeleteSet(SimpleTestCase):
+    """Test Delete Set"""
+
     def setUp(self):
-        super(TestDeleteSet, self).setUp()
-        self.param = {"set_id": str(ObjectId())}
+        """setUp"""
+
+        super().setUp()
+        self.param = {"set_id": 1}
 
     def test_delete_set_unauthorized(self):
+        """test_delete_set_unauthorized"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_provider_set.SetDetail.as_view(),
@@ -163,6 +199,8 @@ class TestDeleteSet(SimpleTestCase):
 
     @patch.object(oai_provider_set_api, "get_by_id")
     def test_delete_set_not_found(self, mock_get_by_id):
+        """test_delete_set_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 

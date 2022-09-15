@@ -1,7 +1,6 @@
 """ Integrations tests for user views
 """
-from mock import PropertyMock
-from mock.mock import patch
+from unittest.mock import patch, PropertyMock
 from rest_framework import status
 
 from core_main_app.components.data.models import Data
@@ -21,9 +20,13 @@ fixture_data = OaiPmhFixtures()
 
 
 class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
+    """MongoIntegrationBaseTestCase"""
+
     fixture = OaiPmhFixtures()
 
     def test_identify(self):
+        """test_identify"""
+
         # Arrange
         data = {"verb": "Identify"}
 
@@ -38,6 +41,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
 
     @patch.object(Data, "xml_content", new_callable=PropertyMock)
     def test_get_record(self, mock_xml_content):
+        """test_get_record"""
+
         # Arrange
         mock_xml_content.return_value = "<tag>value</tag>"
         data = {
@@ -56,6 +61,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.check_tag_exist(response.rendered_content, "record")
 
     def test_get_list_identifiers(self):
+        """test_get_list_identifiers"""
+
         # Arrange
         data = {"verb": "ListIdentifiers", "metadataPrefix": "oai_demo"}
 
@@ -73,6 +80,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
 
     @patch.object(Data, "xml_content", new_callable=PropertyMock)
     def test_get_list_records(self, mock_xml_content):
+        """test_get_list_records"""
+
         # Arrange
         mock_xml_content.return_value = "<tag>value</tag>"
         data = {"verb": "ListRecords", "metadataPrefix": "oai_demo"}
@@ -91,6 +100,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
 
     @patch.object(oai_provider_metadata_format_api, "get_metadata_format_schema_url")
     def test_get_list_metadata_formats(self, mock_get_metadata_format_schema_url):
+        """test_get_list_metadata_formats"""
+
         # Arrange
         data = {"verb": "ListMetadataFormats"}
         mock_get_metadata_format_schema_url.return_value = "dummy_schema"
@@ -113,6 +124,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
     def test_get_list_metadata_formats_with_identifier(
         self, mock_get_metadata_format_schema_url
     ):
+        """test_get_list_metadata_formats_with_identifier"""
+
         # Arrange
         data = {
             "verb": "ListMetadataFormats",
@@ -130,6 +143,8 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.check_tag_exist(response.rendered_content, "ListMetadataFormats")
 
     def test_get_list_sets(self):
+        """test_get_list_sets"""
+
         # Arrange
         data = {"verb": "ListSets"}
 

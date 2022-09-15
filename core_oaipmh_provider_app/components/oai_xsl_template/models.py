@@ -1,11 +1,8 @@
 """
 OaiXslTemplate model
 """
-
-
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models, IntegrityError
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
@@ -15,19 +12,21 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 )
 
 
-class OaiXslTemplate(Document):
+class OaiXslTemplate(models.Model):
     """Relation between a template, an OaiProviderMetadataFormat and a XSLT."""
 
-    template = fields.ReferenceField(Template, blank=False, reverse_delete_rule=CASCADE)
-    xslt = fields.ReferenceField(
-        XslTransformation, blank=False, reverse_delete_rule=CASCADE
-    )
-    oai_metadata_format = fields.ReferenceField(
+    template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
+    xslt = models.ForeignKey(XslTransformation, blank=False, on_delete=models.CASCADE)
+    oai_metadata_format = models.ForeignKey(
         OaiProviderMetadataFormat,
         blank=False,
-        unique_with=["xslt", "template"],
-        reverse_delete_rule=CASCADE,
+        on_delete=models.CASCADE,
     )
+
+    class Meta:
+        """Meta"""
+
+        unique_together = ("oai_metadata_format", "xslt", "template")
 
     @staticmethod
     def get_by_id(oai_xslt_template_id):
@@ -46,8 +45,8 @@ class OaiXslTemplate(Document):
         """
         try:
             return OaiXslTemplate.objects.get(pk=str(oai_xslt_template_id))
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
@@ -67,13 +66,13 @@ class OaiXslTemplate(Document):
 
         """
         try:
-            return OaiXslTemplate.objects().get(
+            return OaiXslTemplate.objects.get(
                 template=template_id, oai_metadata_format=metadata_format_id
             )
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all_by_templates(templates):
@@ -86,7 +85,7 @@ class OaiXslTemplate(Document):
             List of OaiXslTemplate.
 
         """
-        return OaiXslTemplate.objects(template__in=templates).all()
+        return OaiXslTemplate.objects.filter(template__in=templates).all()
 
     @staticmethod
     def get_all_by_metadata_format(metadata_format):
@@ -99,7 +98,7 @@ class OaiXslTemplate(Document):
             List of OaiXslTemplate.
 
         """
-        return OaiXslTemplate.objects(oai_metadata_format=metadata_format).all()
+        return OaiXslTemplate.objects.filter(oai_metadata_format=metadata_format).all()
 
     def save_object(self):
         """Custom save.
@@ -110,7 +109,7 @@ class OaiXslTemplate(Document):
         """
         try:
             return self.save()
-        except mongoengine_errors.NotUniqueError as e:
-            raise exceptions.NotUniqueError(str(e))
+        except IntegrityError as exception:
+            raise exceptions.NotUniqueError(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))

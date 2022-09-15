@@ -1,9 +1,8 @@
 """
 OaiProviderSet model
 """
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import PULL
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template_version_manager.models import (
@@ -15,12 +14,8 @@ from core_oaipmh_common_app.components.oai_set.models import OaiSet
 class OaiProviderSet(OaiSet):
     """Represents a set for Oai-Pmh Provider"""
 
-    templates_manager = fields.ListField(
-        fields.ReferenceField(TemplateVersionManager, reverse_delete_rule=PULL)
-    )
-    description = fields.StringField(blank=True)
-
-    meta = {"indexes": [{"fields": ["templates_manager", "set_spec"]}]}
+    templates_manager = models.ManyToManyField(TemplateVersionManager)
+    description = models.TextField(blank=True)
 
     @staticmethod
     def get_by_id(oai_set_id):
@@ -37,11 +32,11 @@ class OaiProviderSet(OaiSet):
 
         """
         try:
-            return OaiProviderSet.objects().get(pk=str(oai_set_id))
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+            return OaiProviderSet.objects.get(pk=str(oai_set_id))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all(order_by_field=None):
@@ -52,7 +47,12 @@ class OaiProviderSet(OaiSet):
             List of OaiProviderSet.
 
         """
-        return OaiProviderSet.objects().order_by(order_by_field)
+        if not order_by_field:
+            return OaiProviderSet.objects.all()
+
+        return OaiProviderSet.objects.order_by(
+            *[field.replace("+", "") for field in order_by_field]
+        )
 
     @staticmethod
     def get_all_by_templates_manager(templates_manager):
@@ -65,7 +65,9 @@ class OaiProviderSet(OaiSet):
             List of OaiProviderSet.
 
         """
-        return OaiProviderSet.objects(templates_manager__in=templates_manager).all()
+        return OaiProviderSet.objects.filter(
+            templates_manager__in=templates_manager
+        ).all()
 
     @staticmethod
     def get_by_set_spec(set_spec):
@@ -83,8 +85,8 @@ class OaiProviderSet(OaiSet):
 
         """
         try:
-            return OaiProviderSet.objects().get(set_spec=set_spec)
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+            return OaiProviderSet.objects.get(set_spec=set_spec)
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))

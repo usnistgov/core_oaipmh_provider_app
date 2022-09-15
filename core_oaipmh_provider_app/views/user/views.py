@@ -1,3 +1,6 @@
+""" User views
+"""
+
 import logging
 import re
 from datetime import datetime, timedelta
@@ -11,11 +14,12 @@ from django.views.generic import TemplateView
 from rest_framework import status
 
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
-import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
-import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.components.workspace import api as workspace_api
 from core_main_app.system import api as system_api
@@ -23,6 +27,8 @@ from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import (
     XSDFlattenerDatabaseOrURL,
 )
 from core_oaipmh_common_app.utils import UTCdatetime
+import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.commons import status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -47,10 +53,12 @@ logger = logging.getLogger(__name__)
 
 
 class OAIProviderView(TemplateView):
+    """OAI Provider View"""
+
     content_type = "text/xml"
 
     def __init__(self, **kwargs):
-        super(OAIProviderView, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.request = None
         self.oai_verb = None
         self.metadata_prefix = None
@@ -61,6 +69,15 @@ class OAIProviderView(TemplateView):
         self.resumption_token = None
 
     def render_to_response(self, context, **response_kwargs):
+        """render_to_response
+
+        Args:
+            context:
+            response_kwargs:
+
+        Returns:
+
+        """
         # All OAI responses should be XML
         if "content_type" not in response_kwargs:
             response_kwargs["content_type"] = self.content_type
@@ -83,9 +100,25 @@ class OAIProviderView(TemplateView):
         return super().render_to_response(context, **response_kwargs)
 
     def error(self, error):
+        """error
+
+        Args:
+            error:
+
+        Returns:
+
+        """
         return self.errors([error])
 
     def errors(self, errors):
+        """errors
+
+        Args:
+            errors:
+
+        Returns:
+
+        """
         self.template_name = "core_oaipmh_provider_app/user/xml/error.html"
         return self.render_to_response(
             {
@@ -94,6 +127,14 @@ class OAIProviderView(TemplateView):
         )
 
     def get(self, request, *args, **kwargs):
+        """get
+
+        Args:
+            request:
+
+        Returns:
+
+        """
         try:
             # Check if the server is enabled for providing information.
             information = oai_settings_api.get()
@@ -116,24 +157,24 @@ class OAIProviderView(TemplateView):
             # Verb processing.
             if self.oai_verb == "Identify":
                 return self.identify()
-            elif self.oai_verb == "GetRecord":
+            if self.oai_verb == "GetRecord":
                 return self.get_record()
-            elif self.oai_verb == "ListSets":
+            if self.oai_verb == "ListSets":
                 return self.list_sets()
-            elif self.oai_verb == "ListIdentifiers":
+            if self.oai_verb == "ListIdentifiers":
                 return self.list_identifiers()
-            elif self.oai_verb == "ListMetadataFormats":
+            if self.oai_verb == "ListMetadataFormats":
                 return self.list_metadata_formats()
-            elif self.oai_verb == "ListRecords":
+            if self.oai_verb == "ListRecords":
                 return self.list_records()
 
-        except oai_provider_exceptions.OAIExceptions as e:
-            return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException as e:
-            return self.error(e)
-        except Exception as e:
+        except oai_provider_exceptions.OAIExceptions as exception:
+            return self.errors(exception.errors)
+        except oai_provider_exceptions.OAIException as exception:
+            return self.error(exception)
+        except Exception as exception:
             return HttpResponse(
-                {"content": escape(str(e))},
+                {"content": escape(str(exception))},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -153,7 +194,7 @@ class OAIProviderView(TemplateView):
         identify_data = {
             "name": information.repository_name,
             "protocol_version": settings.OAI_PROTOCOL_VERSION,
-            "admins": (email for name, email in settings.OAI_ADMINS),
+            "admins": settings.OAI_ADMINS,
             "earliest_date": self._get_earliest_date(),
             "deleted": settings.OAI_DELETED_RECORD,
             "granularity": settings.OAI_GRANULARITY,
@@ -174,26 +215,26 @@ class OAIProviderView(TemplateView):
         self.template_name = "core_oaipmh_provider_app/user/xml/list_sets.html"
         items = []
         try:
-            sets = oai_provider_set_api.get_all("set_spec")
+            sets = oai_provider_set_api.get_all(["set_spec"])
             if len(sets) == 0:
                 raise oai_provider_exceptions.NoSetHierarchy
-            else:
-                for set_ in sets:
-                    item_info = {
-                        "setSpec": set_.set_spec,
-                        "setName": set_.set_name,
-                        "description": set_.description,
-                    }
-                    items.append(item_info)
+
+            for set_ in sets:
+                item_info = {
+                    "setSpec": set_.set_spec,
+                    "setName": set_.set_name,
+                    "description": set_.description,
+                }
+                items.append(item_info)
 
             return self.render_to_response({"items": items})
-        except oai_provider_exceptions.OAIExceptions as e:
-            return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException as e:
-            return self.error(e)
-        except Exception as e:
+        except oai_provider_exceptions.OAIExceptions as exception:
+            return self.errors(exception.errors)
+        except oai_provider_exceptions.OAIException as exception:
+            return self.error(exception)
+        except Exception as exception:
             return HttpResponse(
-                {"content": escape(str(e))},
+                {"content": escape(str(exception))},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -238,26 +279,26 @@ class OAIProviderView(TemplateView):
 
             if len(metadata_formats) == 0:
                 raise oai_provider_exceptions.NoMetadataFormat
-            else:
-                host_uri = self.request.build_absolute_uri("/")
-                for metadata_format in metadata_formats:
-                    item_info = {
-                        "metadataNamespace": metadata_format.metadata_namespace,
-                        "metadataPrefix": metadata_format.metadata_prefix,
-                        "schema": oai_provider_metadata_format_api.get_metadata_format_schema_url(
-                            metadata_format, host_uri
-                        ),
-                    }
-                    items.append(item_info)
+
+            host_uri = self.request.build_absolute_uri("/")
+            for metadata_format in metadata_formats:
+                item_info = {
+                    "metadataNamespace": metadata_format.metadata_namespace,
+                    "metadataPrefix": metadata_format.metadata_prefix,
+                    "schema": oai_provider_metadata_format_api.get_metadata_format_schema_url(
+                        metadata_format, host_uri
+                    ),
+                }
+                items.append(item_info)
 
             return self.render_to_response({"items": items})
-        except oai_provider_exceptions.OAIExceptions as e:
-            return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException as e:
-            return self.error(e)
-        except Exception as e:
+        except oai_provider_exceptions.OAIExceptions as exception:
+            return self.errors(exception.errors)
+        except oai_provider_exceptions.OAIException as exception:
+            return self.error(exception)
+        except Exception as exception:
             return HttpResponse(
-                {"content": escape(str(e))},
+                {"content": escape(str(exception))},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -355,13 +396,13 @@ class OAIProviderView(TemplateView):
             return self.render_to_response(
                 {"items": items, "resumption_token": resumption_token}
             )
-        except oai_provider_exceptions.OAIExceptions as e:
-            return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException as e:
-            return self.error(e)
-        except Exception as e:
+        except oai_provider_exceptions.OAIExceptions as exception:
+            return self.errors(exception.errors)
+        except oai_provider_exceptions.OAIException as exception:
+            return self.error(exception)
+        except Exception as exception:
             return HttpResponse(
-                {"content": escape(str(e))},
+                {"content": escape(str(exception))},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -382,14 +423,14 @@ class OAIProviderView(TemplateView):
 
         try:
             # FIXME filtering public data is needed since all data has
-            # a OAI data associated with it
+            #   a OAI data associated with it
             public_workspace_list = workspace_api.get_all_public_workspaces()
             data_list = system_api.get_all_data_in_workspaces_for_templates(
                 public_workspace_list, template_id_list
             )
             oai_data = oai_data_api.get_all_by_data_list(
                 data_list, from_date=from_date, until_date=until_date
-            )
+            ).order_by("pk")
 
             oai_data_paginator = Paginator(oai_data, RESULTS_PER_PAGE)
 
@@ -436,7 +477,7 @@ class OAIProviderView(TemplateView):
                         elt.oai_date_stamp
                     ),
                     "sets": oai_provider_set_api.get_all_by_template_ids(
-                        [elt.data.template], request=request
+                        [elt.data.template.pk], request=request
                     ),
                     "deleted": elt.status == oai_status.DELETED,
                 }
@@ -456,8 +497,8 @@ class OAIProviderView(TemplateView):
                     item_info.update({"xml": xml})
 
                 items.append(item_info)
-        except Exception as e:
-            logger.warning("_get_items threw an exception: {0}".format(str(e)))
+        except Exception as exception:
+            logger.warning("_get_items threw an exception: %s", str(exception))
 
         if len(items) == 0:  # No records retrieved
             raise oai_provider_exceptions.NoRecordsMatch
@@ -518,13 +559,13 @@ class OAIProviderView(TemplateView):
             }
 
             return self.render_to_response(record_info)
-        except oai_provider_exceptions.OAIExceptions as e:
-            return self.errors(e.errors)
-        except oai_provider_exceptions.OAIException as e:
-            return self.error(e)
-        except Exception as e:
+        except oai_provider_exceptions.OAIExceptions as exception:
+            return self.errors(exception.errors)
+        except oai_provider_exceptions.OAIException as exception:
+            return self.error(exception)
+        except Exception as exception:
             return HttpResponse(
-                {"content": escape(str(e))},
+                {"content": escape(str(exception))},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -583,11 +624,11 @@ def get_xsd(request, title, version_number):
     """
     try:
         template_version = (
-            version_manager_api.get_active_global_version_manager_by_title(
+            template_version_manager_api.get_active_global_version_manager_by_title(
                 title, request=request
             )
         )
-        template = template_api.get(
+        template = template_api.get_by_id(
             version_manager_api.get_version_by_number(
                 template_version, int(version_number), request=request
             ),
@@ -599,8 +640,8 @@ def get_xsd(request, title, version_number):
         file_obj = StringIO(content_encoded)
 
         return HttpResponse(file_obj, content_type="text/xml")
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
             "Impossible to retrieve the schema with the given name and "
-            "version: %s" % escape(str(e))
+            "version: %s" % escape(str(exception))
         )

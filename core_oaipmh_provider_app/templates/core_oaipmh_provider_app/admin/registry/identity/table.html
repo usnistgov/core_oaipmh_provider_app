@@ -4,12 +4,12 @@
 
 {% block box_tools %}
 <div class="btn-group float-right">
-    {% url 'admin:core_oaipmh_provider_app_edit_identity' data.data_provider.id as edit_url %}
+    {% url 'core-admin:core_oaipmh_provider_app_edit_identity' data.data_provider.id as edit_url %}
     {% include 'core_main_app/common/buttons/edit.html' %}
     <span>
-        <a href="#" class="btn btn-secondary check-status-btn">
+        <div class="btn btn-secondary check-status-btn">
             <i class="fas fa-check-circle"></i> Check status
-        </a>
+        </div>
     </span>
 </div>
 {% endblock %}
@@ -20,94 +20,54 @@
         <td>Status</td>
         <td class="text-center" url="{{ data.data_provider.baseURL }}" id="Status">---</td>
     </tr>
-    <tr class="invisible"><td colspan="2"/></tr>
+    <tr class="invisible"><td colspan="2"></td></tr>
     <tr>
         <td>Name</td>
-        <td>
-            <span>
-               {{ data.data_provider.name }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.name }}</td>
     </tr>
     <tr>
         <td>Admin Email</td>
         <td>
-            <span>
-                {% for admin in data.data_provider.admins %}
-                    {{ admin }}
-                {% endfor %}
-            </span>
+            {% for admin in data.data_provider.admins %}
+                {{ admin }}
+            {% endfor %}
         </td>
     </tr>
     <tr>
         <td>Base URL</td>
-        <td>
-            <span>
-               {{ data.data_provider.baseURL }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.baseURL }}</td>
     </tr>
     <tr>
         <td>Has Deleted Record</td>
-        <td>
-            <span>
-               {{ data.data_provider.deleted }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.deleted }}</td>
     </tr>
     <tr>
         <td>Granularity</td>
-        <td>
-            <span>
-               {{ data.data_provider.granularity }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.granularity }}</td>
     </tr>
     <tr>
         <td>Protocol Version</td>
-        <td>
-            <span>
-               {{ data.data_provider.protocol_version }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.protocol_version }}</td>
     </tr>
     <tr>
         <td>Delimiter</td>
-        <td>
-            <span>
-               {{ data.data_provider.identifier_delimiter }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.identifier_delimiter }}</td>
     </tr>
     <tr>
         <td>Scheme</td>
-        <td>
-            <span>
-               {{ data.data_provider.identifier_scheme }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.identifier_scheme }}</td>
     </tr>
     <tr>
         <td>Repository Identifier</td>
-        <td>
-            <span>
-               {{ data.data_provider.repository_identifier }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.repository_identifier }}</td>
     </tr>
     <tr>
         <td>Sample Identifier</td>
-        <td>
-            <span>
-               {{ data.data_provider.sample_identifier }}
-            </span>
-        </td>
+        <td>{{ data.data_provider.sample_identifier }}</td>
     </tr>
     <tr>
         <td>Enable Harvesting</td>
-        <td>
-            {{ data.data_provider.enable_harvesting }}
-        </td>
+        <td>{{ data.data_provider.enable_harvesting }}</td>
     </tr>
 </table>
 {% endblock %}

@@ -1,9 +1,8 @@
 """ Authentication tests for OAI Provider Metadata Format REST API
 """
+from unittest.mock import patch, Mock
 from django.http import HttpResponse
 from django.test import SimpleTestCase
-from mock import Mock
-from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -25,7 +24,11 @@ from core_oaipmh_provider_app.rest.serializers import (
 
 
 class MetadataFormatsListGetPermission(SimpleTestCase):
+    """Metadata Formats List Get Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_get(
             metadata_format_views.MetadataFormatsList.as_view(), None
         )
@@ -33,6 +36,8 @@ class MetadataFormatsListGetPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(
@@ -48,6 +53,8 @@ class MetadataFormatsListGetPermission(SimpleTestCase):
         oai_provider_metadata_format_serializer_data,
         oai_provider_metadata_format_get_all,
     ):
+        """test_staff_returns_http_200"""
+
         oai_provider_metadata_format_serializer_data.return_value = True
         oai_provider_metadata_format_get_all.return_value = {}
         mock_user = create_mock_user("1", is_staff=True)
@@ -60,7 +67,11 @@ class MetadataFormatsListGetPermission(SimpleTestCase):
 
 
 class MetadataFormatsListPostPermission(SimpleTestCase):
+    """Metadata Formats List Post Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_post(
             metadata_format_views.MetadataFormatsList.as_view(), None
         )
@@ -68,6 +79,8 @@ class MetadataFormatsListPostPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_post(
@@ -85,6 +98,8 @@ class MetadataFormatsListPostPermission(SimpleTestCase):
         oai_provider_metadata_format_serializer_save,
         oai_provider_metadata_format_serializer_is_valid,
     ):
+        """test_staff_returns_http_201"""
+
         oai_provider_metadata_format_serializer_data.return_value = True
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
         oai_provider_metadata_format_serializer_save.return_value = (
@@ -102,10 +117,16 @@ class MetadataFormatsListPostPermission(SimpleTestCase):
 
 
 class MetadataFormatsDetailGetPermission(SimpleTestCase):
+    """Metadata Formats Detail Get Permission"""
+
     def setUp(self):
+        """setUp"""
+
         self.fake_id = "507f1f77bcf86cd799439011"
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_get(
             metadata_format_views.MetadataFormatDetail.as_view(),
             None,
@@ -115,6 +136,8 @@ class MetadataFormatsDetailGetPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(
@@ -132,6 +155,8 @@ class MetadataFormatsDetailGetPermission(SimpleTestCase):
         oai_provider_metadata_format_serializer_data,
         oai_provider_metadata_format_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         oai_provider_metadata_format_serializer_data.return_value = True
         oai_provider_metadata_format_get_by_id.return_value = {}
 
@@ -147,10 +172,16 @@ class MetadataFormatsDetailGetPermission(SimpleTestCase):
 
 
 class MetadataFormatsDetailDeletePermission(SimpleTestCase):
+    """Metadata Formats Detail Delete Permission"""
+
     def setUp(self):
+        """setUp"""
+
         self.fake_id = "507f1f77bcf86cd799439011"
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_delete(
             metadata_format_views.MetadataFormatDetail.as_view(),
             None,
@@ -160,6 +191,8 @@ class MetadataFormatsDetailDeletePermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_delete(
@@ -177,6 +210,8 @@ class MetadataFormatsDetailDeletePermission(SimpleTestCase):
         oai_provider_metadata_format_delete,
         oai_provider_metadata_format_get_by_id,
     ):
+        """test_staff_returns_http_204"""
+
         oai_provider_metadata_format_delete.return_value = True
         oai_provider_metadata_format_get_by_id.return_value = (
             _create_mock_oai_provider_metadata_format()
@@ -194,10 +229,16 @@ class MetadataFormatsDetailDeletePermission(SimpleTestCase):
 
 
 class MetadataFormatsDetailPatchPermission(SimpleTestCase):
+    """Metadata Formats Detail Patch Permission"""
+
     def setUp(self):
+        """setUp"""
+
         self.fake_id = "507f1f77bcf86cd799439011"
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_patch(
             metadata_format_views.MetadataFormatDetail.as_view(),
             None,
@@ -207,6 +248,8 @@ class MetadataFormatsDetailPatchPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_patch(
@@ -226,6 +269,8 @@ class MetadataFormatsDetailPatchPermission(SimpleTestCase):
         update_metadata_format_serializer_is_valid,
         oai_provider_metadata_format_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         update_metadata_format_serializer_save.return_value = None
         update_metadata_format_serializer_is_valid.return_value = {}
         oai_provider_metadata_format_get_by_id.return_value = {}
@@ -242,7 +287,11 @@ class MetadataFormatsDetailPatchPermission(SimpleTestCase):
 
 
 class TemplateAsMetadataFormatPostPermission(SimpleTestCase):
+    """Template As Metadata Format Post Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_post(
             metadata_format_views.TemplateAsMetadataFormat.as_view(), None
         )
@@ -250,6 +299,8 @@ class TemplateAsMetadataFormatPostPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_post(
@@ -265,6 +316,8 @@ class TemplateAsMetadataFormatPostPermission(SimpleTestCase):
         template_metadata_format_serializer_save,
         template_metadata_format_serializer_is_valid,
     ):
+        """test_staff_returns_http_201"""
+
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
         template_metadata_format_serializer_save.return_value = (
             _create_mock_http_response(status.HTTP_201_CREATED)
@@ -281,7 +334,11 @@ class TemplateAsMetadataFormatPostPermission(SimpleTestCase):
 
 
 class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
+    """Template Metadata Format XSLT Post Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_post(
             metadata_format_views.TemplateMetadataFormatXSLT.as_view(), None
         )
@@ -289,6 +346,8 @@ class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_post(
@@ -306,6 +365,7 @@ class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
         template_to_mf_mapping_xslt_serializer_save,
         template_to_mf_mapping_xslt_serializer_is_valid,
     ):
+        """test_staff_returns_http_200"""
         template_to_mf_mapping_xslt_serializer_save.return_value = None
         template_to_mf_mapping_xslt_serializer_is_valid.return_value = {}
         template_to_mf_mapping_xslt_serializer_init_instance.return_value = None
@@ -320,7 +380,11 @@ class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
 
 
 class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
+    """Template Metadata Format XSLT Delete Permission"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         response = RequestMock.do_request_delete(
             metadata_format_views.TemplateMetadataFormatXSLT.as_view(), None
         )
@@ -328,6 +392,8 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_delete(
@@ -349,6 +415,8 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
         template_to_mf_mapping_xslt_serializer_save,
         template_to_mf_mapping_xslt_serializer_is_valid,
     ):
+        """test_staff_returns_http_204"""
+
         # method returns serializer.save directly (which returns an HTTPResponse with status code 201 automatically)
         template_to_mf_mapping_xslt_serializer_save.return_value = (
             _create_mock_http_response(status.HTTP_201_CREATED)

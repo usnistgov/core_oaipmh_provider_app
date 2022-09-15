@@ -1,15 +1,22 @@
+""" Tests unit
+"""
+
 from unittest.case import TestCase
 
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
-import core_oaipmh_provider_app.components.oai_settings.api as settings_api
 from core_main_app.commons import exceptions
+import core_oaipmh_provider_app.components.oai_settings.api as settings_api
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 
 
 class TestOaiSettingsGet(TestCase):
+    """Test Oai Settings Get"""
+
     @patch.object(OaiSettings, "get")
     def test_get_return_object(self, mock_get):
+        """test_get_return_object"""
+
         # Arrange
         mock_oai_settings = _create_mock_oai_settings()
 
@@ -23,6 +30,8 @@ class TestOaiSettingsGet(TestCase):
 
     @patch.object(OaiSettings, "get")
     def test_get_raises_exception_if_object_does_not_exist(self, mock_get):
+        """test_get_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_get.side_effect = exceptions.DoesNotExist("Error")
 
@@ -32,6 +41,8 @@ class TestOaiSettingsGet(TestCase):
 
     @patch.object(OaiSettings, "get")
     def test_get_raises_exception_if_internal_error(self, mock_get):
+        """test_get_raises_exception_if_internal_error"""
+
         # Arrange
         mock_get.side_effect = exceptions.ModelError("Error")
 
@@ -41,8 +52,12 @@ class TestOaiSettingsGet(TestCase):
 
 
 class TestOaiSettingsUpsert(TestCase):
+    """Test Oai Settings Upsert"""
+
     @patch.object(OaiSettings, "save")
     def test_upsert_oai_settings_raises_exception_if_save_failed(self, mock_save):
+        """test_upsert_oai_settings_raises_exception_if_save_failed"""
+
         # Arrange
         oai_settings = _create_oai_settings()
 

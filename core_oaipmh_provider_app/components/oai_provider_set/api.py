@@ -2,8 +2,8 @@
 OaiProviderSet API
 """
 
-from core_main_app.components.template_version_manager import (
-    api as template_version_manager_api,
+from core_main_app.components.template import (
+    api as template_api,
 )
 from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
 
@@ -18,7 +18,8 @@ def upsert(oai_provider_set):
         The OaiProviderSet instance.
 
     """
-    return oai_provider_set.save()
+    oai_provider_set.save()
+    return oai_provider_set
 
 
 def delete(oai_provider_set):
@@ -82,22 +83,23 @@ def get_all_by_templates_manager(templates_manager):
     )
 
 
-def get_all_by_template_ids(template_ids, request):
+def get_all_by_template_ids(template_id_list, request):
     """Get all OaiProviderSet used by a list of templates ids.
 
     Args:
-        template_ids: List of templates ids:
+        template_id_list: List of templates ids:
         request:
 
     Returns:
         List of OaiProviderSet.
 
     """
-    # Be sure to have string and not ObjectId()
-    string_ids = list(map(str, template_ids))
-    # Get all templates managers thanks to templates ids.
-    templates_manager = template_version_manager_api.get_all_by_version_ids(
-        string_ids, request=request
+    # Get all templates managers with the selected templates ids.
+    templates_manager = set(
+        [
+            template_api.get_by_id(template_id, request).version_manager
+            for template_id in template_id_list
+        ]
     )
     # Get all OaiProviderSet used by those templates manager
     return get_all_by_templates_manager(templates_manager)

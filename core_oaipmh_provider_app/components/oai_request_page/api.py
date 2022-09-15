@@ -52,8 +52,12 @@ def upsert(oai_request_page_object):
     for _ in range(constants.MAX_INSERT_RETRIES):
         try:
             oai_request_page_object.resumption_token = _generate_token()
-            return oai_request_page_object.save()
-        except Exception as e:
-            logger.warning("Error while saving OAIRequestPage object: %s" % str(e))
+            oai_request_page_object.save()
+
+            return oai_request_page_object
+        except Exception as exception:
+            logger.warning(
+                "Error while saving OAIRequestPage object: %s", str(exception)
+            )
 
     raise exceptions.ApiError("Exceeded number of tries to save OAIRequestPage")

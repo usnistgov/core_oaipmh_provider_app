@@ -148,5 +148,5 @@ def upsert_from_data(document, force_update=False):
         oai_data.template = document.template
         oai_data.oai_date_stamp = datetime.now()
         upsert(oai_data)
-    except Exception as e:
-        logger.warning("upsert_from_data threw an exception: {0}".format(str(e)))
+    except Exception as exception:
+        logger.warning("upsert_from_data threw an exception: %s", str(exception))

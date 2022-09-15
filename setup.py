@@ -1,3 +1,6 @@
+""" Setup core oaipmh provider_ app
+"""
+
 from os import chdir, pardir
 from os.path import join, exists, dirname, normpath, abspath
 from re import sub
@@ -6,6 +9,13 @@ from setuptools import find_packages, setup
 
 
 def req_link(external_url):
+    """req_link
+
+    Args:
+        external_url:
+
+    Returns:
+    """
     egg_link = sub(r"https://[^=]+=", "", external_url)
     return "==".join(egg_link.rsplit("-", 1))
 
@@ -33,7 +43,7 @@ chdir(normpath(join(abspath(__file__), pardir)))
 
 setup(
     name="core_oaipmh_provider_app",
-    version="1.21.0",
+    version="2.0.0-beta2",
     description="OAI-PMH provider capabilities for the curator core project",
     long_description=long_desc,
     author="NIST IT Lab",

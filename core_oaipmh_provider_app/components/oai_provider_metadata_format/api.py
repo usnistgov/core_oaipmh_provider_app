@@ -7,7 +7,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 
-import xml_utils.commons.exceptions as exceptions
+from xml_utils.xsd_tree.xsd_tree import XSDTree
+from xml_utils.commons import exceptions
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.commons.exceptions import XSDError
 from core_main_app.components.template import api as template_api
@@ -20,7 +21,6 @@ from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def upsert(oai_provider_metadata_format, request):
@@ -60,7 +60,7 @@ def get_by_id(oai_provider_metadata_format_id):
 
     """
     return OaiProviderMetadataFormat.get_by_id(
-        oai_metadata_format_id=oai_provider_metadata_format_id
+        oai_provider_metadata_format_id=oai_provider_metadata_format_id
     )
 
 
@@ -165,39 +165,40 @@ def add_metadata_format(metadata_prefix, schema_url, request):
         except:
             session_id = None
         http_response = send_get_request(schema_url, cookies={"sessionid": session_id})
-        if http_response.status_code == status.HTTP_200_OK:
-            xml_schema = http_response.text
-            target_namespace = _get_target_namespace(xml_schema)
-            obj = OaiProviderMetadataFormat(
-                metadata_prefix=metadata_prefix,
-                schema=schema_url,
-                xml_schema=xml_schema,
-                is_default=False,
-                metadata_namespace=target_namespace,
-                is_template=False,
-            )
-            upsert(obj, request=request)
-            content = OaiPmhMessage.get_message_labelled(
-                "Metadata format added with success."
-            )
-
-            return Response(content, status=status.HTTP_201_CREATED)
-        else:
+        if http_response.status_code != status.HTTP_200_OK:
             raise oai_pmh_exceptions.OAIAPILabelledException(
                 message="Unable to add the new metadata format. Impossible"
                 " to retrieve the schema at the given URL",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
-    except oai_pmh_exceptions.OAIAPILabelledException as e:
-        raise e
-    except (exceptions.XMLError, XSDError) as e:
+
+        xml_schema = http_response.text
+        target_namespace = _get_target_namespace(xml_schema)
+        obj = OaiProviderMetadataFormat(
+            metadata_prefix=metadata_prefix,
+            schema=schema_url,
+            xml_schema=xml_schema,
+            is_default=False,
+            metadata_namespace=target_namespace,
+            is_template=False,
+        )
+        upsert(obj, request=request)
+        content = OaiPmhMessage.get_message_labelled(
+            "Metadata format added with success."
+        )
+
+        return Response(content, status=status.HTTP_201_CREATED)
+
+    except oai_pmh_exceptions.OAIAPILabelledException as exception:
+        raise exception
+    except (exceptions.XMLError, XSDError) as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format. %s" % str(e),
+            message="Unable to add the new metadata format. %s" % str(exception),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    except Exception as e:
+    except Exception as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(e),
+            message="Unable to add the new metadata format.%s" % str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -213,10 +214,8 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
 
     """
     try:
-        template = template_api.get(template_id, request=request)
-        version_manager = version_manager_api.get_from_version(
-            template, request=request
-        )
+        template = template_api.get_by_id(template_id, request=request)
+        version_manager = template.version_manager
         xml_schema = template.content
         target_namespace = _get_target_namespace(xml_schema)
         version_number = version_manager_api.get_version_number(
@@ -240,8 +239,8 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
         )
 
         return Response(content, status=status.HTTP_201_CREATED)
-    except oai_pmh_exceptions.OAIAPILabelledException as e:
-        raise e
+    except oai_pmh_exceptions.OAIAPILabelledException as exception:
+        raise exception
     except DoesNotExist:
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message="Unable to add the new metadata format. "
@@ -249,14 +248,14 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
             "given template",
             status_code=status.HTTP_404_NOT_FOUND,
         )
-    except exceptions.XMLError as e:
+    except exceptions.XMLError as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(e),
+            message="Unable to add the new metadata format.%s" % str(exception),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    except Exception as e:
+    except Exception as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(e),
+            message="Unable to add the new metadata format.%s" % str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -276,8 +275,8 @@ def get_metadata_format_schema_url(metadata_format, host_uri=None):
         title = split_url[0]
         version_number = split_url[1]
         return _get_absolute_uri(title, version_number, host_uri)
-    else:
-        return metadata_format.schema
+
+    return metadata_format.schema
 
 
 def _get_absolute_uri(title, version_number, host_uri=None):
@@ -329,8 +328,8 @@ def _get_target_namespace(xml_schema):
     """
     try:
         xsd_tree = XSDTree.transform_to_xml(xml_schema)
-    except Exception as e:
-        raise exceptions.XMLError(str(e))
+    except Exception as exception:
+        raise exceptions.XMLError(str(exception))
 
     root = xsd_tree.find(".")
     if "targetNamespace" in root.attrib:
