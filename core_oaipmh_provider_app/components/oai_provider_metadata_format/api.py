@@ -162,7 +162,7 @@ def add_metadata_format(metadata_prefix, schema_url, request):
         # TODO: refactor send request with cookies (same code in other apps)
         try:
             session_id = request.session.session_key
-        except:
+        except Exception:
             session_id = None
         http_response = send_get_request(schema_url, cookies={"sessionid": session_id})
         if http_response.status_code != status.HTTP_200_OK:
@@ -298,7 +298,7 @@ def _get_absolute_uri(title, version_number, host_uri=None):
             absolute_uri = urljoin(host_uri, reverse_get_xsd)
         else:
             absolute_uri = absolute_uri_from_settings
-    except:
+    except Exception:
         absolute_uri = absolute_uri_from_settings
 
     return absolute_uri

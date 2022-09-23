@@ -2,5 +2,5 @@
 """
 
 MAX_INSERT_RETRIES = 100
-""" :py:class:`int`: Maximum retries when inserting objects. 
+""" :py:class:`int`: Maximum retries when inserting objects.
 """

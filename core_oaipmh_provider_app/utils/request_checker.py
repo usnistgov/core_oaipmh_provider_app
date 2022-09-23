@@ -144,7 +144,7 @@ def check_from(date):
     """
     try:
         return _check_dates(date)
-    except:
+    except Exception:
         error = 'Illegal date/time for "from" (%s)' % date
         raise oai_provider_exceptions.BadArgument(error)
 
@@ -163,7 +163,7 @@ def check_until(date):
     """
     try:
         return _check_dates(date)
-    except:
+    except Exception:
         error = 'Illegal date/time for "until" (%s)' % date
         raise oai_provider_exceptions.BadArgument(error)
 
