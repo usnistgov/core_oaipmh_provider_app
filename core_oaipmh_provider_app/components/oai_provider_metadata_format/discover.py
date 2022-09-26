@@ -28,11 +28,17 @@ def init():
             schema_url = "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
             metadata_namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/"
             with open(
-                finders.find(join("core_oaipmh_provider_app", "xsd", "oai_dc.xsd"))
+                finders.find(
+                    join("core_oaipmh_provider_app", "xsd", "oai_dc.xsd")
+                )
             ) as file:
                 xml_schema = file.read()
                 simpledc_path = finders.find(
-                    join("core_oaipmh_provider_app", "xsd", "simpledc20021212.xsd")
+                    join(
+                        "core_oaipmh_provider_app",
+                        "xsd",
+                        "simpledc20021212.xsd",
+                    )
                 )
 
                 # replace the simpledc schema URL with the local file version to avoid the HTTPS bug
@@ -53,7 +59,8 @@ def init():
                 system_api.upsert_oai_provider_metadata_format(oai_dublin_core)
     except Exception as exception:
         logger.error(
-            "ERROR : Impossible to init the metadata formats: %s", str(exception)
+            "ERROR : Impossible to init the metadata formats: %s",
+            str(exception),
         )
 
     logger.info("FINISH oai provider metadata format discovery.")

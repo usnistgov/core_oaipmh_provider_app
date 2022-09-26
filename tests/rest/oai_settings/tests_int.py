@@ -9,7 +9,9 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
-from core_oaipmh_provider_app.rest.oai_settings import views as rest_oai_settings
+from core_oaipmh_provider_app.rest.oai_settings import (
+    views as rest_oai_settings,
+)
 from tests.utils.fixtures.fixtures import OaiPmhFixtures
 
 
@@ -55,7 +57,9 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
             self.fixture.settings.repository_identifier
         )
         self.new_enable_harvesting = (
-            "True" if (not self.fixture.settings.enable_harvesting) is True else "False"
+            "True"
+            if (not self.fixture.settings.enable_harvesting) is True
+            else "False"
         )
         self.data = {
             "repository_name": str(self.new_repository_name),
@@ -81,4 +85,6 @@ class TestUpdateSettings(MongoIntegrationBaseTestCase):
         self.assertEqual(
             settings_.repository_identifier, self.new_repository_identifier
         )
-        self.assertEqual(str(settings_.enable_harvesting), self.new_enable_harvesting)
+        self.assertEqual(
+            str(settings_.enable_harvesting), self.new_enable_harvesting
+        )

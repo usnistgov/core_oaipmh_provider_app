@@ -10,7 +10,9 @@ from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
     views as metadata_format_views,
 )
@@ -351,7 +353,8 @@ class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_post(
-            metadata_format_views.TemplateMetadataFormatXSLT.as_view(), mock_user
+            metadata_format_views.TemplateMetadataFormatXSLT.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -368,12 +371,15 @@ class TemplateMetadataFormatXSLTPostPermission(SimpleTestCase):
         """test_staff_returns_http_200"""
         template_to_mf_mapping_xslt_serializer_save.return_value = None
         template_to_mf_mapping_xslt_serializer_is_valid.return_value = {}
-        template_to_mf_mapping_xslt_serializer_init_instance.return_value = None
+        template_to_mf_mapping_xslt_serializer_init_instance.return_value = (
+            None
+        )
 
         mock_user = create_mock_user("1", is_staff=True)
 
         response = RequestMock.do_request_post(
-            metadata_format_views.TemplateMetadataFormatXSLT.as_view(), mock_user
+            metadata_format_views.TemplateMetadataFormatXSLT.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -397,7 +403,8 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_delete(
-            metadata_format_views.TemplateMetadataFormatXSLT.as_view(), mock_user
+            metadata_format_views.TemplateMetadataFormatXSLT.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -434,7 +441,8 @@ class TemplateMetadataFormatXSLTDeletePermission(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True)
 
         response = RequestMock.do_request_delete(
-            metadata_format_views.TemplateMetadataFormatXSLT.as_view(), mock_user
+            metadata_format_views.TemplateMetadataFormatXSLT.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

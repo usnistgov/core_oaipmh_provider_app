@@ -19,13 +19,19 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set import (
     api as oai_provider_set_api,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template import (
     api as oai_xsl_template_api,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +147,9 @@ class OaiProviderSetSerializer(ModelSerializer):
         if "templates_manager" in validated_data.keys():
             del validated_data["templates_manager"]
 
-        oai_provider_set = oai_provider_set_api.upsert(OaiProviderSet(**validated_data))
+        oai_provider_set = oai_provider_set_api.upsert(
+            OaiProviderSet(**validated_data)
+        )
         oai_provider_set.templates_manager.set(templates_manager)
 
         return oai_provider_set
@@ -167,7 +175,9 @@ class OaiProviderSetSerializer(ModelSerializer):
                 for id_ in templates_manager
             ]
             instance.templates_manager.set(templates_manager)
-        instance.description = validated_data.get("description", instance.description)
+        instance.description = validated_data.get(
+            "description", instance.description
+        )
         return oai_provider_set_api.upsert(instance)
 
 
@@ -190,8 +200,8 @@ class TemplateToMFMappingXSLTSerializer(ModelSerializer):
         Returns:
 
         """
-        oai_metadata_format_object = oai_provider_metadata_format_api.get_by_id(
-            oai_metadata_format
+        oai_metadata_format_object = (
+            oai_provider_metadata_format_api.get_by_id(oai_metadata_format)
         )
 
         if oai_metadata_format_object.is_template:
@@ -242,7 +252,9 @@ class TemplateToMFMappingXSLTSerializer(ModelSerializer):
             )
             self.instance = oai_xsl_template
         except exceptions.DoesNotExist as exception:
-            logger.warning("init_instance threw an exception: %s ", str(exception))
+            logger.warning(
+                "init_instance threw an exception: %s ", str(exception)
+            )
 
     template = CharField(required=True)
     oai_metadata_format = CharField(required=True)

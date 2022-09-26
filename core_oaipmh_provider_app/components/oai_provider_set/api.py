@@ -5,7 +5,9 @@ OaiProviderSet API
 from core_main_app.components.template import (
     api as template_api,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 
 
 def upsert(oai_provider_set):

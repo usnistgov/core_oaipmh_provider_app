@@ -10,7 +10,9 @@ from rest_framework import status
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
 from core_main_app.components.template.models import Template
-from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.components.xsl_transformation.models import (
+    XslTransformation,
+)
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
@@ -19,7 +21,9 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
     views as rest_oai_provider_metadata_format,
 )
@@ -137,7 +141,9 @@ class TestAddMetadataFormat(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch.object(requests, "get")
-    def test_add_metadata_format_raises_exception_if_bad_schema_url(self, mock_get):
+    def test_add_metadata_format_raises_exception_if_bad_schema_url(
+        self, mock_get
+    ):
         """test_add_metadata_format_raises_exception_if_bad_schema_url"""
 
         # Arrange
@@ -182,7 +188,10 @@ class TestAddTemplateMetadataFormat(SimpleTestCase):
         """setUp"""
 
         super().setUp()
-        self.data = {"metadata_prefix": "oai_test", "template_id": randint(1, 100)}
+        self.data = {
+            "metadata_prefix": "oai_test",
+            "template_id": randint(1, 100),
+        }
         self.bad_data = {}
 
     def test_add_template_metadata_format_unauthorized(self):
@@ -260,11 +269,15 @@ class TestUpdateMetadataFormat(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiProviderMetadataFormat, "get_by_id")
-    def test_update_metadata_format_serializer_invalid(self, mock_metadata_format):
+    def test_update_metadata_format_serializer_invalid(
+        self, mock_metadata_format
+    ):
         """test_update_metadata_format_serializer_invalid"""
 
         # Arrange
-        mock_metadata_format.return_value = Mock(spec=OaiProviderMetadataFormat())
+        mock_metadata_format.return_value = Mock(
+            spec=OaiProviderMetadataFormat()
+        )
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_provider_metadata_format.MetadataFormatDetail.as_view(),
@@ -455,7 +468,9 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_template_to_metadata_format_unmapping_xslt_serializer_invalid(self):
+    def test_template_to_metadata_format_unmapping_xslt_serializer_invalid(
+        self,
+    ):
         """test_template_to_metadata_format_unmapping_xslt_serializer_invalid"""
 
         # Act
@@ -469,7 +484,9 @@ class TestTemplateToMetadataFormatUnMappingXslt(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch.object(OaiXslTemplate, "get_by_template_id_and_metadata_format_id")
-    def test_template_to_metadata_format_unmapping_xslt_not_found(self, mock_get_by_id):
+    def test_template_to_metadata_format_unmapping_xslt_not_found(
+        self, mock_get_by_id
+    ):
         """test_template_to_metadata_format_unmapping_xslt_not_found"""
 
         # Arrange

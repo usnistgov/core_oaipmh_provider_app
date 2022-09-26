@@ -55,7 +55,9 @@ class TestOaiSettingsUpsert(TestCase):
     """Test Oai Settings Upsert"""
 
     @patch.object(OaiSettings, "save")
-    def test_upsert_oai_settings_raises_exception_if_save_failed(self, mock_save):
+    def test_upsert_oai_settings_raises_exception_if_save_failed(
+        self, mock_save
+    ):
         """test_upsert_oai_settings_raises_exception_if_save_failed"""
 
         # Arrange

@@ -51,4 +51,6 @@ def post_delete_data(sender, instance, **kwargs):
             str(instance.pk),
         )
     except Exception as exception:
-        logger.warning("post_delete_data threw an exception: %s", str(exception))
+        logger.warning(
+            "post_delete_data threw an exception: %s", str(exception)
+        )

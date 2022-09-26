@@ -40,7 +40,9 @@ class Settings(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def patch(self, request):
@@ -83,13 +85,17 @@ class Settings(APIView):
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions_oai.OAIAPIException as exception:
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class Check(APIView):
@@ -123,4 +129,6 @@ class Check(APIView):
             return Response(content, status=http_response.status_code)
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

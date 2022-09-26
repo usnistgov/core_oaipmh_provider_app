@@ -10,12 +10,16 @@ from core_main_app.components.template_version_manager.models import (
 )
 from core_main_app.components.workspace import api as workspace_api
 from core_main_app.components.workspace.models import Workspace
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_main_app.utils.integration_tests.fixture_interface import (
+    FixtureInterface,
+)
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.settings import OAI_SCHEME, OAI_REPO_IDENTIFIER
 from tests.test_settings import OAI_PROVIDER_ROOT
@@ -69,7 +73,9 @@ class OaiPmhFixtures(FixtureInterface):
     def insert_template_version_managers(self):
         """Insert template version manager fixtures"""
         saved_template_version_managers = []
-        list_template_version_manager = OaiPmhMock.mock_template_version_manager()
+        list_template_version_manager = (
+            OaiPmhMock.mock_template_version_manager()
+        )
 
         for template_version_manager in list_template_version_manager:
             template_version_manager.save()
@@ -108,14 +114,19 @@ class OaiPmhFixtures(FixtureInterface):
         saved_data = []
         self.nb_public_data = 0
         list_data = OaiPmhMock.mock_data(
-            template_map={template.id: template for template in self.templates},
-            workspace_map={workspace.id: workspace for workspace in self.workspaces},
+            template_map={
+                template.id: template for template in self.templates
+            },
+            workspace_map={
+                workspace.id: workspace for workspace in self.workspaces
+            },
         )
         for elt in list_data:
             elt.save()
             saved_data.append(elt)
-            if elt.workspace is not None and workspace_api.is_workspace_public(
-                elt.workspace
+            if (
+                elt.workspace is not None
+                and workspace_api.is_workspace_public(elt.workspace)
             ):
                 self.nb_public_data += 1
 
@@ -125,7 +136,9 @@ class OaiPmhFixtures(FixtureInterface):
         """OaiData's methods"""
         saved_data = []
         list_data = OaiPmhMock.mock_oai_data(
-            template_map={template.id: template for template in self.templates},
+            template_map={
+                template.id: template for template in self.templates
+            },
             data_map={data.id: data for data in self.data},
         )
         for elt in list_data:
@@ -143,7 +156,9 @@ class OaiPmhFixtures(FixtureInterface):
         """OaiPmhProviderMetadataFormat's methods"""
         saved_data = []
         list_data = OaiPmhMock.mock_oai_metadata_format(
-            template_map={template.id: template for template in self.templates},
+            template_map={
+                template.id: template for template in self.templates
+            },
         )
         for elt in list_data:
             saved_data.append(elt.save())
@@ -193,7 +208,9 @@ class OaiPmhMock:
         Returns:
         """
         list_templates = list()
-        for template_data in OaiPmhMock.load_json_data(f"template{version}.json"):
+        for template_data in OaiPmhMock.load_json_data(
+            f"template{version}.json"
+        ):
             template_version_manager_data = template_data["version_manager"]
             del template_data["version_manager"]
 
@@ -203,7 +220,9 @@ class OaiPmhMock:
                 template.version_manager = template_version_manager_map[
                     template_version_manager_data["id"]
                 ]
-                template.is_current = template_version_manager_data["is_current"]
+                template.is_current = template_version_manager_data[
+                    "is_current"
+                ]
 
             list_templates.append(template)
 
@@ -218,7 +237,9 @@ class OaiPmhMock:
 
         Returns:
         """
-        data_json = OaiPmhMock.load_json_data(f"template_version_manager{version}.json")
+        data_json = OaiPmhMock.load_json_data(
+            f"template_version_manager{version}.json"
+        )
         list_templates = [TemplateVersionManager(**x) for x in data_json]
         return list_templates
 
@@ -325,10 +346,14 @@ class OaiPmhMock:
         for oai_metadata_format_data in OaiPmhMock.load_json_data(
             f"oai_metadata_format{version}.json"
         ):
-            oai_metadata_format_template_id = oai_metadata_format_data["template"]
+            oai_metadata_format_template_id = oai_metadata_format_data[
+                "template"
+            ]
             del oai_metadata_format_data["template"]
 
-            oai_metadata_format = OaiProviderMetadataFormat(**oai_metadata_format_data)
+            oai_metadata_format = OaiProviderMetadataFormat(
+                **oai_metadata_format_data
+            )
 
             if template_map:
                 oai_metadata_format.template = template_map[
@@ -348,7 +373,9 @@ class OaiPmhMock:
 
         Returns:
         """
-        list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(version)
+        list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(
+            version
+        )
         return list_oai_metadata_formats[0]
 
     @staticmethod
@@ -363,7 +390,9 @@ class OaiPmhMock:
         """
         list_set = list()
 
-        for oai_set_data in OaiPmhMock.load_json_data(f"oai_set{version}.json"):
+        for oai_set_data in OaiPmhMock.load_json_data(
+            f"oai_set{version}.json"
+        ):
             oai_set_templates_manager = oai_set_data["templates_manager"]
             del oai_set_data["templates_manager"]
 

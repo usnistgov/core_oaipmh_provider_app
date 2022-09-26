@@ -82,7 +82,9 @@ class TestOaiDataGetById(TestCase):
         self.assertIsInstance(result, OaiData)
 
     @patch.object(OaiData, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -95,7 +97,9 @@ class TestOaiDataGetById(TestCase):
             oai_data_api.get_by_id(mock_absent_id)
 
     @patch.object(OaiData, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -143,7 +147,9 @@ class TestOaiDataGetByData(TestCase):
             oai_data_api.get_by_data(mock_absent_data)
 
     @patch.object(OaiData, "get_by_data")
-    def test_get_by_data_raises_exception_if_internal_error(self, mock_get_by_data):
+    def test_get_by_data_raises_exception_if_internal_error(
+        self, mock_get_by_data
+    ):
         """test_get_by_data_raises_exception_if_internal_error"""
 
         # Arrange
@@ -200,7 +206,9 @@ class TestOaiDataGetEarliestDataDate(TestCase):
         """test_get_earliest_data_date_raises_exception_if_internal_error"""
 
         # Arrange
-        mock_get_earliest_data_date.side_effect = exceptions.ModelError("Error.")
+        mock_get_earliest_data_date.side_effect = exceptions.ModelError(
+            "Error."
+        )
 
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):

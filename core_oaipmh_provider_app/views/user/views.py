@@ -41,8 +41,12 @@ from core_oaipmh_provider_app.components.oai_provider_set import (
 from core_oaipmh_provider_app.components.oai_request_page import (
     api as oai_request_page_api,
 )
-from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_request_page.models import (
+    OaiRequestPage,
+)
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 from core_oaipmh_provider_app.settings import (
     RESULTS_PER_PAGE,
     CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT,
@@ -85,7 +89,9 @@ class OAIProviderView(TemplateView):
         # Add common context data needed for all responses
         context.update(
             {
-                "now": UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.now()),
+                "now": UTCdatetime.datetime_to_utc_datetime_iso8601(
+                    datetime.now()
+                ),
                 "verb": self.oai_verb,
                 "identifier": self.identifier,
                 "metadataPrefix": self.metadata_prefix,
@@ -269,11 +275,15 @@ class OAIProviderView(TemplateView):
                         xslt_metadata_formats
                     )
                 except Exception:
-                    raise oai_provider_exceptions.IdDoesNotExist(self.identifier)
+                    raise oai_provider_exceptions.IdDoesNotExist(
+                        self.identifier
+                    )
             else:
                 # No identifier provided. We return all metadata formats available
                 if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
-                    metadata_formats = oai_provider_metadata_format_api.get_all()
+                    metadata_formats = (
+                        oai_provider_metadata_format_api.get_all()
+                    )
                 else:
                     metadata_formats = []
 
@@ -308,7 +318,9 @@ class OAIProviderView(TemplateView):
             XML type response.
 
         """
-        self.template_name = "core_oaipmh_provider_app/user/xml/list_identifiers.html"
+        self.template_name = (
+            "core_oaipmh_provider_app/user/xml/list_identifiers.html"
+        )
         return self._treatment_list_items()
 
     def list_records(self):
@@ -317,7 +329,9 @@ class OAIProviderView(TemplateView):
            XML type response.
 
         """
-        self.template_name = "core_oaipmh_provider_app/user/xml/list_records.html"
+        self.template_name = (
+            "core_oaipmh_provider_app/user/xml/list_records.html"
+        )
         return self._treatment_list_items(include_metadata=True)
 
     def _treatment_list_items(self, include_metadata=False):
@@ -378,7 +392,9 @@ class OAIProviderView(TemplateView):
                 )
                 use_raw = False
 
-            templates_id_from_set = self._get_templates_id_by_set_spec(self.set)
+            templates_id_from_set = self._get_templates_id_by_set_spec(
+                self.set
+            )
             set(template_id_list).intersection(templates_id_from_set)
 
             (items, resumption_token) = self._get_items(
@@ -492,7 +508,9 @@ class OAIProviderView(TemplateView):
                             elt.data.template, metadata_format
                         ).xslt
 
-                        xml = xsl_transformation_api.xsl_transform(xml, xslt.name)
+                        xml = xsl_transformation_api.xsl_transform(
+                            xml, xslt.name
+                        )
 
                     item_info.update({"xml": xml})
 
@@ -512,7 +530,9 @@ class OAIProviderView(TemplateView):
 
         """
         try:
-            self.template_name = "core_oaipmh_provider_app/user/xml/get_record.html"
+            self.template_name = (
+                "core_oaipmh_provider_app/user/xml/get_record.html"
+            )
             # Check if the identifier pattern is OK.
             record_id = request_checker.check_identifier(self.identifier)
             try:
@@ -532,13 +552,17 @@ class OAIProviderView(TemplateView):
                     and oai_data.template == metadata_format.template
                 )
                 if oai_data.status != oai_status.DELETED:
-                    xml = re.sub(r"<\?xml[^?]+\?>", "", oai_data.data.xml_content)
+                    xml = re.sub(
+                        r"<\?xml[^?]+\?>", "", oai_data.data.xml_content
+                    )
 
                     if not use_raw:
                         xslt = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
                             oai_data.template.id, metadata_format.id
                         ).xslt
-                        xml = xsl_transformation_api.xsl_transform(xml, xslt.name)
+                        xml = xsl_transformation_api.xsl_transform(
+                            xml, xslt.name
+                        )
                 else:
                     xml = None
             except Exception:
@@ -582,14 +606,18 @@ class OAIProviderView(TemplateView):
     def _get_templates_id_by_metadata_prefix(metadata_prefix):
         try:
             templates_id = []
-            metadata_format = oai_provider_metadata_format_api.get_by_metadata_prefix(
-                metadata_prefix
+            metadata_format = (
+                oai_provider_metadata_format_api.get_by_metadata_prefix(
+                    metadata_prefix
+                )
             )
             if metadata_format.is_template:
                 templates_id.append(str(metadata_format.template.id))
             return templates_id
         except Exception:
-            raise oai_provider_exceptions.CannotDisseminateFormat(metadata_prefix)
+            raise oai_provider_exceptions.CannotDisseminateFormat(
+                metadata_prefix
+            )
 
     @staticmethod
     def _get_templates_id_by_set_spec(set_spec):
@@ -623,10 +651,8 @@ def get_xsd(request, title, version_number):
 
     """
     try:
-        template_version = (
-            template_version_manager_api.get_active_global_version_manager_by_title(
-                title, request=request
-            )
+        template_version = template_version_manager_api.get_active_global_version_manager_by_title(
+            title, request=request
         )
         template = template_api.get_by_id(
             version_manager_api.get_version_by_number(

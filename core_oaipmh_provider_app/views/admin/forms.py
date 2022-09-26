@@ -9,16 +9,22 @@ from core_main_app.components.template import api as template_api
 from core_main_app.components.template_version_manager import (
     api as template_version_manager_api,
 )
-from core_main_app.components.xsl_transformation import api as xsl_transformation_api
+from core_main_app.components.xsl_transformation import (
+    api as xsl_transformation_api,
+)
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
     api as oai_provider_metadata_format_api,
 )
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +56,11 @@ class EditIdentityForm(forms.ModelForm):
         """Meta"""
 
         model = OaiSettings
-        fields = ["repository_name", "repository_identifier", "enable_harvesting"]
+        fields = [
+            "repository_name",
+            "repository_identifier",
+            "enable_harvesting",
+        ]
 
 
 class MetadataFormatForm(forms.ModelForm):
@@ -122,7 +132,9 @@ class TemplateMetadataFormatForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
-        self.fields["template"].choices = _get_templates_versions(request=self.request)
+        self.fields["template"].choices = _get_templates_versions(
+            request=self.request
+        )
 
     def clean_template(self):
         data = self.cleaned_data["template"]
@@ -207,7 +219,9 @@ class MappingXSLTForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         edit_mode = kwargs.pop("edit_mode", None)
         super().__init__(*args, **kwargs)
-        self.fields["template"].choices = _get_templates_versions(request=self.request)
+        self.fields["template"].choices = _get_templates_versions(
+            request=self.request
+        )
         self.fields["xslt"].choices = _get_xsl_transformation()
         if edit_mode:
             self.fields["template"].widget = forms.HiddenInput()
@@ -239,7 +253,9 @@ def _get_templates_versions(request):
                 version_name = template.display_name
                 templates.append((version, version_name))
     except exceptions.DoesNotExist as exception:
-        logger.warning("_get_templates_versions threw an exception: %s", str(exception))
+        logger.warning(
+            "_get_templates_versions threw an exception: %s", str(exception)
+        )
 
     return templates
 

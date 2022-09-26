@@ -99,7 +99,9 @@ def get_all_custom_metadata_format(order_by_field=None):
         List of metadata format.
 
     """
-    return OaiProviderMetadataFormat.get_all_custom_metadata_format(order_by_field)
+    return OaiProviderMetadataFormat.get_all_custom_metadata_format(
+        order_by_field
+    )
 
 
 def get_all_default_metadata_format(order_by_field=None):
@@ -112,7 +114,9 @@ def get_all_default_metadata_format(order_by_field=None):
         List of metadata format.
 
     """
-    return OaiProviderMetadataFormat.get_all_default_metadata_format(order_by_field)
+    return OaiProviderMetadataFormat.get_all_default_metadata_format(
+        order_by_field
+    )
 
 
 def get_all_template_metadata_format(order_by_field=None):
@@ -125,7 +129,9 @@ def get_all_template_metadata_format(order_by_field=None):
         List of metadata format.
 
     """
-    return OaiProviderMetadataFormat.get_all_template_metadata_format(order_by_field)
+    return OaiProviderMetadataFormat.get_all_template_metadata_format(
+        order_by_field
+    )
 
 
 def get_all_no_template_metadata_format():
@@ -164,7 +170,9 @@ def add_metadata_format(metadata_prefix, schema_url, request):
             session_id = request.session.session_key
         except Exception:
             session_id = None
-        http_response = send_get_request(schema_url, cookies={"sessionid": session_id})
+        http_response = send_get_request(
+            schema_url, cookies={"sessionid": session_id}
+        )
         if http_response.status_code != status.HTTP_200_OK:
             raise oai_pmh_exceptions.OAIAPILabelledException(
                 message="Unable to add the new metadata format. Impossible"
@@ -193,12 +201,14 @@ def add_metadata_format(metadata_prefix, schema_url, request):
         raise exception
     except (exceptions.XMLError, XSDError) as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format. %s" % str(exception),
+            message="Unable to add the new metadata format. %s"
+            % str(exception),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     except Exception as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(exception),
+            message="Unable to add the new metadata format.%s"
+            % str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -250,12 +260,14 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
         )
     except exceptions.XMLError as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(exception),
+            message="Unable to add the new metadata format.%s"
+            % str(exception),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     except Exception as exception:
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message="Unable to add the new metadata format.%s" % str(exception),
+            message="Unable to add the new metadata format.%s"
+            % str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -292,7 +304,9 @@ def _get_absolute_uri(title, version_number, host_uri=None):
     reverse_get_xsd = reverse(
         "core_oaipmh_provider_app_get_xsd", args=[title, version_number]
     )
-    absolute_uri_from_settings = urljoin(settings.OAI_HOST_URI, reverse_get_xsd)
+    absolute_uri_from_settings = urljoin(
+        settings.OAI_HOST_URI, reverse_get_xsd
+    )
     try:
         if host_uri:
             absolute_uri = urljoin(host_uri, reverse_get_xsd)

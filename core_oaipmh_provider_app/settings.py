@@ -28,7 +28,9 @@ OAI_NAME = CUSTOM_NAME + " OAI-PMH Server"
 OAI_DELIMITER = ":"
 OAI_DESCRIPTION = "OAI-PMH " + CUSTOM_NAME
 OAI_GRANULARITY = "YYYY-MM-DDThh:mm:ssZ"  # the finest harvesting granularity supported by the repository
-OAI_PROTOCOL_VERSION = "2.0"  # the version of the OAI-PMH supported by the repository
+OAI_PROTOCOL_VERSION = (
+    "2.0"  # the version of the OAI-PMH supported by the repository
+)
 OAI_SCHEME = "oai"
 OAI_REPO_IDENTIFIER = "server-x"
 OAI_SAMPLE_IDENTIFIER = (

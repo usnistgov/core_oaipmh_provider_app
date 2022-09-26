@@ -7,12 +7,16 @@ from unittest.mock import Mock, patch
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
-from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.components.xsl_transformation.models import (
+    XslTransformation,
+)
 import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 
 
 class TestOaiXslTemplateUpsert(TestCase):
@@ -36,7 +40,9 @@ class TestOaiXslTemplateUpsert(TestCase):
         self.assertIsInstance(result, OaiXslTemplate)
 
     @patch.object(OaiXslTemplate, "save")
-    def test_oai_xsl_template_upsert_raises_error_if_save_failed(self, mock_save):
+    def test_oai_xsl_template_upsert_raises_error_if_save_failed(
+        self, mock_save
+    ):
         """test_oai_xsl_template_upsert_raises_error_if_save_failed"""
 
         # Arrange
@@ -51,7 +57,9 @@ class TestOaiXslTemplateDelete(TestCase):
     """Test Oai Xsl Template Delete"""
 
     @patch.object(OaiXslTemplate, "delete")
-    def test_delete_oai_xsl_template_raises_exception_if_error(self, mock_delete):
+    def test_delete_oai_xsl_template_raises_exception_if_error(
+        self, mock_delete
+    ):
         """test_delete_oai_xsl_template_raises_exception_if_error"""
 
         # Arrange
@@ -83,7 +91,9 @@ class TestOaiXslTemplateGetById(TestCase):
         self.assertIsInstance(result, OaiXslTemplate)
 
     @patch.object(OaiXslTemplate, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -96,7 +106,9 @@ class TestOaiXslTemplateGetById(TestCase):
             oai_xsl_template_api.get_by_id(mock_absent_id)
 
     @patch.object(OaiXslTemplate, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -113,7 +125,9 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
     """Test Oai Xsl Template Get By Template Id And Metadata Format Id"""
 
     @patch.object(OaiXslTemplate, "get_by_template_id_and_metadata_format_id")
-    def test_get_by_id_returns_object(self, mock_get_by_id_and_metadata_format_id):
+    def test_get_by_id_returns_object(
+        self, mock_get_by_id_and_metadata_format_id
+    ):
         """test_get_by_id_returns_object"""
 
         # Arrange
@@ -121,11 +135,15 @@ class TestOaiXslTemplateGetByTemplateIdAndMetadataFormatId(TestCase):
         template_id = 1
         metadata_format_id = 1
 
-        mock_get_by_id_and_metadata_format_id.return_value = mock_oai_xsl_template
+        mock_get_by_id_and_metadata_format_id.return_value = (
+            mock_oai_xsl_template
+        )
 
         # Act
-        result = oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
-            template_id, metadata_format_id
+        result = (
+            oai_xsl_template_api.get_by_template_id_and_metadata_format_id(
+                template_id, metadata_format_id
+            )
         )
 
         # Assert
@@ -174,10 +192,14 @@ class TestOaiXslTemplateGetAllByTemplate(TestCase):
     """Test Oai Xsl Template Get All By Template"""
 
     @patch.object(OaiXslTemplate, "get_all_by_templates")
-    def test_get_all_by_template_contains_only_oai_xsl_template(self, mock_get_all):
+    def test_get_all_by_template_contains_only_oai_xsl_template(
+        self, mock_get_all
+    ):
         """test_get_all_by_template_contains_only_oai_xsl_template"""
         _generic_get_all_test(
-            self, mock_get_all, oai_xsl_template_api.get_all_by_templates(Template())
+            self,
+            mock_get_all,
+            oai_xsl_template_api.get_all_by_templates(Template()),
         )
 
 
@@ -233,7 +255,9 @@ class TestOaiXslTemplateGetMetadataFormatsByTemplates(TestCase):
         mock_get.return_value = [mock_oai_xsl_template1]
 
         # Act
-        result = oai_xsl_template_api.get_metadata_formats_by_templates([Template()])
+        result = oai_xsl_template_api.get_metadata_formats_by_templates(
+            [Template()]
+        )
 
         # Assert
         self.assertEqual(mock_oai_xsl_template1.oai_metadata_format, result[0])
@@ -244,7 +268,10 @@ def _generic_get_all_test(self, mock_get_all, act_function):
     mock_oai_xsl_template1 = _create_mock_oai_xsl_template()
     mock_oai_xsl_template2 = _create_mock_oai_xsl_template()
 
-    mock_get_all.return_value = [mock_oai_xsl_template1, mock_oai_xsl_template2]
+    mock_get_all.return_value = [
+        mock_oai_xsl_template1,
+        mock_oai_xsl_template2,
+    ]
 
     # Act
     result = act_function

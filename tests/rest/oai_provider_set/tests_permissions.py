@@ -6,8 +6,12 @@ from rest_framework import status
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.rest.oai_provider_set import views as oai_provider_views
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
+from core_oaipmh_provider_app.rest.oai_provider_set import (
+    views as oai_provider_views,
+)
 from core_oaipmh_provider_app.rest.serializers import OaiProviderSetSerializer
 
 
@@ -106,7 +110,9 @@ class SetDetailGetPermission(SimpleTestCase):
         """test_anonymous_returns_http_403"""
 
         response = RequestMock.do_request_get(
-            oai_provider_views.SetDetail.as_view(), None, param={"set_id": self.fake_id}
+            oai_provider_views.SetDetail.as_view(),
+            None,
+            param={"set_id": self.fake_id},
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -156,7 +162,9 @@ class SetDetailDeletePermission(SimpleTestCase):
         """test_anonymous_returns_http_403"""
 
         response = RequestMock.do_request_delete(
-            oai_provider_views.SetDetail.as_view(), None, param={"set_id": self.fake_id}
+            oai_provider_views.SetDetail.as_view(),
+            None,
+            param={"set_id": self.fake_id},
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -206,7 +214,9 @@ class SetDetailPatchPermission(SimpleTestCase):
         """test_anonymous_returns_http_403"""
 
         response = RequestMock.do_request_patch(
-            oai_provider_views.SetDetail.as_view(), None, param={"set_id": self.fake_id}
+            oai_provider_views.SetDetail.as_view(),
+            None,
+            param={"set_id": self.fake_id},
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

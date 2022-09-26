@@ -61,7 +61,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("resumption_token", models.CharField(max_length=255, unique=True)),
+                (
+                    "resumption_token",
+                    models.CharField(max_length=255, unique=True),
+                ),
                 ("metadata_format", models.CharField(max_length=255)),
                 ("template_id_list", models.JSONField(default=list)),
                 (
@@ -78,7 +81,10 @@ class Migration(migrations.Migration):
                     "until_date",
                     models.DateTimeField(blank=True, default=None, null=True),
                 ),
-                ("expiration_date", models.DateTimeField(default=None, null=True)),
+                (
+                    "expiration_date",
+                    models.DateTimeField(default=None, null=True),
+                ),
                 ("page_number", models.IntegerField()),
             ],
         ),
@@ -115,7 +121,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("oai_date_stamp", models.DateTimeField(default=None, null=True)),
+                (
+                    "oai_date_stamp",
+                    models.DateTimeField(default=None, null=True),
+                ),
                 ("status", models.CharField(max_length=200)),
                 (
                     "data",
@@ -172,7 +181,9 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "unique_together": {("oai_metadata_format", "xslt", "template")},
+                "unique_together": {
+                    ("oai_metadata_format", "xslt", "template")
+                },
             },
         ),
         migrations.CreateModel(
@@ -192,7 +203,9 @@ class Migration(migrations.Migration):
                 ("description", models.TextField(blank=True)),
                 (
                     "templates_manager",
-                    models.ManyToManyField(to="core_main_app.TemplateVersionManager"),
+                    models.ManyToManyField(
+                        to="core_main_app.TemplateVersionManager"
+                    ),
                 ),
             ],
             options={

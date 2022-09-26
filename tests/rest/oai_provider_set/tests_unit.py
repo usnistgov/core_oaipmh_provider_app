@@ -12,7 +12,9 @@ from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.components.oai_provider_set import (
     api as oai_provider_set_api,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 from core_oaipmh_provider_app.rest.oai_provider_set import (
     views as rest_oai_provider_set,
 )

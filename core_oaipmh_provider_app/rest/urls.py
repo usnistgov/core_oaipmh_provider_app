@@ -6,8 +6,12 @@ from django.urls import re_path
 from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
     views as oai_metadata_format_views,
 )
-from core_oaipmh_provider_app.rest.oai_provider_set import views as oai_set_views
-from core_oaipmh_provider_app.rest.oai_settings import views as oai_settings_views
+from core_oaipmh_provider_app.rest.oai_provider_set import (
+    views as oai_set_views,
+)
+from core_oaipmh_provider_app.rest.oai_settings import (
+    views as oai_settings_views,
+)
 
 urlpatterns = [
     re_path(

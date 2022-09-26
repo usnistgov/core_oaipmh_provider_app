@@ -9,7 +9,9 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 from core_oaipmh_provider_app.rest.oai_provider_set import (
     views as rest_oai_provider_set,
 )
@@ -35,7 +37,9 @@ class TestSelectSet(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            rest_oai_provider_set.SetDetail.as_view(), user=user, param=self.param
+            rest_oai_provider_set.SetDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -168,10 +172,12 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            OaiProviderSet.objects.get(pk=self.first_set.id).set_spec, self.new_set_spec
+            OaiProviderSet.objects.get(pk=self.first_set.id).set_spec,
+            self.new_set_spec,
         )
         self.assertEqual(
-            OaiProviderSet.objects.get(pk=self.first_set.id).set_name, self.new_set_name
+            OaiProviderSet.objects.get(pk=self.first_set.id).set_name,
+            self.new_set_name,
         )
         self.assertEqual(
             OaiProviderSet.objects.get(pk=self.first_set.id).description,
@@ -179,7 +185,9 @@ class TestUpdateSet(MongoIntegrationBaseTestCase):
         )
         self.assertEqual(
             list(
-                OaiProviderSet.objects.get(pk=self.first_set.id).templates_manager.all()
+                OaiProviderSet.objects.get(
+                    pk=self.first_set.id
+                ).templates_manager.all()
             ),
             [self.new_template_version],
         )

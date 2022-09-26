@@ -42,7 +42,9 @@ class SetsList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
@@ -79,17 +81,23 @@ class SetsList(APIView):
             serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled("Set added with success.")
+            content = OaiPmhMessage.get_message_labelled(
+                "Set added with success."
+            )
 
             return Response(content, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions_oai.OAIAPIException as exception:
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class SetDetail(APIView):
@@ -129,7 +137,9 @@ class SetDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, set_id):
@@ -163,7 +173,9 @@ class SetDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, set_id):
@@ -202,11 +214,15 @@ class SetDetail(APIView):
             serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled("Set updated with success.")
+            content = OaiPmhMessage.get_message_labelled(
+                "Set updated with success."
+            )
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -217,4 +233,6 @@ class SetDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

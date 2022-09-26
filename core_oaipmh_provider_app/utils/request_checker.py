@@ -89,7 +89,8 @@ def check_illegal_and_required(legal, required, data):
     if len(illegal) > 0:
         for arg in illegal:
             error = (
-                'Arguments ("%s") was passed that was not valid for ' "this verb" % arg
+                'Arguments ("%s") was passed that was not valid for '
+                "this verb" % arg
             )
             errors.append(oai_provider_exceptions.BadArgument(error))
     # Check if a parameter is missing for the request

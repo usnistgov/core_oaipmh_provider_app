@@ -6,7 +6,9 @@ from django.db import models, IntegrityError
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
-from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.components.xsl_transformation.models import (
+    XslTransformation,
+)
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
@@ -15,8 +17,12 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 class OaiXslTemplate(models.Model):
     """Relation between a template, an OaiProviderMetadataFormat and a XSLT."""
 
-    template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
-    xslt = models.ForeignKey(XslTransformation, blank=False, on_delete=models.CASCADE)
+    template = models.ForeignKey(
+        Template, blank=False, on_delete=models.CASCADE
+    )
+    xslt = models.ForeignKey(
+        XslTransformation, blank=False, on_delete=models.CASCADE
+    )
     oai_metadata_format = models.ForeignKey(
         OaiProviderMetadataFormat,
         blank=False,
@@ -51,7 +57,9 @@ class OaiXslTemplate(models.Model):
             raise exceptions.ModelError(str(ex))
 
     @staticmethod
-    def get_by_template_id_and_metadata_format_id(template_id, metadata_format_id):
+    def get_by_template_id_and_metadata_format_id(
+        template_id, metadata_format_id
+    ):
         """Returns an OaiXslTemplate by its template and metadata_format.
         Args:
             template_id: Template id.
@@ -98,7 +106,9 @@ class OaiXslTemplate(models.Model):
             List of OaiXslTemplate.
 
         """
-        return OaiXslTemplate.objects.filter(oai_metadata_format=metadata_format).all()
+        return OaiXslTemplate.objects.filter(
+            oai_metadata_format=metadata_format
+        ).all()
 
     def save_object(self):
         """Custom save.

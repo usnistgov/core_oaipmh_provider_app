@@ -67,9 +67,9 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects.filter(is_default=True).order_by(
-            order_by_field
-        )
+        return OaiProviderMetadataFormat.objects.filter(
+            is_default=True
+        ).order_by(order_by_field)
 
     @staticmethod
     def get_all_template_metadata_format(order_by_field=None):
@@ -82,9 +82,9 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects.filter(is_template=True).order_by(
-            order_by_field
-        )
+        return OaiProviderMetadataFormat.objects.filter(
+            is_template=True
+        ).order_by(order_by_field)
 
     @staticmethod
     def get_all_no_template_metadata_format():
@@ -94,7 +94,9 @@ class OaiProviderMetadataFormat(OaiMetadataFormat):
             List of metadata format.
 
         """
-        return OaiProviderMetadataFormat.objects.filter(is_template=False or None).all()
+        return OaiProviderMetadataFormat.objects.filter(
+            is_template=False or None
+        ).all()
 
     @staticmethod
     def get_all_by_templates(templates):

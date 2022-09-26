@@ -12,7 +12,9 @@ from core_main_app.commons import exceptions as common_exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template.models import Template
 from core_main_app.components.workspace import api as workspace_api
-from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.components.xsl_transformation.models import (
+    XslTransformation,
+)
 from core_main_app.system import api as system_api
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_provider_app.commons import exceptions, status as oai_status
@@ -27,13 +29,19 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set import (
     api as oai_provider_set_api,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template import (
     api as oai_xsl_template_api,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 from core_oaipmh_provider_app.utils import request_checker
 from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.mocks import MockQuerySet
@@ -58,7 +66,9 @@ class TestServerGeneral(TestOaiPmhSuite):
         )
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     @patch.object(oai_settings_api, "get")
     def test_no_harvesting(self, mock_get):
@@ -93,7 +103,9 @@ class TestServerGeneral(TestOaiPmhSuite):
         self.assertTrue(
             isinstance(response.context_data["errors"][0], exceptions.BadVerb)
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_VERB)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_VERB
+        )
 
     @patch.object(oai_settings_api, "get")
     @patch.object(HttpRequest, "build_absolute_uri")
@@ -114,7 +126,9 @@ class TestServerGeneral(TestOaiPmhSuite):
         self.assertTrue(
             isinstance(response.context_data["errors"][0], exceptions.BadVerb)
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_VERB)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_VERB
+        )
 
 
 class TestIdentify(TestOaiPmhSuite):
@@ -137,9 +151,13 @@ class TestIdentify(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
 
 class TestListSets(TestOaiPmhSuite):
@@ -162,9 +180,13 @@ class TestListSets(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -229,7 +251,9 @@ class TestListSets(TestOaiPmhSuite):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, "ListSets")
-        self.check_tag_count(response.rendered_content, "set", len(list_oai_sets))
+        self.check_tag_count(
+            response.rendered_content, "set", len(list_oai_sets)
+        )
 
 
 class TestListIdentifiers(TestOaiPmhSuite):
@@ -254,9 +278,13 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -279,9 +307,13 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -304,9 +336,13 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(HttpRequest, "build_absolute_uri")
@@ -319,7 +355,9 @@ class TestListIdentifiers(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_get_by_metadata_prefix.side_effect = common_exceptions.DoesNotExist("")
+        mock_get_by_metadata_prefix.side_effect = (
+            common_exceptions.DoesNotExist("")
+        )
         bad_arg = {"verb": "ListIdentifiers", "metadataPrefix": "dummy"}
 
         # Act
@@ -330,7 +368,8 @@ class TestListIdentifiers(TestOaiPmhSuite):
         # Assert
         self.assertTrue(
             isinstance(
-                response.context_data["errors"][0], exceptions.CannotDisseminateFormat
+                response.context_data["errors"][0],
+                exceptions.CannotDisseminateFormat,
             )
         )
         self.check_tag_error_code(
@@ -374,7 +413,9 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.NoRecordsMatch)
+            isinstance(
+                response.context_data["errors"][0], exceptions.NoRecordsMatch
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.NO_RECORDS_MATCH
@@ -417,7 +458,9 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.NoRecordsMatch)
+            isinstance(
+                response.context_data["errors"][0], exceptions.NoRecordsMatch
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.NO_RECORDS_MATCH
@@ -430,7 +473,9 @@ class TestListMetadataFormats(TestOaiPmhSuite):
     @patch.object(oai_provider_metadata_format_api, "get_all")
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
-    def test_list_metadata_format_no_data(self, mock_get, mock_request, mock_get_all):
+    def test_list_metadata_format_no_data(
+        self, mock_get, mock_request, mock_get_all
+    ):
         """test_list_metadata_format_no_data"""
 
         # Arrange
@@ -446,7 +491,9 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.NoMetadataFormat)
+            isinstance(
+                response.context_data["errors"][0], exceptions.NoMetadataFormat
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.NO_METADATA_FORMAT
@@ -473,7 +520,9 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.IdDoesNotExist)
+            isinstance(
+                response.context_data["errors"][0], exceptions.IdDoesNotExist
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.ID_DOES_NOT_EXIST
@@ -509,18 +558,26 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.IdDoesNotExist)
+            isinstance(
+                response.context_data["errors"][0], exceptions.IdDoesNotExist
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.ID_DOES_NOT_EXIST
         )
 
-    @patch.object(oai_provider_metadata_format_api, "get_metadata_format_schema_url")
+    @patch.object(
+        oai_provider_metadata_format_api, "get_metadata_format_schema_url"
+    )
     @patch.object(oai_provider_metadata_format_api, "get_all")
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_metadata_format_identifier(
-        self, mock_get, mock_request, mock_get_all, mock_get_metadata_format_schema_url
+        self,
+        mock_get,
+        mock_request,
+        mock_get_all,
+        mock_get_metadata_format_schema_url,
     ):
         """test_list_metadata_format_identifier"""
 
@@ -544,10 +601,14 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, "ListMetadataFormats")
         self.check_tag_count(
-            response.rendered_content, "metadataFormat", len(list_metadata_formats)
+            response.rendered_content,
+            "metadataFormat",
+            len(list_metadata_formats),
         )
 
-    @patch.object(oai_provider_metadata_format_api, "get_metadata_format_schema_url")
+    @patch.object(
+        oai_provider_metadata_format_api, "get_metadata_format_schema_url"
+    )
     @patch.object(oai_xsl_template_api, "get_metadata_formats_by_templates")
     @patch.object(oai_provider_metadata_format_api, "get_all_by_templates")
     @patch.object(data_api, "get_by_id")
@@ -586,7 +647,9 @@ class TestListMetadataFormats(TestOaiPmhSuite):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, "ListMetadataFormats")
         self.check_tag_count(
-            response.rendered_content, "metadataFormat", len(list_metadata_formats)
+            response.rendered_content,
+            "metadataFormat",
+            len(list_metadata_formats),
         )
 
 
@@ -610,9 +673,13 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -631,9 +698,13 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -643,7 +714,11 @@ class TestGetRecord(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
+        data = {
+            "verb": "GetRecord",
+            "metadataPrefix": "dummy",
+            "identifier": "dummy",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -652,7 +727,9 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.IdDoesNotExist)
+            isinstance(
+                response.context_data["errors"][0], exceptions.IdDoesNotExist
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.ID_DOES_NOT_EXIST
@@ -672,7 +749,11 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_request.return_value = ""
         mock_check_identifier.return_value = 1
         mock_get_by_data.side_effect = common_exceptions.DoesNotExist("")
-        data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
+        data = {
+            "verb": "GetRecord",
+            "metadataPrefix": "dummy",
+            "identifier": "dummy",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -681,7 +762,9 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.IdDoesNotExist)
+            isinstance(
+                response.context_data["errors"][0], exceptions.IdDoesNotExist
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.ID_DOES_NOT_EXIST
@@ -707,8 +790,14 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_request.return_value = ""
         mock_check_identifier.return_value = 1
         mock_get_by_data.return_value = object()
-        mock_get_by_metadata_prefix.side_effect = common_exceptions.DoesNotExist("")
-        data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
+        mock_get_by_metadata_prefix.side_effect = (
+            common_exceptions.DoesNotExist("")
+        )
+        data = {
+            "verb": "GetRecord",
+            "metadataPrefix": "dummy",
+            "identifier": "dummy",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -718,7 +807,8 @@ class TestGetRecord(TestOaiPmhSuite):
         # Assert
         self.assertTrue(
             isinstance(
-                response.context_data["errors"][0], exceptions.CannotDisseminateFormat
+                response.context_data["errors"][0],
+                exceptions.CannotDisseminateFormat,
             )
         )
         self.check_tag_error_code(
@@ -772,7 +862,11 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_get_by_data.return_value = mock_oai_data
         mock_get_by_metadata_prefix.return_value = mock_metadata_format
         mock_get_all_by_template_ids.return_value = ""
-        data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
+        data = {
+            "verb": "GetRecord",
+            "metadataPrefix": "dummy",
+            "identifier": "dummy",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -785,7 +879,9 @@ class TestGetRecord(TestOaiPmhSuite):
         self.assertEqual(response.status_code, HTTP_200_OK)
 
     @patch.object(xsl_transformation_api, "xsl_transform")
-    @patch.object(oai_xsl_template_api, "get_by_template_id_and_metadata_format_id")
+    @patch.object(
+        oai_xsl_template_api, "get_by_template_id_and_metadata_format_id"
+    )
     @patch.object(oai_provider_set_api, "get_all_by_template_ids")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(oai_data_api, "get_by_data")
@@ -817,7 +913,9 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_oai_template.id = 1
 
         mock_metadata_format = Mock(spec=OaiProviderMetadataFormat)
-        mock_metadata_format.is_template = False  # Will trigger use_raw = False
+        mock_metadata_format.is_template = (
+            False  # Will trigger use_raw = False
+        )
         mock_metadata_format.template = mock_oai_template
 
         mock_oai_data = Mock(spec=OaiData)
@@ -843,10 +941,16 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_get_by_data.return_value = mock_oai_data
         mock_get_by_metadata_prefix.return_value = mock_metadata_format
         mock_get_all_by_template_ids.return_value = ""
-        mock_get_by_template_id_and_metadata_format_id.return_value = mock_oai_xslt
+        mock_get_by_template_id_and_metadata_format_id.return_value = (
+            mock_oai_xslt
+        )
         mock_xsl_transform.return_value = mock_cleaned_xml
 
-        data = {"verb": "GetRecord", "metadataPrefix": "dummy", "identifier": "dummy"}
+        data = {
+            "verb": "GetRecord",
+            "metadataPrefix": "dummy",
+            "identifier": "dummy",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -864,7 +968,9 @@ class TestListRecords(TestOaiPmhSuite):
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
-    def test_list_records_error_metadata_prefix_missing(self, mock_get, mock_request):
+    def test_list_records_error_metadata_prefix_missing(
+        self, mock_get, mock_request
+    ):
         """test_list_records_error_metadata_prefix_missing"""
 
         # Arrange
@@ -879,9 +985,13 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -891,7 +1001,11 @@ class TestListRecords(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        bad_arg = {"verb": "ListRecords", "metadataPrefix": "dummy", "from": "bad_date"}
+        bad_arg = {
+            "verb": "ListRecords",
+            "metadataPrefix": "dummy",
+            "from": "bad_date",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -900,9 +1014,13 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
@@ -925,9 +1043,13 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.BadArgument)
+            isinstance(
+                response.context_data["errors"][0], exceptions.BadArgument
+            )
         )
-        self.check_tag_error_code(response.rendered_content, exceptions.BAD_ARGUMENT)
+        self.check_tag_error_code(
+            response.rendered_content, exceptions.BAD_ARGUMENT
+        )
 
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(HttpRequest, "build_absolute_uri")
@@ -940,7 +1062,9 @@ class TestListRecords(TestOaiPmhSuite):
         # Arrange
         mock_get.return_value = _create_mock_oai_settings()
         mock_request.return_value = ""
-        mock_get_by_metadata_prefix.side_effect = common_exceptions.DoesNotExist("")
+        mock_get_by_metadata_prefix.side_effect = (
+            common_exceptions.DoesNotExist("")
+        )
         bad_arg = {"verb": "ListRecords", "metadataPrefix": "dummy"}
 
         # Act
@@ -951,7 +1075,8 @@ class TestListRecords(TestOaiPmhSuite):
         # Assert
         self.assertTrue(
             isinstance(
-                response.context_data["errors"][0], exceptions.CannotDisseminateFormat
+                response.context_data["errors"][0],
+                exceptions.CannotDisseminateFormat,
             )
         )
         self.check_tag_error_code(
@@ -982,7 +1107,11 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_by_metadata_prefix.return_value = []
         mock_get_template_ids.return_value = [1]
         mock_get_by_set_spec.side_effect = common_exceptions.DoesNotExist("")
-        data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
+        data = {
+            "verb": "ListRecords",
+            "metadataPrefix": "dummy",
+            "set": "dummy_set",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -991,7 +1120,9 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.NoRecordsMatch)
+            isinstance(
+                response.context_data["errors"][0], exceptions.NoRecordsMatch
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.NO_RECORDS_MATCH
@@ -1021,7 +1152,11 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_by_metadata_prefix.return_value = []
         mock_get_templates_id_by_set_spec.return_value = []
         mock_get_all_by_template.return_value = []
-        data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
+        data = {
+            "verb": "ListRecords",
+            "metadataPrefix": "dummy",
+            "set": "dummy_set",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -1030,7 +1165,9 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Assert
         self.assertTrue(
-            isinstance(response.context_data["errors"][0], exceptions.NoRecordsMatch)
+            isinstance(
+                response.context_data["errors"][0], exceptions.NoRecordsMatch
+            )
         )
         self.check_tag_error_code(
             response.rendered_content, exceptions.NO_RECORDS_MATCH
@@ -1090,7 +1227,11 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_all_by_data_list.return_value = mock_oai_data_qs
         mock_get_all_by_template_ids.return_value = []
 
-        data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
+        data = {
+            "verb": "ListRecords",
+            "metadataPrefix": "dummy",
+            "set": "dummy_set",
+        }
 
         # Act
         response = RequestMock.do_request_get(
@@ -1107,7 +1248,9 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(oai_data_api, "get_all_by_data_list")
     @patch.object(system_api, "get_all_data_in_workspaces_for_templates")
     @patch.object(workspace_api, "get_all_public_workspaces")
-    @patch.object(oai_xsl_template_api, "get_by_template_id_and_metadata_format_id")
+    @patch.object(
+        oai_xsl_template_api, "get_by_template_id_and_metadata_format_id"
+    )
     @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(oai_xsl_template_api, "get_template_ids_by_metadata_format")
@@ -1152,7 +1295,9 @@ class TestListRecords(TestOaiPmhSuite):
         mock_xslt.name = "dummy"
         mock_oai_xslt.xslt = mock_xslt
 
-        mock_get_by_template_id_and_metadata_format_id.return_value = mock_oai_xslt
+        mock_get_by_template_id_and_metadata_format_id.return_value = (
+            mock_oai_xslt
+        )
 
         mock_oai_data = Mock(spec=OaiData)
         mock_oai_data.status = oai_status.ACTIVE
@@ -1174,7 +1319,11 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_all_by_template_ids.return_value = []
         mock_xsl_transform.return_value = mock_cleaned_xml
 
-        data = {"verb": "ListRecords", "metadataPrefix": "dummy", "set": "dummy_set"}
+        data = {
+            "verb": "ListRecords",
+            "metadataPrefix": "dummy",
+            "set": "dummy_set",
+        }
 
         # Act
         response = RequestMock.do_request_get(

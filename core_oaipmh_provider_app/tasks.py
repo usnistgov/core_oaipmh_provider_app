@@ -8,7 +8,9 @@ from django.core import serializers
 
 from core_main_app.system import api as data_system_api
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 
 logger = logging.getLogger(__name__)
 

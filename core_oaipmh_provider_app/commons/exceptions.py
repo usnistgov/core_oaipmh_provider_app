@@ -70,7 +70,8 @@ class CannotDisseminateFormat(OAIException):
     def __init__(self, metadata_prefix):
         self.message = (
             "The metadata format identified by the value given for the metadataPrefix argument"
-            " (%s) is not supported by the item or by the repository." % metadata_prefix
+            " (%s) is not supported by the item or by the repository."
+            % metadata_prefix
         )
         self.code = DISSEMINATE_FORMAT
 
@@ -101,7 +102,9 @@ class NoMetadataFormat(OAIException):
     """No Metadata Format"""
 
     def __init__(self):
-        self.message = "There are no metadata formats available for the specified item."
+        self.message = (
+            "There are no metadata formats available for the specified item."
+        )
         self.code = NO_METADATA_FORMAT
 
 

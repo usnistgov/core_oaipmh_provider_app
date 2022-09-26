@@ -17,7 +17,9 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
 from core_oaipmh_provider_app.components.oai_provider_set import (
     api as oai_provider_set_api,
 )
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 from core_oaipmh_provider_app.components.oai_xsl_template import (
     api as oai_xsl_template_api,
 )
@@ -41,7 +43,9 @@ def identity_view(request):
             },
             EditObjectModalView.get_modal_js_path(),
         ],
-        "css": ["core_oaipmh_provider_app/admin/css/registry/identity/table_info.css"],
+        "css": [
+            "core_oaipmh_provider_app/admin/css/registry/identity/table_info.css"
+        ],
     }
 
     modals = [EditObjectModalView.get_modal_html_path()]
@@ -64,7 +68,10 @@ def identity_view(request):
         "enable_harvesting": info.enable_harvesting,
     }
 
-    context = {"data_provider": data_provider, "object_name": info.repository_name}
+    context = {
+        "data_provider": data_provider,
+        "object_name": info.repository_name,
+    }
 
     return admin_render(
         request,
@@ -103,8 +110,10 @@ def metadata_formats_view(request):
     ]
 
     order_field = "metadata_prefix"
-    default_metadata_formats = oai_metadata_format_api.get_all_default_metadata_format(
-        order_by_field=order_field
+    default_metadata_formats = (
+        oai_metadata_format_api.get_all_default_metadata_format(
+            order_by_field=order_field
+        )
     )
     metadata_formats = oai_metadata_format_api.get_all_custom_metadata_format(
         order_by_field=order_field
@@ -164,7 +173,9 @@ def sets_view(request):
         DeleteObjectModalView.get_modal_html_path(),
     ]
 
-    context = {"sets": oai_provider_set_api.get_all(order_by_field=["set_spec"])}
+    context = {
+        "sets": oai_provider_set_api.get_all(order_by_field=["set_spec"])
+    }
 
     return admin_render(
         request,
@@ -257,7 +268,9 @@ def _get_xsl_templates(metadata_format):
 
     """
     items_xsl_templates = []
-    xsl_templates = oai_xsl_template_api.get_all_by_metadata_format(metadata_format)
+    xsl_templates = oai_xsl_template_api.get_all_by_metadata_format(
+        metadata_format
+    )
     for item in xsl_templates:
         item_info = {
             "id": item.id,

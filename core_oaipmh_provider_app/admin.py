@@ -11,10 +11,16 @@ from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
+from core_oaipmh_provider_app.components.oai_request_page.models import (
+    OaiRequestPage,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 from core_oaipmh_provider_app.views.admin import (
     ajax as admin_ajax,
     views as admin_views,
@@ -65,7 +71,9 @@ admin_urls = [
     ),
     re_path(
         r"^provider/metadata_formats/template/add",
-        staff_member_required(admin_ajax.AddTemplateMetadataFormatView.as_view()),
+        staff_member_required(
+            admin_ajax.AddTemplateMetadataFormatView.as_view()
+        ),
         name="core_oaipmh_provider_app_add_template_metadata_format",
     ),
     re_path(

@@ -25,13 +25,19 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 from core_oaipmh_provider_app.components.oai_provider_set import (
     api as oai_provider_set_api,
 )
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
-from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
+from core_oaipmh_provider_app.components.oai_settings import (
+    api as oai_settings_api,
+)
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 from core_oaipmh_provider_app.components.oai_xsl_template import (
     api as oai_xsl_template_api,
 )
-from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.components.oai_xsl_template.models import (
+    OaiXslTemplate,
+)
 from core_oaipmh_provider_app.views.admin.forms import (
     EditIdentityForm,
     MetadataFormatForm,
@@ -91,14 +97,18 @@ class AddMetadataFormatView(AddObjectModalView):
 
     form_class = MetadataFormatForm
     model = OaiProviderMetadataFormat
-    success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_metadata_formats")
+    success_url = reverse_lazy(
+        "core-admin:core_oaipmh_provider_app_metadata_formats"
+    )
     success_message = "Metadata Format created with success."
 
     def _save(self, form):
         # Save treatment.
         try:
             oai_provider_metadata_format_api.add_metadata_format(
-                self.object.metadata_prefix, self.object.schema, request=self.request
+                self.object.metadata_prefix,
+                self.object.schema,
+                request=self.request,
             )
         except Exception as exception:
             form.add_error(None, str(exception))
@@ -108,7 +118,9 @@ class DeleteMetadataFormatView(DeleteObjectModalView):
     """Delete Metadata Format View"""
 
     model = OaiProviderMetadataFormat
-    success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_metadata_formats")
+    success_url = reverse_lazy(
+        "core-admin:core_oaipmh_provider_app_metadata_formats"
+    )
     success_message = "Metadata Format deleted with success."
     field_for_name = "metadata_prefix"
 
@@ -122,13 +134,17 @@ class EditMetadataFormatView(EditObjectModalView):
 
     form_class = EditMetadataFormatForm
     model = OaiProviderMetadataFormat
-    success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_metadata_formats")
+    success_url = reverse_lazy(
+        "core-admin:core_oaipmh_provider_app_metadata_formats"
+    )
     success_message = "Metadata Format edited with success."
 
     def _save(self, form):
         # Save treatment.
         try:
-            oai_provider_metadata_format_api.upsert(self.object, request=self.request)
+            oai_provider_metadata_format_api.upsert(
+                self.object, request=self.request
+            )
         except NotUniqueError:
             form.add_error(
                 None,
@@ -144,14 +160,18 @@ class AddTemplateMetadataFormatView(AddObjectModalView):
 
     form_class = TemplateMetadataFormatForm
     model = OaiProviderMetadataFormat
-    success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_metadata_formats")
+    success_url = reverse_lazy(
+        "core-admin:core_oaipmh_provider_app_metadata_formats"
+    )
     success_message = "Template Metadata Format created with success."
 
     def _save(self, form):
         # Save treatment.
         try:
             oai_provider_metadata_format_api.add_template_metadata_format(
-                self.object.metadata_prefix, self.object.template.id, self.request
+                self.object.metadata_prefix,
+                self.object.template.id,
+                self.request,
             )
         except Exception as exception:
             form.add_error(None, str(exception))
@@ -177,7 +197,9 @@ class AddSetView(AddObjectModalView):
     def _save(self, form):
         try:
             saved_object = oai_provider_set_api.upsert(self.object)
-            saved_object.templates_manager.set(form.cleaned_data["templates_manager"])
+            saved_object.templates_manager.set(
+                form.cleaned_data["templates_manager"]
+            )
             oai_provider_set_api.upsert(saved_object)
         except Exception as exception:
             form.add_error(None, str(exception))
@@ -216,7 +238,9 @@ class EditSetView(EditObjectModalView):
     def _save(self, form):
         try:
             saved_object = oai_provider_set_api.upsert(self.object)
-            saved_object.templates_manager.set(form.cleaned_data["templates_manager"])
+            saved_object.templates_manager.set(
+                form.cleaned_data["templates_manager"]
+            )
             oai_provider_set_api.upsert(saved_object)
         except Exception as exception:
             form.add_error(None, str(exception))

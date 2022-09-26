@@ -32,7 +32,9 @@ class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
 
         super().setUp()
         self.param = {
-            "metadata_format_id": str(OaiPmhMock().mock_oai_first_metadata_format().id)
+            "metadata_format_id": str(
+                OaiPmhMock().mock_oai_first_metadata_format().id
+            )
         }
 
     def test_select_metadata_format_returns(self):
@@ -118,7 +120,8 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
-            len(OaiProviderMetadataFormat.objects.all()), self.nb_metadata_formats + 1
+            len(OaiProviderMetadataFormat.objects.all()),
+            self.nb_metadata_formats + 1,
         )
 
 
@@ -135,7 +138,9 @@ class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
             "metadata_prefix": "oai_test",
             "template_id": str(OaiPmhMock.mock_oai_first_template().id),
         }
-        self.nb_template_metadata_formats = len(OaiProviderMetadataFormat.objects.all())
+        self.nb_template_metadata_formats = len(
+            OaiProviderMetadataFormat.objects.all()
+        )
 
     def test_add_template_metadata_format(self):
         """test_add_template_metadata_format"""
@@ -168,7 +173,9 @@ class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
 
         super().setUp()
         self.param = {
-            "metadata_format_id": str(OaiPmhMock().mock_oai_first_metadata_format().id)
+            "metadata_format_id": str(
+                OaiPmhMock().mock_oai_first_metadata_format().id
+            )
         }
         self.nb_metadata_formats = len(OaiProviderMetadataFormat.objects.all())
 
@@ -188,7 +195,8 @@ class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(
-            len(OaiProviderMetadataFormat.objects.all()), self.nb_metadata_formats - 1
+            len(OaiProviderMetadataFormat.objects.all()),
+            self.nb_metadata_formats - 1,
         )
 
 
@@ -201,7 +209,9 @@ class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
         """setUp"""
 
         super().setUp()
-        self.first_metadata_format = OaiPmhMock.mock_oai_first_metadata_format()
+        self.first_metadata_format = (
+            OaiPmhMock.mock_oai_first_metadata_format()
+        )
         self.new_metadata_prefix = "{0}_new".format(
             self.first_metadata_format.metadata_prefix
         )

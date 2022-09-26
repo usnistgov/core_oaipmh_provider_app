@@ -18,7 +18,9 @@ class SettingsGetPermission(SimpleTestCase):
     def test_anonymous_returns_http_403(self):
         """test_anonymous_returns_http_403"""
 
-        response = RequestMock.do_request_get(settings_views.Settings.as_view(), None)
+        response = RequestMock.do_request_get(
+            settings_views.Settings.as_view(), None
+        )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -57,7 +59,9 @@ class SettingsPatchPermission(SimpleTestCase):
     def test_anonymous_returns_http_403(self):
         """test_anonymous_returns_http_403"""
 
-        response = RequestMock.do_request_patch(settings_views.Settings.as_view(), None)
+        response = RequestMock.do_request_patch(
+            settings_views.Settings.as_view(), None
+        )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -104,7 +108,9 @@ class CheckGetPermission(SimpleTestCase):
     def test_anonymous_returns_http_403(self):
         """test_anonymous_returns_http_403"""
 
-        response = RequestMock.do_request_get(settings_views.Check.as_view(), None)
+        response = RequestMock.do_request_get(
+            settings_views.Check.as_view(), None
+        )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -113,7 +119,9 @@ class CheckGetPermission(SimpleTestCase):
 
         mock_user = create_mock_user("1")
 
-        response = RequestMock.do_request_get(settings_views.Check.as_view(), mock_user)
+        response = RequestMock.do_request_get(
+            settings_views.Check.as_view(), mock_user
+        )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -126,7 +134,9 @@ class CheckGetPermission(SimpleTestCase):
         )
         mock_user = create_mock_user("1", is_staff=True)
 
-        response = RequestMock.do_request_get(settings_views.Check.as_view(), mock_user)
+        response = RequestMock.do_request_get(
+            settings_views.Check.as_view(), mock_user
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

@@ -15,7 +15,9 @@ from core_main_app.components.template_version_manager.models import (
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
-from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_provider_set.models import (
+    OaiProviderSet,
+)
 
 
 class TestOaiProviderSetUpsert(TestCase):
@@ -39,7 +41,9 @@ class TestOaiProviderSetUpsert(TestCase):
         self.assertIsInstance(result, OaiProviderSet)
 
     @patch.object(OaiProviderSet, "save")
-    def test_oai_provider_set_upsert_raises_error_if_save_failed(self, mock_save):
+    def test_oai_provider_set_upsert_raises_error_if_save_failed(
+        self, mock_save
+    ):
         """test_oai_provider_set_upsert_raises_error_if_save_failed"""
 
         # Arrange
@@ -70,7 +74,9 @@ class TestOaiProviderSetGetById(TestCase):
         self.assertIsInstance(result, OaiProviderSet)
 
     @patch.object(OaiProviderSet, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -83,7 +89,9 @@ class TestOaiProviderSetGetById(TestCase):
             provider_set_api.get_by_id(mock_absent_id)
 
     @patch.object(OaiProviderSet, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -109,13 +117,17 @@ class TestOaiProviderSetGetBySetSpec(TestCase):
         mock_get.return_value = mock_oai_provider_set
 
         # Act
-        result = provider_set_api.get_by_set_spec(mock_oai_provider_set.set_spec)
+        result = provider_set_api.get_by_set_spec(
+            mock_oai_provider_set.set_spec
+        )
 
         # Assert
         self.assertIsInstance(result, OaiProviderSet)
 
     @patch.object(OaiProviderSet, "get_by_set_spec")
-    def test_get_by_set_spec_raises_exception_if_object_does_not_exist(self, mock_get):
+    def test_get_by_set_spec_raises_exception_if_object_does_not_exist(
+        self, mock_get
+    ):
         """test_get_by_set_spec_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -128,7 +140,9 @@ class TestOaiProviderSetGetBySetSpec(TestCase):
             provider_set_api.get_by_set_spec(mock_absent_set_spec)
 
     @patch.object(OaiProviderSet, "get_by_set_spec")
-    def test_get_by_set_spec_raises_exception_if_internal_error(self, mock_get):
+    def test_get_by_set_spec_raises_exception_if_internal_error(
+        self, mock_get
+    ):
         """test_get_by_set_spec_raises_exception_if_internal_error"""
 
         # Arrange
@@ -152,13 +166,18 @@ class TestOaiProviderSetGetAll(TestCase):
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
         mock_oai_provider_set2 = _create_mock_oai_provider_set()
 
-        mock_get_all.return_value = [mock_oai_provider_set1, mock_oai_provider_set2]
+        mock_get_all.return_value = [
+            mock_oai_provider_set1,
+            mock_oai_provider_set2,
+        ]
 
         # Act
         result = provider_set_api.get_all()
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiProviderSet) for item in result)
+        )
 
 
 class TestOaiProviderSetGetAllByTemplatesManager(TestCase):
@@ -172,7 +191,10 @@ class TestOaiProviderSetGetAllByTemplatesManager(TestCase):
         mock_oai_provider_set1 = _create_mock_oai_provider_set()
         mock_oai_provider_set2 = _create_mock_oai_provider_set()
 
-        mock_get.return_value = [mock_oai_provider_set1, mock_oai_provider_set2]
+        mock_get.return_value = [
+            mock_oai_provider_set1,
+            mock_oai_provider_set2,
+        ]
 
         # Act
         result = provider_set_api.get_all_by_templates_manager(
@@ -180,7 +202,9 @@ class TestOaiProviderSetGetAllByTemplatesManager(TestCase):
         )
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiProviderSet) for item in result)
+        )
 
 
 class TestOaiProviderSetGetAllByTemplates(TestCase):
@@ -209,10 +233,14 @@ class TestOaiProviderSetGetAllByTemplates(TestCase):
         mock_template_api_get_by_id.return_value = _create_mock_template()
 
         # Act
-        result = provider_set_api.get_all_by_template_ids([template_id], mock_request)
+        result = provider_set_api.get_all_by_template_ids(
+            [template_id], mock_request
+        )
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiProviderSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiProviderSet) for item in result)
+        )
 
 
 class TestOaiProviderSetDelete(TestCase):

@@ -75,7 +75,9 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, "ListIdentifiers")
         self.check_tag_count(
-            response.rendered_content, "identifier", self.fixture.nb_public_data
+            response.rendered_content,
+            "identifier",
+            self.fixture.nb_public_data,
         )
 
     @patch.object(Data, "xml_content", new_callable=PropertyMock)
@@ -98,8 +100,12 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
             response.rendered_content, "record", self.fixture.nb_public_data
         )
 
-    @patch.object(oai_provider_metadata_format_api, "get_metadata_format_schema_url")
-    def test_get_list_metadata_formats(self, mock_get_metadata_format_schema_url):
+    @patch.object(
+        oai_provider_metadata_format_api, "get_metadata_format_schema_url"
+    )
+    def test_get_list_metadata_formats(
+        self, mock_get_metadata_format_schema_url
+    ):
         """test_get_list_metadata_formats"""
 
         # Arrange
@@ -120,7 +126,9 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
             len(self.fixture.oai_metadata_formats),
         )
 
-    @patch.object(oai_provider_metadata_format_api, "get_metadata_format_schema_url")
+    @patch.object(
+        oai_provider_metadata_format_api, "get_metadata_format_schema_url"
+    )
     def test_get_list_metadata_formats_with_identifier(
         self, mock_get_metadata_format_schema_url
     ):

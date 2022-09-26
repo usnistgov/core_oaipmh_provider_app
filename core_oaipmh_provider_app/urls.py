@@ -13,6 +13,8 @@ urlpatterns = [
         name="core_oaipmh_provider_app_get_xsd",
     ),
     re_path(
-        r"^$", OAIProviderView.as_view(), name="core_oaipmh_provider_app_server_index"
+        r"^$",
+        OAIProviderView.as_view(),
+        name="core_oaipmh_provider_app_server_index",
     ),
 ]

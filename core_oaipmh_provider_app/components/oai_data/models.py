@@ -20,7 +20,9 @@ class OaiData(models.Model):
     data = models.ForeignKey(Data, blank=False, on_delete=models.CASCADE)
     oai_date_stamp = models.DateTimeField(blank=False, null=True, default=None)
     status = models.CharField(blank=False, max_length=200)
-    template = models.ForeignKey(Template, blank=False, on_delete=models.CASCADE)
+    template = models.ForeignKey(
+        Template, blank=False, on_delete=models.CASCADE
+    )
 
     class Meta:
         """Meta"""
@@ -143,7 +145,9 @@ class OaiData(models.Model):
 
         """
         try:
-            earliest_record = OaiData.objects.order_by("oai_date_stamp").first()
+            earliest_record = OaiData.objects.order_by(
+                "oai_date_stamp"
+            ).first()
 
             return earliest_record.oai_date_stamp
         except Exception as ex:

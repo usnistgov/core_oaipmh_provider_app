@@ -6,7 +6,9 @@ import string
 
 from core_main_app.commons import exceptions
 from core_oaipmh_provider_app.commons import constants
-from core_oaipmh_provider_app.components.oai_request_page.models import OaiRequestPage
+from core_oaipmh_provider_app.components.oai_request_page.models import (
+    OaiRequestPage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -60,4 +62,6 @@ def upsert(oai_request_page_object):
                 "Error while saving OAIRequestPage object: %s", str(exception)
             )
 
-    raise exceptions.ApiError("Exceeded number of tries to save OAIRequestPage")
+    raise exceptions.ApiError(
+        "Exceeded number of tries to save OAIRequestPage"
+    )
