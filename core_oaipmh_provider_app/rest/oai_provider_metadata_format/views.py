@@ -78,7 +78,7 @@ class MetadataFormatsList(APIView):
                 data=request.data, context={"request": request}
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             return serializer.save()
         except ValidationError as validation_exception:
@@ -212,7 +212,7 @@ class MetadataFormatDetail(APIView):
                 context={"request": request},
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
@@ -268,7 +268,7 @@ class TemplateAsMetadataFormat(APIView):
                 data=request.data, context={"request": request}
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             return serializer.save()
         except ValidationError as validation_exception:
@@ -316,7 +316,7 @@ class TemplateMetadataFormatXSLT(APIView):
                 data=request.data
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Try to set the instance
             serializer.init_instance()
             # Save data
@@ -370,7 +370,7 @@ class TemplateMetadataFormatXSLT(APIView):
                 data=request.data
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Get template id
             template_id = serializer.data.get("template_id")
             # Get metadata format id

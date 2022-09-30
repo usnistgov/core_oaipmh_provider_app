@@ -76,7 +76,7 @@ class SetsList(APIView):
                 data=request.data, context={"request": request}
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled("Set added with success.")
@@ -199,7 +199,7 @@ class SetDetail(APIView):
                 instance=set_, data=request.data, context={"request": request}
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled("Set updated with success.")

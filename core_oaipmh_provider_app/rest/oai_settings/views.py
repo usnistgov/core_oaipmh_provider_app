@@ -74,7 +74,7 @@ class Settings(APIView):
                 instance=settings_, data=request.data
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
