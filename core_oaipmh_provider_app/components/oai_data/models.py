@@ -17,11 +17,13 @@ from core_main_app.components.template.models import Template
 class OaiData(models.Model):
     """Represents a data for Oai-Pmh Provider"""
 
-    data = models.ForeignKey(Data, blank=False, on_delete=models.CASCADE)
+    data = models.ForeignKey(
+        Data, blank=False, null=True, on_delete=models.SET_NULL
+    )
     oai_date_stamp = models.DateTimeField(blank=False, null=True, default=None)
     status = models.CharField(blank=False, max_length=200)
     template = models.ForeignKey(
-        Template, blank=False, on_delete=models.CASCADE
+        Template, blank=False, null=True, on_delete=models.SET_NULL
     )
 
     class Meta:
@@ -159,4 +161,4 @@ class OaiData(models.Model):
         Returns:
 
         """
-        return f"{self.data.title} ({self.pk})"
+        return f"{self.data.title if self.data else 'DELETED'} ({self.pk})"

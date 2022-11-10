@@ -4,7 +4,7 @@ Handle signals.
 import logging
 from datetime import datetime
 
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, pre_delete
 
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
@@ -17,25 +17,25 @@ logger = logging.getLogger(__name__)
 def init():
     """Connect to Data object events."""
     post_save.connect(post_save_data, sender=Data)
-    post_delete.connect(post_delete_data, sender=Data)
+    pre_delete.connect(pre_delete_data, sender=Data)
 
 
 def post_save_data(sender, instance, **kwargs):
-    """Method executed after a saving of a Data object.
+    """Method executed after saving a Data object.
     Args:
         sender: Class.
-        instance: OaiData document.
+        instance: Data.
         **kwargs: Args.
 
     """
     oai_data_api.upsert_from_data(instance, force_update=True)
 
 
-def post_delete_data(sender, instance, **kwargs):
-    """Method executed after a deletion of a Data object.
+def pre_delete_data(sender, instance, **kwargs):
+    """Method executed before deleting a Data object.
     Args:
         sender: Class.
-        instance: OaiData document.
+        instance: Data.
         **kwargs: Args.
 
     """
@@ -47,10 +47,10 @@ def post_delete_data(sender, instance, **kwargs):
         oai_data_api.upsert(oai_data)
     except exceptions.DoesNotExist:
         logger.warning(
-            "post_delete_data: no oai data found for the given document: %s",
+            "pre_delete_data: no oai data found for the given document: %s",
             str(instance.pk),
         )
     except Exception as exception:
         logger.warning(
-            "post_delete_data threw an exception: %s", str(exception)
+            "pre_delete_data threw an exception: %s", str(exception)
         )

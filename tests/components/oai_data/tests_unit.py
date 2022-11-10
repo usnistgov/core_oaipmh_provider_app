@@ -215,6 +215,30 @@ class TestOaiDataGetEarliestDataDate(TestCase):
             oai_data_api.get_earliest_data_date()
 
 
+class TestOaiDataStr(TestCase):
+    """TestOaiDataStr"""
+
+    def test_oai_data_str_uses_data_title_if_not_None(self):
+        """oai_data_str_uses_data_title_if_not_None
+
+        Returns:
+
+        """
+        oai_data = _create_oai_data()
+        oai_data.data.title = "test"
+        self.assertTrue("test" in oai_data.__str__())
+
+    def test_oai_data_str_uses_deleted_label_if_data_is_None(self):
+        """oai_data_str_uses_deleted_label_if_data_is_None
+
+        Returns:
+
+        """
+        oai_data = _create_oai_data()
+        oai_data.data = None
+        self.assertTrue("DELETED" in oai_data.__str__())
+
+
 def _generic_get_all_test(self, mock_get_all, act_function):
     """generic_get_all_test.
 
