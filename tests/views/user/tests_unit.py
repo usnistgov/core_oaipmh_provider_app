@@ -1,8 +1,8 @@
 """ Unit Test Rest OaiRegistry
 """
 from datetime import datetime
-
 from unittest.mock import patch, Mock
+
 from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.status import HTTP_200_OK
@@ -11,7 +11,6 @@ import core_main_app.components.xsl_transformation.api as xsl_transformation_api
 from core_main_app.commons import exceptions as common_exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template.models import Template
-from core_main_app.components.workspace import api as workspace_api
 from core_main_app.components.xsl_transformation.models import (
     XslTransformation,
 )
@@ -1174,9 +1173,8 @@ class TestListRecords(TestOaiPmhSuite):
         )
 
     @patch.object(oai_provider_set_api, "get_all_by_template_ids")
-    @patch.object(oai_data_api, "get_all_by_data_list")
-    @patch.object(system_api, "get_all_data_in_workspaces_for_templates")
-    @patch.object(workspace_api, "get_all_public_workspaces")
+    @patch.object(oai_data_api, "get_all_by_template_list")
+    @patch.object(system_api, "get_template_by_id")
     @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
@@ -1189,9 +1187,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_templates_id,
         mock_get_by_metadata_prefix,
         mock_get_templates_id_by_set_spec,
-        mock_get_all_public_workspaces,
-        mock_get_all_data_in_workspaces_for_templates,
-        mock_get_all_by_data_list,
+        mock_get_template_by_id,
+        mock_get_all_by_template_list,
         mock_get_all_by_template_ids,
     ):
         """test_list_record_with_xml_decl_use_raw"""
@@ -1222,9 +1219,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_oai_data_qs = MockQuerySet()
         mock_oai_data_qs.item_list = [mock_oai_data]
 
-        mock_get_all_public_workspaces.return_value = []
-        mock_get_all_data_in_workspaces_for_templates.return_value = []
-        mock_get_all_by_data_list.return_value = mock_oai_data_qs
+        mock_get_template_by_id.return_value = None
+        mock_get_all_by_template_list.return_value = mock_oai_data_qs
         mock_get_all_by_template_ids.return_value = []
 
         data = {
@@ -1245,9 +1241,8 @@ class TestListRecords(TestOaiPmhSuite):
 
     @patch.object(xsl_transformation_api, "xsl_transform")
     @patch.object(oai_provider_set_api, "get_all_by_template_ids")
-    @patch.object(oai_data_api, "get_all_by_data_list")
-    @patch.object(system_api, "get_all_data_in_workspaces_for_templates")
-    @patch.object(workspace_api, "get_all_public_workspaces")
+    @patch.object(oai_data_api, "get_all_by_template_list")
+    @patch.object(system_api, "get_template_by_id")
     @patch.object(
         oai_xsl_template_api, "get_by_template_id_and_metadata_format_id"
     )
@@ -1266,9 +1261,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_get_by_metadata_prefix,
         mock_get_templates_id_by_set_spec,
         mock_get_by_template_id_and_metadata_format_id,
-        mock_get_all_public_workspaces,
-        mock_get_all_data_in_workspaces_for_templates,
-        mock_get_all_by_data_list,
+        mock_get_all_by_template_id,
+        mock_get_all_by_template_list,
         mock_get_all_by_template_ids,
         mock_xsl_transform,
     ):
@@ -1313,9 +1307,8 @@ class TestListRecords(TestOaiPmhSuite):
         mock_oai_data_qs = MockQuerySet()
         mock_oai_data_qs.item_list = [mock_oai_data]
 
-        mock_get_all_public_workspaces.return_value = []
-        mock_get_all_data_in_workspaces_for_templates.return_value = []
-        mock_get_all_by_data_list.return_value = mock_oai_data_qs
+        mock_get_all_by_template_id.return_value = None
+        mock_get_all_by_template_list.return_value = mock_oai_data_qs
         mock_get_all_by_template_ids.return_value = []
         mock_xsl_transform.return_value = mock_cleaned_xml
 

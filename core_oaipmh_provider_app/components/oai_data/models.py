@@ -33,6 +33,39 @@ class OaiData(models.Model):
         verbose_name_plural = "Oai data"
 
     @staticmethod
+    def _filter_by_date(from_date, until_date):
+        """Create Q query to filter between two dates
+
+        Args:
+            from_date:
+            until_date:
+
+        Returns:
+            list - The query to be used to filter item between these dates
+        """
+        qlist = []
+
+        if from_date:
+            qlist.append(Q(oai_date_stamp__gte=from_date))
+
+        if until_date:
+            qlist.append(Q(oai_date_stamp__lte=until_date))
+
+        return qlist
+
+    @staticmethod
+    def _filter_public_data():
+        """Create Q query to output public data only
+
+        Returns:
+             list - Filters to only return public data
+        """
+        return [
+            Q(data__workspace__isnull=False),
+            Q(data__workspace__is_public=True),
+        ]
+
+    @staticmethod
     def get_by_id(oai_data_id):
         """Returns the object with the given id
 
@@ -77,6 +110,16 @@ class OaiData(models.Model):
             raise exceptions.ModelError(str(ex))
 
     @staticmethod
+    def get_all():
+        """Return all OaiData.
+
+        Returns:
+            List of OaiData.
+
+        """
+        return OaiData.objects.all()
+
+    @staticmethod
     def get_all_by_data_list_and_timeframe(data_list, from_date, until_date):
         """Get all OaiData from a specific data list.
 
@@ -88,26 +131,14 @@ class OaiData(models.Model):
         Returns:
             List of OaiData instance.
         """
-        q_list = [Q(data__in=data_list)]
-        if from_date:
-            q_list.append(Q(oai_date_stamp__gte=from_date))
-        if until_date:
-            q_list.append(Q(oai_date_stamp__lte=until_date))
+        q_list = [Q(data__in=data_list)] + OaiData._filter_by_date(
+            from_date, until_date
+        )
 
         return OaiData.objects.filter(reduce(operator.and_, q_list)).all()
 
     @staticmethod
-    def get_all():
-        """Return all OaiData.
-
-        Returns:
-            List of OaiData.
-
-        """
-        return OaiData.objects.all()
-
-    @staticmethod
-    def get_all_by_template(template, from_date, until_date):
+    def get_all_by_template_and_timeframe(template, from_date, until_date):
         """Get all OaiData used by a template.
 
         Args:
@@ -119,11 +150,30 @@ class OaiData(models.Model):
             List of OaiData.
 
         """
-        q_list = [Q(template=template)]
-        if from_date:
-            q_list.append(Q(oai_date_stamp__gte=from_date))
-        if until_date:
-            q_list.append(Q(oai_date_stamp__lte=until_date))
+        q_list = [Q(template=template)] + OaiData._filter_by_date(
+            from_date, until_date
+        )
+
+        return OaiData.objects.filter(reduce(operator.and_, q_list)).all()
+
+    @staticmethod
+    def get_all_by_template_list_and_timeframe(
+        template_list, from_date, until_date
+    ):
+        """Get all OaiData used by a list of templates.
+
+        Args:
+            template_list: List of templates.
+            from_date:
+            until_date:
+
+        Returns:
+            List of OaiData.
+
+        """
+        q_list = [Q(template__in=template_list)] + OaiData._filter_by_date(
+            from_date, until_date
+        )
 
         return OaiData.objects.filter(reduce(operator.and_, q_list)).all()
 

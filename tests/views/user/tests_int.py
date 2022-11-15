@@ -16,8 +16,6 @@ from core_oaipmh_provider_app.views.user.views import OAIProviderView
 from tests.utils.fixtures.fixtures import OaiPmhFixtures
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
-fixture_data = OaiPmhFixtures()
-
 
 class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
     """MongoIntegrationBaseTestCase"""
@@ -77,7 +75,7 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.check_tag_count(
             response.rendered_content,
             "identifier",
-            self.fixture.nb_public_data,
+            self.fixture.nb_oai_data,
         )
 
     @patch.object(Data, "xml_content", new_callable=PropertyMock)
@@ -97,7 +95,7 @@ class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.check_tag_exist(response.rendered_content, "ListRecords")
         self.check_tag_count(
-            response.rendered_content, "record", self.fixture.nb_public_data
+            response.rendered_content, "record", self.fixture.nb_oai_data
         )
 
     @patch.object(

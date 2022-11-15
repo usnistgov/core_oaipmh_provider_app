@@ -149,5 +149,81 @@
             }
         },
         "last_modification_date": "2017-05-08T18:17:41.940000"
+    },
+    {
+        "id": 3,
+        "template": 1,
+        "user_id": "1",
+        "title": "Test 3",
+        "dict_content": {
+            "experiment": {
+                "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "citation": {
+                    "citation": {
+                        "citation": null
+                    }
+                },
+                "id": 45464110,
+                "experimentType": {
+                    "tracerDiffusivity": {
+                        "dataAnalysis": null,
+                        "experimentalConditions": {
+                            "environment": {
+                                "environment": null
+                            },
+                            "measurementConditions": null
+                        },
+                        "samplePreparations": {
+                            "sampleGeometry": {
+                                "geometry": [
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    },
+                                    {
+                                        "geometry": null,
+                                        "MaterialName": null
+                                    }
+                                ]
+                            },
+                            "samplePreparationProcedure": {
+                                "procedureDescription": null,
+                                "procedureName": null
+                            }
+                        },
+                        "measurement": {
+                            "dataCollectionMethod": null,
+                            "type": null,
+                            "experimentalMethod": {
+                                "direct": {
+                                    "EPMA": {
+                                        "EPMAInstrumentBrand": null
+                                    }
+                                }
+                            }
+                        },
+                        "material": {
+                            "phase": {
+                                "crystalStructure": null,
+                                "name": null
+                            },
+                            "materialName": "Test 2",
+                            "Composition": {
+                                "quantityUnit": "mass fraction",
+                                "materialForm": {
+                                    "singleCrystalline": null
+                                },
+                                "constituents": null
+                            }
+                        },
+                        "diffusingSpecies": {
+                            "element": "Br"
+                        }
+                    }
+                }
+            }
+        },
+        "last_modification_date": "2017-05-08T18:17:45.210000",
+        "workspace": 1
     }
 ]

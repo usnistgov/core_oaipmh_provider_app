@@ -1,18 +1,17 @@
 """ Tests unit
 """
 
-from datetime import datetime
 from random import randint
 from unittest.case import TestCase
+from unittest.mock import patch
 
-from unittest.mock import Mock, patch
-
+import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
-import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
+from tests.components.oai_data import _create_oai_data, _generic_get_all_test
 
 
 class TestOaiDataUpsert(TestCase):
@@ -175,7 +174,7 @@ class TestOaiDataGetAll(TestCase):
 class TestOaiDataGetAllByTemplate(TestCase):
     """Test Oai Data Get All By Template"""
 
-    @patch.object(OaiData, "get_all_by_template")
+    @patch.object(OaiData, "get_all_by_template_and_timeframe")
     def test_get_all_by_template_contains_only_oai_data(self, mock_get_all):
         """test_get_all_by_template_contains_only_oai_data"""
 
@@ -213,91 +212,3 @@ class TestOaiDataGetEarliestDataDate(TestCase):
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
             oai_data_api.get_earliest_data_date()
-
-
-class TestOaiDataStr(TestCase):
-    """TestOaiDataStr"""
-
-    def test_oai_data_str_uses_data_title_if_not_None(self):
-        """oai_data_str_uses_data_title_if_not_None
-
-        Returns:
-
-        """
-        oai_data = _create_oai_data()
-        oai_data.data.title = "test"
-        self.assertTrue("test" in oai_data.__str__())
-
-    def test_oai_data_str_uses_deleted_label_if_data_is_None(self):
-        """oai_data_str_uses_deleted_label_if_data_is_None
-
-        Returns:
-
-        """
-        oai_data = _create_oai_data()
-        oai_data.data = None
-        self.assertTrue("DELETED" in oai_data.__str__())
-
-
-def _generic_get_all_test(self, mock_get_all, act_function):
-    """generic_get_all_test.
-
-    Args:
-        mock_get_all:
-        act_function:
-
-    Returns:
-
-    """
-    # Arrange
-    mock_oai_data1 = _create_mock_oai_data()
-    mock_oai_data2 = _create_mock_oai_data()
-
-    mock_get_all.return_value = [mock_oai_data1, mock_oai_data2]
-
-    # Act
-    result = act_function
-
-    # Assert
-    self.assertTrue(all(isinstance(item, OaiData) for item in result))
-
-
-def _create_oai_data():
-    """Get an OaiData object.
-
-    Returns:
-        OaiData instance.
-
-    """
-    oai_data = OaiData()
-    oai_data = _set_oai_data_fields(oai_data)
-
-    return oai_data
-
-
-def _create_mock_oai_data():
-    """Mock an OaiData.
-
-    Returns:
-        OaiData mock.
-
-    """
-    mock_oai_data = Mock(spec=OaiData)
-    mock_oai_data = _set_oai_data_fields(mock_oai_data)
-
-    return mock_oai_data
-
-
-def _set_oai_data_fields(oai_data):
-    """Set OaiData fields.
-
-    Returns:
-        OaiData with assigned fields.
-
-    """
-    oai_data.status = status.ACTIVE
-    oai_data.data = Data()
-    oai_data.template = Template()
-    oai_data.oai_date_stamp = datetime.now()
-
-    return oai_data

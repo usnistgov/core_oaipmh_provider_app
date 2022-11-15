@@ -72,8 +72,25 @@ def get_all_by_template(template, from_date=None, until_date=None):
         List of OaiData.
 
     """
-    return OaiData.get_all_by_template(
+    return OaiData.get_all_by_template_and_timeframe(
         template=template, from_date=from_date, until_date=until_date
+    )
+
+
+def get_all_by_template_list(template_list, from_date=None, until_date=None):
+    """Get all OaiData used by a list of templates.
+
+    Args:
+        template_list: List of templates.
+        from_date: From date
+        until_date: Until date
+
+    Returns:
+        List of OaiData.
+
+    """
+    return OaiData.get_all_by_template_list_and_timeframe(
+        template_list=template_list, from_date=from_date, until_date=until_date
     )
 
 
@@ -141,7 +158,10 @@ def upsert_from_data(document, force_update=False):
             oai_data.oai_date_stamp = datetime.now()
             upsert(oai_data)
     except exceptions.DoesNotExist:
-        # Create only if the record is published.
+        # Create only if the record is published and the workspace is public.
+        if not document.workspace or not document.workspace.is_public:
+            return
+
         oai_data = OaiData()
         oai_data.status = status.ACTIVE
         oai_data.data = document

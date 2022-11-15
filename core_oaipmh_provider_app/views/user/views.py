@@ -14,6 +14,8 @@ from django.views.generic import TemplateView
 from rest_framework import status
 
 import core_main_app.components.xsl_transformation.api as xsl_transformation_api
+import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
+import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.data import api as data_api
 from core_main_app.components.template import api as template_api
@@ -21,14 +23,11 @@ from core_main_app.components.template_version_manager import (
     api as template_version_manager_api,
 )
 from core_main_app.components.version_manager import api as version_manager_api
-from core_main_app.components.workspace import api as workspace_api
 from core_main_app.system import api as system_api
 from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import (
     XSDFlattenerDatabaseOrURL,
 )
 from core_oaipmh_common_app.utils import UTCdatetime
-import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
-import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.commons import status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -438,14 +437,12 @@ class OAIProviderView(TemplateView):
         output_resumption_token = None
 
         try:
-            # FIXME filtering public data is needed since all data has
-            #   a OAI data associated with it
-            public_workspace_list = workspace_api.get_all_public_workspaces()
-            data_list = system_api.get_all_data_in_workspaces_for_templates(
-                public_workspace_list, template_id_list
-            )
-            oai_data = oai_data_api.get_all_by_data_list(
-                data_list, from_date=from_date, until_date=until_date
+            template_list = [
+                system_api.get_template_by_id(template_id)
+                for template_id in template_id_list
+            ]
+            oai_data = oai_data_api.get_all_by_template_list(
+                template_list, from_date=from_date, until_date=until_date
             ).order_by("pk")
 
             oai_data_paginator = Paginator(oai_data, RESULTS_PER_PAGE)
@@ -485,7 +482,7 @@ class OAIProviderView(TemplateView):
                 identifier = "%s:%s:id/%s" % (
                     settings.OAI_SCHEME,
                     settings.OAI_REPO_IDENTIFIER,
-                    str(elt.data_id),
+                    str(elt.id),
                 )
                 item_info = {
                     "identifier": identifier,
@@ -493,7 +490,7 @@ class OAIProviderView(TemplateView):
                         elt.oai_date_stamp
                     ),
                     "sets": oai_provider_set_api.get_all_by_template_ids(
-                        [elt.data.template.pk], request=request
+                        [elt.template.pk], request=request
                     ),
                     "deleted": elt.status == oai_status.DELETED,
                 }

@@ -48,6 +48,7 @@ class OaiPmhFixtures(FixtureInterface):
     data_identifiers = []
     workspaces = []
     nb_public_data = 0
+    nb_oai_data = 0
 
     def insert_data(self):
         """Insert data"""
@@ -59,6 +60,8 @@ class OaiPmhFixtures(FixtureInterface):
         self.insert_oai_record()
         self.insert_oai_metadata_format()
         self.insert_oai_set()
+
+        self.loaded = True
 
     def insert_settings(self):
         """Insert settings fixtures"""
@@ -134,6 +137,7 @@ class OaiPmhFixtures(FixtureInterface):
 
     def insert_oai_record(self):
         """OaiData's methods"""
+        self.nb_oai_data = 0
         saved_data = []
         list_data = OaiPmhMock.mock_oai_data(
             template_map={
@@ -146,9 +150,10 @@ class OaiPmhFixtures(FixtureInterface):
             identifier = "%s:%s:id/%s" % (
                 OAI_SCHEME,
                 OAI_REPO_IDENTIFIER,
-                str(elt.data.id),
+                str(elt.id),
             )
             self.data_identifiers.append(identifier)
+            self.nb_oai_data += 1
 
         self.oai_data = saved_data
 
@@ -325,7 +330,9 @@ class OaiPmhMock:
 
             if template_map and data_map:
                 oai_data.template = template_map[template_id]
-                oai_data.data = data_map[data_id]
+
+                if data_id:
+                    oai_data.data = data_map[data_id]
 
             list_data.append(oai_data)
 

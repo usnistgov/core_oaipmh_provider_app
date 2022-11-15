@@ -25,6 +25,7 @@ class ProviderAppConfig(AppConfig):
 
         """
         if "migrate" not in sys.argv:
+            from core_main_app.utils.migrations import ensure_migration_applied
             import core_oaipmh_provider_app.components.oai_provider_metadata_format.discover as discover_metadata_formats
             import core_oaipmh_provider_app.components.oai_settings.discover as discover_settings
             from core_oaipmh_provider_app.components.oai_data import (
@@ -38,6 +39,11 @@ class ProviderAppConfig(AppConfig):
                 CAN_SET_WORKSPACE_PUBLIC,
                 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT,
             )
+
+            ensure_migration_applied(
+                "core_oaipmh_provider_app", "0003_oai_data_bulk_delete"
+            )
+
             discover_settings.init()
             discover_metadata_formats.init()
             insert_data_in_oai_data()

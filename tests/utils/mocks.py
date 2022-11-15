@@ -17,3 +17,14 @@ class MockQuerySet(Mock):
         Returns:
         """
         return self.item_list
+
+
+class MockPassThrough(Mock):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+        self.args = args if args else None
+        self.kwargs = kwargs if kwargs else None
+
+    def all(self):
+        return self
