@@ -1,11 +1,13 @@
 """ Integrations testing of the OaiData API
 """
-from core_main_app.system import api as system_api
+from django.db.models import Q
+from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
+
+from core_main_app.components.data.models import Data
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
-from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
 class TestUpsertFromData(MongoIntegrationBaseTestCase):
@@ -29,8 +31,11 @@ class TestUpsertFromData(MongoIntegrationBaseTestCase):
         self.assertEqual(
             [data for data in all_oai_data if data],
             list(
-                system_api.get_all_data_in_workspaces_for_templates(
-                    [self.workspace.pk], [self.template.pk]
+                Data.objects.filter(
+                    Q(
+                        workspace__in=[self.workspace.pk],
+                        template__in=[self.template.pk],
+                    )
                 )
             ),
         )
