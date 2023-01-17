@@ -5,9 +5,9 @@ OaiData model
 import operator
 from functools import reduce
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data

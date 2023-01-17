@@ -2,12 +2,12 @@
 Handle signals.
 """
 import logging
-from datetime import datetime
 
 from django.db.models.signals import post_save, pre_delete
 
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
 
@@ -41,7 +41,7 @@ def pre_delete_data(sender, instance, **kwargs):
     """
     try:
         oai_data = oai_data_api.get_by_data(instance)
-        oai_data.oai_date_stamp = datetime.now()
+        oai_data.oai_date_stamp = datetime_now()
         oai_data.status = status.DELETED
 
         oai_data_api.upsert(oai_data)

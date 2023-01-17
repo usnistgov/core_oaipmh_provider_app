@@ -2,11 +2,10 @@
 """
 
 from unittest.case import TestCase
-
 from unittest.mock import Mock, patch
 
-from core_main_app.commons import exceptions
 import core_oaipmh_provider_app.components.oai_settings.api as settings_api
+from core_main_app.commons import exceptions
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 
 

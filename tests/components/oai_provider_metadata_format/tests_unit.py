@@ -3,13 +3,12 @@
 
 from random import randint
 from unittest.case import TestCase
-
 from unittest.mock import Mock, patch
 
+import core_oaipmh_provider_app.components.oai_provider_metadata_format.api as provider_metadata_format_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
-import core_oaipmh_provider_app.components.oai_provider_metadata_format.api as provider_metadata_format_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )

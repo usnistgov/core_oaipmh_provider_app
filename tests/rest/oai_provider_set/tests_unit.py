@@ -2,8 +2,8 @@
 """
 
 from unittest.mock import patch
-from django.test.testcases import SimpleTestCase
 
+from django.test.testcases import SimpleTestCase
 from rest_framework import status
 
 from core_main_app.commons import exceptions

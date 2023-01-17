@@ -3,10 +3,12 @@
 
 from random import randint
 from unittest.case import TestCase
+from unittest.mock import Mock
 from unittest.mock import patch
 
 import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
 from core_main_app.commons import exceptions
+from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
 from core_oaipmh_provider_app.commons import status
@@ -212,3 +214,77 @@ class TestOaiDataGetEarliestDataDate(TestCase):
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
             oai_data_api.get_earliest_data_date()
+
+
+class TestOaiDataUpsertFromData(TestCase):
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    def test_get_by_data_is_called(self, mock_upsert, mock_get_by_data):
+        mock_document = "mock_document"
+        mock_get_by_data.return_value = None
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document)
+
+        self.assertTrue(mock_get_by_data.called_with(mock_document))
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    def test_upsert_if_data_exists_and_force_update(
+        self, mock_upsert, mock_get_by_data
+    ):
+        mock_document = "mock_document"
+        mock_oai_data = Mock()
+
+        mock_get_by_data.return_value = mock_oai_data
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document, force_update=True)
+
+        self.assertTrue(mock_upsert.called_with(mock_oai_data))
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    def test_no_upsert_if_data_exists_and_not_force_update(
+        self, mock_upsert, mock_get_by_data
+    ):
+        mock_document = "mock_document"
+        mock_oai_data = Mock()
+
+        mock_get_by_data.return_value = mock_oai_data
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document, force_update=False)
+
+        self.assertFalse(mock_upsert.called)
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    def test_no_upsert_if_no_data_and_no_workspace(
+        self, mock_upsert, mock_get_by_data
+    ):
+        mock_document = Mock()
+        mock_document.workspace = None
+
+        mock_get_by_data.side_effect = DoesNotExist(
+            "mock_get_by_data_does_not_exist"
+        )
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document, force_update=False)
+
+        self.assertFalse(mock_upsert.called)
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.OaiData")
+    def test_upsert_if_no_data_and_workspace(
+        self, _, mock_upsert, mock_get_by_data
+    ):
+        mock_document = Mock()
+        mock_document.workspace = Mock()
+        mock_document.workspace.is_public = True
+
+        mock_get_by_data.side_effect = DoesNotExist(
+            "mock_get_by_data_does_not_exist"
+        )
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document, force_update=False)
+
+        self.assertTrue(mock_upsert.called)

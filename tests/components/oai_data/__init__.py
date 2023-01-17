@@ -1,10 +1,10 @@
 """ Test utils for OaiData
 """
-from datetime import datetime
 from unittest.mock import Mock
 
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 
@@ -68,6 +68,6 @@ def _set_oai_data_fields(oai_data):
     oai_data.status = status.ACTIVE
     oai_data.data = Data()
     oai_data.template = Template()
-    oai_data.oai_date_stamp = datetime.now()
+    oai_data.oai_date_stamp = datetime_now()
 
     return oai_data

@@ -2,15 +2,14 @@
 """
 
 from unittest.case import TestCase
-
 from unittest.mock import Mock, patch
 
+import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.components.xsl_transformation.models import (
     XslTransformation,
 )
-import core_oaipmh_provider_app.components.oai_xsl_template.api as oai_xsl_template_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )

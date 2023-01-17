@@ -3,10 +3,10 @@
 
 from random import randint
 from unittest.case import TestCase
-
 from unittest.mock import Mock, patch
 
 import core_main_app.components.template.api as template_api
+import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager.models import (
@@ -14,7 +14,6 @@ from core_main_app.components.template_version_manager.models import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
-import core_oaipmh_provider_app.components.oai_provider_set.api as provider_set_api
 from core_oaipmh_provider_app.components.oai_provider_set.models import (
     OaiProviderSet,
 )

@@ -3,7 +3,7 @@
 
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import StringIO
 
 from django.core.paginator import Paginator
@@ -24,6 +24,7 @@ from core_main_app.components.template_version_manager import (
 )
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.system import api as system_api
+from core_main_app.utils.datetime import datetime_now, datetime_timedelta
 from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import (
     XSDFlattenerDatabaseOrURL,
 )
@@ -89,7 +90,7 @@ class OAIProviderView(TemplateView):
         context.update(
             {
                 "now": UTCdatetime.datetime_to_utc_datetime_iso8601(
-                    datetime.now()
+                    datetime_now()
                 ),
                 "verb": self.oai_verb,
                 "identifier": self.identifier,
@@ -450,7 +451,7 @@ class OAIProviderView(TemplateView):
             # If there are more pages to display
             if oai_data_paginator.num_pages > page_nb:
                 exp_date = UTCdatetime.datetime_to_utc_datetime_iso8601(
-                    datetime.now() + timedelta(days=7)
+                    datetime_now() + datetime_timedelta(days=7)
                 )
 
                 oai_request_page_object = oai_request_page_api.upsert(

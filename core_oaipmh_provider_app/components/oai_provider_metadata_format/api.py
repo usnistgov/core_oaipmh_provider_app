@@ -7,8 +7,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 
-from xml_utils.xsd_tree.xsd_tree import XSDTree
-from xml_utils.commons import exceptions
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.commons.exceptions import XSDError
 from core_main_app.components.template import api as template_api
@@ -21,6 +19,8 @@ from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
+from xml_utils.commons import exceptions
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def upsert(oai_provider_metadata_format, request):

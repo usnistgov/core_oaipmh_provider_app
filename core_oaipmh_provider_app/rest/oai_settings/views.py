@@ -7,12 +7,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 from core_main_app.utils.decorators import api_staff_member_required
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_provider_app.rest import serializers
-import core_oaipmh_provider_app.components.oai_settings.api as oai_settings_api
 
 
 class Settings(APIView):

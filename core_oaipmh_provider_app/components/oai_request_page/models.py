@@ -1,7 +1,7 @@
 """ OaiRequestPage model
 """
-from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 

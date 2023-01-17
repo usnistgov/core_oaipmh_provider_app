@@ -1,13 +1,13 @@
 """ Integrations testing of the OaiData API
 """
 from django.db.models import Q
-from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 from core_main_app.components.data.models import Data
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
+from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
 class TestUpsertFromData(MongoIntegrationBaseTestCase):

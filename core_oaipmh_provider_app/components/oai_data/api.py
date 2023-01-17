@@ -1,9 +1,9 @@
 """ OaiData API
 """
 import logging
-from datetime import datetime
 
 from core_main_app.commons import exceptions
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 
@@ -155,7 +155,7 @@ def upsert_from_data(document, force_update=False):
     try:
         oai_data = get_by_data(document)
         if force_update:
-            oai_data.oai_date_stamp = datetime.now()
+            oai_data.oai_date_stamp = datetime_now()
             upsert(oai_data)
     except exceptions.DoesNotExist:
         # Create only if the record is published and the workspace is public.
@@ -166,7 +166,7 @@ def upsert_from_data(document, force_update=False):
         oai_data.status = status.ACTIVE
         oai_data.data = document
         oai_data.template = document.template
-        oai_data.oai_date_stamp = datetime.now()
+        oai_data.oai_date_stamp = datetime_now()
         upsert(oai_data)
     except Exception as exception:
         logger.warning(

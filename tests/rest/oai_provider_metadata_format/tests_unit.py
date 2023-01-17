@@ -1,8 +1,8 @@
 """ Unit Test Rest OaiProviderMetadataFormat
 """
 from random import randint
-
 from unittest.mock import patch, Mock
+
 import requests
 from django.test.testcases import SimpleTestCase, TestCase
 from rest_framework import status

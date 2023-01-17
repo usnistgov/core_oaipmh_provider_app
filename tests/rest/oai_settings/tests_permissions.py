@@ -1,7 +1,8 @@
 """ Authentication tests for OAI Settings REST API
 """
-from django.test import SimpleTestCase
 from unittest.mock import patch, Mock
+
+from django.test import SimpleTestCase
 from rest_framework import status
 from rest_framework.status import HTTP_200_OK
 
