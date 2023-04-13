@@ -157,7 +157,9 @@ class SetForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     templates_manager = forms.MultipleChoiceField(
-        label="Templates", widget=forms.SelectMultiple(), required=True
+        label="Templates",
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "double-columns"}),
+        required=True,
     )
     description = forms.CharField(
         label="Description",

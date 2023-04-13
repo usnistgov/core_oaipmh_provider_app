@@ -149,20 +149,12 @@ def sets_view(request):
     """
     assets = {
         "js": [
-            {
-                "path": "core_oaipmh_provider_app/admin/js/registry/sets/modals/init_select.js",
-                "is_raw": False,
-            },
-            {
-                "path": "core_oaipmh_provider_app/admin/libs/fSelect/js/fSelect.js",
-                "is_raw": False,
-            },
             AddObjectModalView.get_modal_js_path(),
             EditObjectModalView.get_modal_js_path(),
             DeleteObjectModalView.get_modal_js_path(),
         ],
         "css": [
-            "core_oaipmh_provider_app/admin/libs/fSelect/css/fSelect.css",
+            "core_main_app/common/css/select.css",
             "core_oaipmh_provider_app/admin/css/registry/sets/add_set.css",
         ],
     }
