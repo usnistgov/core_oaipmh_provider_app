@@ -6,7 +6,7 @@ from rest_framework import status
 
 from core_main_app.components.data.models import Data
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -18,8 +18,8 @@ from tests.utils.fixtures.fixtures import OaiPmhFixtures
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
 
-class TestVerbs(TestOaiPmhSuite, MongoIntegrationBaseTestCase):
-    """MongoIntegrationBaseTestCase"""
+class TestVerbs(TestOaiPmhSuite, IntegrationBaseTestCase):
+    """IntegrationBaseTestCase"""
 
     fixture = OaiPmhFixtures()
 

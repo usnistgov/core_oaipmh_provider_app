@@ -6,7 +6,7 @@ from requests import Response
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -22,7 +22,7 @@ from core_oaipmh_provider_app.rest.oai_provider_metadata_format import (
 from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
-class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
+class TestSelectMetadataFormat(IntegrationBaseTestCase):
     """Test Select Metadata Format"""
 
     fixture = OaiPmhFixtures()
@@ -54,7 +54,7 @@ class TestSelectMetadataFormat(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestSelectAllMetadataFormats(MongoIntegrationBaseTestCase):
+class TestSelectAllMetadataFormats(IntegrationBaseTestCase):
     """Test Select All Metadata Formats"""
 
     fixture = OaiPmhFixtures()
@@ -82,7 +82,7 @@ class TestSelectAllMetadataFormats(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
+class TestAddMetadataFormat(IntegrationBaseTestCase):
     """Test Add Metadata Format"""
 
     fixture = OaiPmhFixtures()
@@ -125,7 +125,7 @@ class TestAddMetadataFormat(MongoIntegrationBaseTestCase):
         )
 
 
-class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
+class TestAddTemplateMetadataFormat(IntegrationBaseTestCase):
     """Test Add Template Metadata Format"""
 
     fixture = OaiPmhFixtures()
@@ -163,7 +163,7 @@ class TestAddTemplateMetadataFormat(MongoIntegrationBaseTestCase):
         )
 
 
-class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
+class TestDeleteMetadataFormat(IntegrationBaseTestCase):
     """Test Delete Metadata Format"""
 
     fixture = OaiPmhFixtures()
@@ -200,7 +200,7 @@ class TestDeleteMetadataFormat(MongoIntegrationBaseTestCase):
         )
 
 
-class TestUpdateMetadataFormat(MongoIntegrationBaseTestCase):
+class TestUpdateMetadataFormat(IntegrationBaseTestCase):
     """Test Update Metadata Format"""
 
     fixture = OaiPmhFixtures()

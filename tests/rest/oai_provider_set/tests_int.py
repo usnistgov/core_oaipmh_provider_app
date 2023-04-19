@@ -4,7 +4,7 @@
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -17,7 +17,7 @@ from core_oaipmh_provider_app.rest.oai_provider_set import (
 from tests.utils.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
-class TestSelectSet(MongoIntegrationBaseTestCase):
+class TestSelectSet(IntegrationBaseTestCase):
     """Test Select Set"""
 
     fixture = OaiPmhFixtures()
@@ -45,7 +45,7 @@ class TestSelectSet(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestSelectAllSets(MongoIntegrationBaseTestCase):
+class TestSelectAllSets(IntegrationBaseTestCase):
     """Test Select All Sets"""
 
     fixture = OaiPmhFixtures()
@@ -71,7 +71,7 @@ class TestSelectAllSets(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestAddSet(MongoIntegrationBaseTestCase):
+class TestAddSet(IntegrationBaseTestCase):
     """Test Add Set"""
 
     fixture = OaiPmhFixtures()
@@ -104,7 +104,7 @@ class TestAddSet(MongoIntegrationBaseTestCase):
         self.assertEqual(len(OaiProviderSet.objects.all()), self.nb_sets + 1)
 
 
-class TestDeleteSet(MongoIntegrationBaseTestCase):
+class TestDeleteSet(IntegrationBaseTestCase):
     """Test Delete Set"""
 
     fixture = OaiPmhFixtures()
@@ -132,7 +132,7 @@ class TestDeleteSet(MongoIntegrationBaseTestCase):
         self.assertEqual(len(OaiProviderSet.objects.all()), self.nb_sets - 1)
 
 
-class TestUpdateSet(MongoIntegrationBaseTestCase):
+class TestUpdateSet(IntegrationBaseTestCase):
     """Test Update Set"""
 
     fixture = OaiPmhFixtures()

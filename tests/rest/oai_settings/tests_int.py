@@ -4,7 +4,7 @@
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -15,7 +15,7 @@ from core_oaipmh_provider_app.rest.oai_settings import (
 from tests.utils.fixtures.fixtures import OaiPmhFixtures
 
 
-class TestSelect(MongoIntegrationBaseTestCase):
+class TestSelect(IntegrationBaseTestCase):
     """Test Select"""
 
     fixture = OaiPmhFixtures()
@@ -41,7 +41,7 @@ class TestSelect(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestUpdateSettings(MongoIntegrationBaseTestCase):
+class TestUpdateSettings(IntegrationBaseTestCase):
     """Test Update Settings"""
 
     fixture = OaiPmhFixtures()

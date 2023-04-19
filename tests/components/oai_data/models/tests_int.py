@@ -2,15 +2,13 @@
 """
 from core_main_app.system import api as system_api
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
 from tests.utils.fixtures.fixtures import OaiPmhFixtures
 
 
-class TestOaiDataGetAllByTemplateListAndTimeframe(
-    MongoIntegrationBaseTestCase
-):
+class TestOaiDataGetAllByTemplateListAndTimeframe(IntegrationBaseTestCase):
     """Test OaiData get_all_by_template_list_and_timeframe method"""
 
     fixture = OaiPmhFixtures()
@@ -25,7 +23,7 @@ class TestOaiDataGetAllByTemplateListAndTimeframe(
         self.assertEqual(list(results), list(OaiData.objects.all()))
 
 
-class TestOaiDataGetAllByTemplateAndTimeframe(MongoIntegrationBaseTestCase):
+class TestOaiDataGetAllByTemplateAndTimeframe(IntegrationBaseTestCase):
     """Test OaiData get_all_by_template_and_timeframe method"""
 
     fixture = OaiPmhFixtures()
