@@ -35,6 +35,28 @@ checkStatus = function()
 };
 
 
+/**
+ * Copy base url
+ */
+copyURL = function()
+{
+    // Create a temporary text field
+    var $temp = $("<input>");
+    $("body").append($temp);
+    // Select the text field
+    $temp.val($.trim($(".base-url").text())).select();
+    // Copy the text inside the text field
+    navigator.clipboard.writeText($temp.val()).then(function() {
+        $.notify("Base URL copied to clipboard successfully!", { style: "success" });
+    }, function() {
+        $.notify("A problem has occurred while copying the Base Url.", { style: "danger" });
+    });
+
+    // Remove a temporary text field
+    $temp.remove();
+}
+
 $(document).ready(function() {
     $('.check-status-btn').on('click', checkStatus);
+    $('.copy-base-url-btn').on('click', copyURL)
 });

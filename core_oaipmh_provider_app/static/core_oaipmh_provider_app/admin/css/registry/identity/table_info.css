@@ -25,3 +25,7 @@ table.data-table {
     font-style: italic;
     color: #001ade;
 }
+
+.base-url{
+    display: inline;
+}

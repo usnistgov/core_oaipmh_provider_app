@@ -35,7 +35,14 @@
     </tr>
     <tr>
         <td>Base URL</td>
-        <td>{{ data.data_provider.baseURL }}</td>
+        <td>
+            <span class="base-url">
+                {{data.data_provider.baseURL}}
+            </span>
+            <button class="btn btn-secondary btn-sm float-right copy-base-url-btn">
+                <i class="fas fa-copy"></i> Copy URL
+            </button>
+        </td>
     </tr>
     <tr>
         <td>Has Deleted Record</td>
