@@ -8,7 +8,7 @@
     </small>
 {% endblock %}
 {% block box_tools %}
-<div class="btn-group {% if BOOTSTRAP_VERSION == "4.6.2" %}float-right{% if BOOTSTRAP_VERSION == "5.1.3" %}float-end{% endif %}">
+<div class="btn-group {% if BOOTSTRAP_VERSION == "4.6.2" %}float-right{% elif BOOTSTRAP_VERSION == "5.1.3" %}float-end{% endif %}">
     {% url 'core-admin:core_oaipmh_provider_app_add_template_metadata_format' as add_url %}
     {% include 'core_main_app/common/buttons/add.html' with label='Add Metadata Format' %}
 </div>
