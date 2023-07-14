@@ -3,6 +3,7 @@
 import logging
 
 from django import forms
+from django.conf import settings
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
@@ -119,9 +120,7 @@ class TemplateMetadataFormatForm(forms.ModelForm):
             attrs={"placeholder": "example: oai_dc", "class": "form-control"}
         ),
     )
-    template = forms.ChoiceField(
-        label="Template", widget=forms.Select(attrs={"class": "form-control"})
-    )
+    template = forms.ChoiceField(label="Template", widget=forms.Select())
 
     class Meta:
         """Meta"""
@@ -135,6 +134,10 @@ class TemplateMetadataFormatForm(forms.ModelForm):
         self.fields["template"].choices = _get_templates_versions(
             request=self.request
         )
+        if settings.BOOTSTRAP_VERSION == "4.6.2":
+            self.fields["template"].widget.attrs["class"] = "form-control"
+        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+            self.fields["template"].widget.attrs["class"] = "form-select"
 
     def clean_template(self):
         data = self.cleaned_data["template"]
@@ -204,12 +207,8 @@ class MappingXSLTForm(forms.ModelForm):
         label="Metadata Prefix",
         required=True,
     )
-    template = forms.ChoiceField(
-        label="Template", widget=forms.Select(attrs={"class": "form-control"})
-    )
-    xslt = forms.ChoiceField(
-        label="XSLT", widget=forms.Select(attrs={"class": "form-control"})
-    )
+    template = forms.ChoiceField(label="Template", widget=forms.Select())
+    xslt = forms.ChoiceField(label="XSLT", widget=forms.Select())
 
     class Meta:
         """Meta"""
@@ -227,6 +226,13 @@ class MappingXSLTForm(forms.ModelForm):
         self.fields["xslt"].choices = _get_xsl_transformation()
         if edit_mode:
             self.fields["template"].widget = forms.HiddenInput()
+
+        if settings.BOOTSTRAP_VERSION == "4.6.2":
+            self.fields["xslt"].widget.attrs["class"] = "form-control"
+            self.fields["template"].widget.attrs["class"] = "form-control"
+        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+            self.fields["xslt"].widget.attrs["class"] = "form-select"
+            self.fields["template"].widget.attrs["class"] = "form-select"
 
     def clean_xslt(self):
         data = self.cleaned_data["xslt"]
