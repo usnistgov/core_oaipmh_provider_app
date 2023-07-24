@@ -134,9 +134,9 @@ class TemplateMetadataFormatForm(forms.ModelForm):
         self.fields["template"].choices = _get_templates_versions(
             request=self.request
         )
-        if settings.BOOTSTRAP_VERSION == "4.6.2":
+        if settings.BOOTSTRAP_VERSION.startswith("4"):
             self.fields["template"].widget.attrs["class"] = "form-control"
-        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+        elif settings.BOOTSTRAP_VERSION.startswith("5"):
             self.fields["template"].widget.attrs["class"] = "form-select"
 
     def clean_template(self):
@@ -227,10 +227,10 @@ class MappingXSLTForm(forms.ModelForm):
         if edit_mode:
             self.fields["template"].widget = forms.HiddenInput()
 
-        if settings.BOOTSTRAP_VERSION == "4.6.2":
+        if settings.BOOTSTRAP_VERSION.startswith("4"):
             self.fields["xslt"].widget.attrs["class"] = "form-control"
             self.fields["template"].widget.attrs["class"] = "form-control"
-        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+        elif settings.BOOTSTRAP_VERSION.startswith("5"):
             self.fields["xslt"].widget.attrs["class"] = "form-select"
             self.fields["template"].widget.attrs["class"] = "form-select"
 
