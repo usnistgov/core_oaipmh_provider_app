@@ -6,6 +6,8 @@ from unittest.case import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
 
+from tests.components.oai_data import _create_oai_data, _generic_get_all_test
+
 import core_oaipmh_provider_app.components.oai_data.api as oai_data_api
 from core_main_app.commons import exceptions
 from core_main_app.commons.exceptions import DoesNotExist
@@ -13,7 +15,6 @@ from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
-from tests.components.oai_data import _create_oai_data, _generic_get_all_test
 
 
 class TestOaiDataUpsert(TestCase):
@@ -280,6 +281,7 @@ class TestOaiDataUpsertFromData(TestCase):
         mock_document = Mock()
         mock_document.workspace = Mock()
         mock_document.workspace.is_public = True
+        mock_document.template.format = "XSD"
 
         mock_get_by_data.side_effect = DoesNotExist(
             "mock_get_by_data_does_not_exist"
@@ -288,3 +290,22 @@ class TestOaiDataUpsertFromData(TestCase):
         oai_data_api.upsert_from_data(mock_document, force_update=False)
 
         self.assertTrue(mock_upsert.called)
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.OaiData")
+    def test_upsert_not_called_if_template_format_not_xsd(
+        self, _, mock_upsert, mock_get_by_data
+    ):
+        mock_document = Mock()
+        mock_document.workspace = Mock()
+        mock_document.workspace.is_public = True
+        mock_document.template.format = "JSON"
+
+        mock_get_by_data.side_effect = DoesNotExist(
+            "mock_get_by_data_does_not_exist"
+        )
+        mock_upsert.return_value = None
+        oai_data_api.upsert_from_data(mock_document, force_update=False)
+
+        self.assertFalse(mock_upsert.called)

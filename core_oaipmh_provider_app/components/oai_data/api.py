@@ -3,6 +3,7 @@
 import logging
 
 from core_main_app.commons import exceptions
+from core_main_app.components.template.models import Template
 from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_provider_app.commons import status
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
@@ -160,6 +161,10 @@ def upsert_from_data(document, force_update=False):
     except exceptions.DoesNotExist:
         # Create only if the record is published and the workspace is public.
         if not document.workspace or not document.workspace.is_public:
+            return
+
+        # Create only if the record is in XML format.
+        if document.template.format != Template.XSD:
             return
 
         oai_data = OaiData()
