@@ -13,7 +13,7 @@ from core_oaipmh_provider_app.components.oai_provider_set.models import (
 from core_oaipmh_provider_app.rest.oai_provider_set import (
     views as oai_provider_views,
 )
-from core_oaipmh_provider_app.rest.serializers import OaiProviderSetSerializer
+from core_oaipmh_provider_app.rest import serializers as rest_serializers
 
 
 class SetListGetPermission(SimpleTestCase):
@@ -76,9 +76,15 @@ class SetListPostPermission(SimpleTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    @patch.object(OaiProviderSetSerializer, "is_valid")
-    @patch.object(OaiProviderSetSerializer, "save")
-    @patch.object(OaiProviderSetSerializer, "data")
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "is_valid"
+    )
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "save"
+    )
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "data"
+    )
     def test_staff_returns_http_201(
         self,
         oai_provider_set_serializer_data,
@@ -132,7 +138,7 @@ class SetDetailGetPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiProviderSet, "get_by_id")
-    @patch.object(OaiProviderSetSerializer, "data")
+    @patch.object(rest_serializers.OaiProviderSetListSerializer, "data")
     def test_staff_returns_http_200(
         self, oai_provider_set_serializer_data, oai_provider_set_get_by_id
     ):
@@ -236,9 +242,15 @@ class SetDetailPatchPermission(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiProviderSet, "get_by_id")
-    @patch.object(OaiProviderSetSerializer, "is_valid")
-    @patch.object(OaiProviderSetSerializer, "save")
-    @patch.object(OaiProviderSetSerializer, "data")
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "is_valid"
+    )
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "save"
+    )
+    @patch.object(
+        rest_serializers.OaiProviderSetCreateUpdateSerializer, "data"
+    )
     def test_staff_returns_http_200(
         self,
         oai_provider_set_serializer_data,

@@ -38,6 +38,9 @@ from core_oaipmh_provider_app.components.oai_xsl_template import (
 from core_oaipmh_provider_app.components.oai_xsl_template.models import (
     OaiXslTemplate,
 )
+from core_oaipmh_provider_app.utils.template import (
+    check_template_manager_in_xsd_format,
+)
 from core_oaipmh_provider_app.views.admin.forms import (
     EditIdentityForm,
     MetadataFormatForm,
@@ -95,6 +98,7 @@ class EditIdentityView(EditObjectModalView):
 class AddMetadataFormatView(AddObjectModalView):
     """Add Metadata Format View"""
 
+    template_name = "core_oaipmh_provider_app/admin/registry/metadata_formats/forms/add_form.html"
     form_class = MetadataFormatForm
     model = OaiProviderMetadataFormat
     success_url = reverse_lazy(
@@ -158,6 +162,7 @@ class EditMetadataFormatView(EditObjectModalView):
 class AddTemplateMetadataFormatView(AddObjectModalView):
     """Add Template Metadata Format View"""
 
+    template_name = "core_oaipmh_provider_app/admin/registry/metadata_formats/forms/add_form.html"
     form_class = TemplateMetadataFormatForm
     model = OaiProviderMetadataFormat
     success_url = reverse_lazy(
@@ -196,9 +201,16 @@ class AddSetView(AddObjectModalView):
 
     def _save(self, form):
         try:
+            template_version_manager_id_list = form.cleaned_data[
+                "templates_manager"
+            ]
+            check_template_manager_in_xsd_format(
+                template_version_manager_id_list, self.request
+            )
+
             saved_object = oai_provider_set_api.upsert(self.object)
             saved_object.templates_manager.set(
-                form.cleaned_data["templates_manager"]
+                template_version_manager_id_list
             )
             oai_provider_set_api.upsert(saved_object)
         except Exception as exception:
@@ -237,9 +249,16 @@ class EditSetView(EditObjectModalView):
 
     def _save(self, form):
         try:
+            template_version_manager_id_list = form.cleaned_data[
+                "templates_manager"
+            ]
+            check_template_manager_in_xsd_format(
+                template_version_manager_id_list, self.request
+            )
+
             saved_object = oai_provider_set_api.upsert(self.object)
             saved_object.templates_manager.set(
-                form.cleaned_data["templates_manager"]
+                template_version_manager_id_list
             )
             oai_provider_set_api.upsert(saved_object)
         except Exception as exception:

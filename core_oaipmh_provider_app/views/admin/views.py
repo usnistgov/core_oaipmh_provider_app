@@ -126,6 +126,7 @@ def metadata_formats_view(request):
         "default_metadata_formats": default_metadata_formats,
         "metadata_formats": metadata_formats,
         "template_metadata_formats": template_metadata_formats,
+        "object_name": "Metadata Format",
     }
 
     return admin_render(

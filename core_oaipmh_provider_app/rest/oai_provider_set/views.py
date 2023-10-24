@@ -34,7 +34,7 @@ class SetsList(APIView):
         """
         try:
             sets = oai_provider_set_api.get_all()
-            serializer = serializers.OaiProviderSetSerializer(
+            serializer = serializers.OaiProviderSetListSerializer(
                 sets, many=True, context={"request": request}
             )
 
@@ -73,7 +73,7 @@ class SetsList(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.OaiProviderSetSerializer(
+            serializer = serializers.OaiProviderSetCreateUpdateSerializer(
                 data=request.data, context={"request": request}
             )
             # Validate data
@@ -122,7 +122,7 @@ class SetDetail(APIView):
         """
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
-            serializer = serializers.OaiProviderSetSerializer(
+            serializer = serializers.OaiProviderSetListSerializer(
                 set_, context={"request": request}
             )
 
@@ -206,7 +206,7 @@ class SetDetail(APIView):
         try:
             set_ = oai_provider_set_api.get_by_id(set_id)
             # Build serializer
-            serializer = serializers.OaiProviderSetSerializer(
+            serializer = serializers.OaiProviderSetCreateUpdateSerializer(
                 instance=set_, data=request.data, context={"request": request}
             )
             # Validate data

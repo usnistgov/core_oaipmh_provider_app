@@ -7,6 +7,7 @@ from django.conf import settings
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager import (
     api as template_version_manager_api,
 )
@@ -80,6 +81,7 @@ class MetadataFormatForm(forms.ModelForm):
         label="Schema URL",
         required=True,
         widget=forms.URLInput(attrs={"class": "form-control"}),
+        help_text="The provided link must point to an XSD schema.",
     )
 
     class Meta:
@@ -120,7 +122,11 @@ class TemplateMetadataFormatForm(forms.ModelForm):
             attrs={"placeholder": "example: oai_dc", "class": "form-control"}
         ),
     )
-    template = forms.ChoiceField(label="Template", widget=forms.Select())
+    template = forms.ChoiceField(
+        label="Template",
+        widget=forms.Select(),
+        help_text="Only XSD templates can be added as metadata formats.",
+    )
 
     class Meta:
         """Meta"""
@@ -252,14 +258,20 @@ def _get_templates_versions(request):
     """
     templates = []
     try:
-        list_ = template_version_manager_api.get_active_global_version_manager(
-            request=request
+        # Retrieve all template version manager in the allowed format (currently XSD).
+        template_version_manager_list = (
+            template_version_manager_api.get_active_global_version_manager(
+                request=request
+            ).filter(template__format=Template.XSD)
         )
-        for elt in list_:
-            for version in elt.versions:
-                template = template_api.get_by_id(version, request=request)
+
+        for template_version_manager in template_version_manager_list:
+            for template_version in template_version_manager.versions:
+                template = template_api.get_by_id(
+                    template_version, request=request
+                )
                 version_name = template.display_name
-                templates.append((version, version_name))
+                templates.append((template_version, version_name))
     except exceptions.DoesNotExist as exception:
         logger.warning(
             "_get_templates_versions threw an exception: %s", str(exception)
@@ -278,13 +290,14 @@ def _get_templates_manager(request):
         List of templates manager.
 
     """
-    templates_manager = []
-    list_ = template_version_manager_api.get_active_global_version_manager(
-        request=request
-    )
-    for elt in list_:
-        templates_manager.append((elt.id, elt.title))
-    return templates_manager
+    return [
+        (template_version_manager.id, template_version_manager.title)
+        for template_version_manager in template_version_manager_api.get_active_global_version_manager(
+            request=request
+        ).filter(
+            template__format=Template.XSD
+        )
+    ]
 
 
 def _get_xsl_transformation():

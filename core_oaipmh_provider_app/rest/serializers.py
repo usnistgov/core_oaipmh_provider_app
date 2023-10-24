@@ -4,11 +4,15 @@
 import logging
 
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import ListField
 from rest_framework.serializers import CharField, ModelSerializer
 
-import core_main_app.components.template_version_manager.api as template_version_manager_api
 from core_main_app.commons import exceptions
+from core_main_app.commons.exceptions import CoreError
 from core_main_app.commons.serializers import BasicSerializer
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
 from core_main_app.components.xsl_transformation import api as oai_xslt_api
 from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
     api as oai_provider_metadata_format_api,
@@ -31,6 +35,9 @@ from core_oaipmh_provider_app.components.oai_xsl_template import (
 )
 from core_oaipmh_provider_app.components.oai_xsl_template.models import (
     OaiXslTemplate,
+)
+from core_oaipmh_provider_app.utils.template import (
+    check_template_manager_in_xsd_format,
 )
 
 logger = logging.getLogger(__name__)
@@ -115,7 +122,7 @@ class UpdateMetadataFormatSerializer(BasicSerializer):
     metadata_prefix = CharField(required=True)
 
 
-class OaiProviderSetSerializer(ModelSerializer):
+class OaiProviderSetListSerializer(ModelSerializer):
     """Oai Provider Set Serializer"""
 
     class Meta:
@@ -133,6 +140,12 @@ class OaiProviderSetSerializer(ModelSerializer):
 
         read_only_fields = ("id",)
 
+
+class OaiProviderSetCreateUpdateSerializer(OaiProviderSetListSerializer):
+    """Oai Provider Set Serializer"""
+
+    templates_manager = ListField(child=CharField(), write_only=True)
+
     def create(self, validated_data):
         """create
 
@@ -143,6 +156,15 @@ class OaiProviderSetSerializer(ModelSerializer):
 
         """
         templates_manager = validated_data.get("templates_manager", [])
+
+        try:
+            check_template_manager_in_xsd_format(
+                templates_manager, self.context["request"]
+            )
+        except CoreError as core_error:
+            raise ValidationError(
+                f"Cannot create or update OAI set: {str(core_error)}"
+            )
 
         if "templates_manager" in validated_data.keys():
             del validated_data["templates_manager"]
@@ -167,6 +189,15 @@ class OaiProviderSetSerializer(ModelSerializer):
         instance.set_spec = validated_data.get("set_spec", instance.set_spec)
         instance.set_name = validated_data.get("set_name", instance.set_name)
         templates_manager = validated_data.get("templates_manager", [])
+        try:
+            check_template_manager_in_xsd_format(
+                templates_manager, self.context["request"]
+            )
+        except CoreError as core_error:
+            raise ValidationError(
+                f"Cannot create or update OAI set: {str(core_error)}"
+            )
+
         if len(templates_manager) > 0:
             templates_manager = [
                 template_version_manager_api.get_by_id(

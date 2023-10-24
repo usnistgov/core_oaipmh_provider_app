@@ -7,9 +7,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 
-from core_main_app.commons.exceptions import DoesNotExist
-from core_main_app.commons.exceptions import XSDError
+from core_main_app.commons.exceptions import DoesNotExist, XSDError
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template.models import Template
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_main_app.utils.xml import is_schema_valid
@@ -215,35 +215,42 @@ def add_metadata_format(metadata_prefix, schema_url, request):
 
 def add_template_metadata_format(metadata_prefix, template_id, request):
     """Add a new template metadata format.
+
     Args:
         metadata_prefix: Metadata Prefix.
         template_id: Id of the template.
         request:
 
     Returns: Response.
-
     """
     try:
         template = template_api.get_by_id(template_id, request=request)
+
+        if (
+            template.format != Template.XSD
+        ):  # Check that the template format is XSD.
+            raise XSDError(
+                f"Incorrect template format: XSD format only ({template.format} "
+                "provided)."
+            )
+
         version_manager = template.version_manager
         xml_schema = template.content
-        target_namespace = _get_target_namespace(xml_schema)
         version_number = version_manager_api.get_version_number(
             version_manager, template_id, request=request
         )
-        schema_url = _get_simple_template_metadata_format_schema_url(
-            version_manager.title, version_number
-        )
-        obj = OaiProviderMetadataFormat(
+        oai_provider_metadata_format = OaiProviderMetadataFormat(
             metadata_prefix=metadata_prefix,
-            schema=schema_url,
+            schema=_get_simple_template_metadata_format_schema_url(
+                version_manager.title, version_number
+            ),
             xml_schema=xml_schema,
             is_default=False,
             is_template=True,
-            metadata_namespace=target_namespace,
+            metadata_namespace=_get_target_namespace(xml_schema),
             template=template,
         )
-        upsert(obj, request=request)
+        upsert(oai_provider_metadata_format, request=request)
         content = OaiPmhMessage.get_message_labelled(
             "Metadata format added with success."
         )

@@ -1,0 +1,22 @@
+<form action="{{ view.request.path }}" method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            This form contains the following errors:
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+    {% for field in form %}
+        <div style="margin-bottom: 1rem">
+            {{ field.label_tag }}
+            {% if field.help_text %}
+                <span style="float: right; color: #777">
+                    <i class="fas fa-question-circle"></i>
+                    {{ field.help_text|safe }}
+                </span>
+            {% endif %}
+            {{ field }}
+            <div style="color: darkred; height: 1.5rem">{{ field.errors }}</div>
+        </div>
+    {% endfor %}
+</form>
