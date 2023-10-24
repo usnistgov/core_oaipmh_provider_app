@@ -124,7 +124,7 @@ class DeleteMetadataFormatView(DeleteObjectModalView):
     success_message = "Metadata Format deleted with success."
     field_for_name = "metadata_prefix"
 
-    def _delete(self, request, *args, **kwargs):
+    def _delete(self, form):
         # Delete treatment.
         oai_provider_metadata_format_api.delete(self.object)
 
@@ -222,7 +222,7 @@ class DeleteSetView(DeleteObjectModalView):
     success_message = "Set deleted with success."
     field_for_name = "set_spec"
 
-    def _delete(self, request, *args, **kwargs):
+    def _delete(self, form):
         # Delete treatment.
         oai_provider_metadata_format_api.delete(self.object)
 
@@ -318,7 +318,7 @@ class DeleteTemplateMappingView(DeleteObjectModalView):
     success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_sets")
     success_message = "Mapping deleted with success."
 
-    def _delete(self, request, *args, **kwargs):
+    def _delete(self, form):
         # Delete treatment.
         oai_xsl_template_api.delete(self.object)
 
