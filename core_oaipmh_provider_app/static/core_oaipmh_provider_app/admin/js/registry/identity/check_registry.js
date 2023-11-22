@@ -41,15 +41,15 @@ checkStatus = function()
 copyURL = function()
 {
     // Create a temporary text field
-    var $temp = $("<input>");
+    let $temp = $("<input>");
     $("body").append($temp);
     // Select the text field
     $temp.val($.trim($(".base-url").text())).select();
     // Copy the text inside the text field
     navigator.clipboard.writeText($temp.val()).then(function() {
-        $.notify("Base URL copied to clipboard successfully!", { style: "success" });
+        $.notify("Base URL copied to clipboard successfully!", "success");
     }, function() {
-        $.notify("A problem has occurred while copying the Base Url.", { style: "danger" });
+        $.notify("An error has occurred while copying the base URL!", "danger");
     });
 
     // Remove a temporary text field
