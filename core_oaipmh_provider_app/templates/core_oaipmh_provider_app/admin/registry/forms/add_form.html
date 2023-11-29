@@ -7,7 +7,7 @@
         </div>
     {% endif %}
     {% for field in form %}
-        <div style="margin-bottom: 1rem">
+        <div style="margin-bottom: 0.5rem">
             {{ field.label_tag }}
             {% if field.help_text %}
                 <span style="float: right; color: #777">
@@ -16,7 +16,9 @@
                 </span>
             {% endif %}
             {{ field }}
-            <div style="color: darkred; height: 1.5rem">{{ field.errors }}</div>
+            {% if field.errors %}
+            <div style="color: darkred; height: 2rem">{{ field.errors }}</div>
+            {% endif %}
         </div>
     {% endfor %}
 </form>

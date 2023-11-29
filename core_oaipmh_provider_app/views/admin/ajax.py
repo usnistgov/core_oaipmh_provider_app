@@ -98,7 +98,9 @@ class EditIdentityView(EditObjectModalView):
 class AddMetadataFormatView(AddObjectModalView):
     """Add Metadata Format View"""
 
-    template_name = "core_oaipmh_provider_app/admin/registry/metadata_formats/forms/add_form.html"
+    template_name = (
+        "core_oaipmh_provider_app/admin/registry/forms/add_form.html"
+    )
     form_class = MetadataFormatForm
     model = OaiProviderMetadataFormat
     success_url = reverse_lazy(
@@ -162,7 +164,9 @@ class EditMetadataFormatView(EditObjectModalView):
 class AddTemplateMetadataFormatView(AddObjectModalView):
     """Add Template Metadata Format View"""
 
-    template_name = "core_oaipmh_provider_app/admin/registry/metadata_formats/forms/add_form.html"
+    template_name = (
+        "core_oaipmh_provider_app/admin/registry/forms/add_form.html"
+    )
     form_class = TemplateMetadataFormatForm
     model = OaiProviderMetadataFormat
     success_url = reverse_lazy(
@@ -194,6 +198,9 @@ class AddTemplateMetadataFormatView(AddObjectModalView):
 class AddSetView(AddObjectModalView):
     """Add Set View"""
 
+    template_name = (
+        "core_oaipmh_provider_app/admin/registry/forms/add_form.html"
+    )
     form_class = SetForm
     model = OaiProviderSet
     success_url = reverse_lazy("core-admin:core_oaipmh_provider_app_sets")

@@ -169,6 +169,7 @@ class SetForm(forms.ModelForm):
         label="Templates",
         widget=forms.CheckboxSelectMultiple(attrs={"class": "double-columns"}),
         required=True,
+        help_text="Only XSD templates can be added as metadata formats.",
     )
     description = forms.CharField(
         label="Description",

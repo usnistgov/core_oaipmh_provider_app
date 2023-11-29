@@ -167,7 +167,8 @@ def sets_view(request):
     ]
 
     context = {
-        "sets": oai_provider_set_api.get_all(order_by_field=["set_spec"])
+        "sets": oai_provider_set_api.get_all(order_by_field=["set_spec"]),
+        "object_name": "Set",
     }
 
     return admin_render(
