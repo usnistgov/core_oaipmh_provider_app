@@ -80,7 +80,7 @@ class Settings(APIView):
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
-                "OAI-PMH Settings updated with success."
+                "OAI-PMH Settings updated."
             )
 
             return Response(content, status=status.HTTP_200_OK)

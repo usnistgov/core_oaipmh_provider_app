@@ -80,9 +80,7 @@ class SetsList(APIView):
             serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled(
-                "Set added with success."
-            )
+            content = OaiPmhMessage.get_message_labelled("Set added.")
 
             return Response(content, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
@@ -213,9 +211,7 @@ class SetDetail(APIView):
             serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled(
-                "Set updated with success."
-            )
+            content = OaiPmhMessage.get_message_labelled("Set updated.")
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:

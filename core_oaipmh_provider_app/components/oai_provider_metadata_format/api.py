@@ -191,9 +191,7 @@ def add_metadata_format(metadata_prefix, schema_url, request):
             is_template=False,
         )
         upsert(obj, request=request)
-        content = OaiPmhMessage.get_message_labelled(
-            "Metadata format added with success."
-        )
+        content = OaiPmhMessage.get_message_labelled("Metadata format added.")
 
         return Response(content, status=status.HTTP_201_CREATED)
 
@@ -251,9 +249,7 @@ def add_template_metadata_format(metadata_prefix, template_id, request):
             template=template,
         )
         upsert(oai_provider_metadata_format, request=request)
-        content = OaiPmhMessage.get_message_labelled(
-            "Metadata format added with success."
-        )
+        content = OaiPmhMessage.get_message_labelled("Metadata format added.")
 
         return Response(content, status=status.HTTP_201_CREATED)
     except oai_pmh_exceptions.OAIAPILabelledException as exception:

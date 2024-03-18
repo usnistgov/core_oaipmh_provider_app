@@ -47,7 +47,7 @@ copyURL = function()
     $temp.val($.trim($(".base-url").text())).select();
     // Copy the text inside the text field
     navigator.clipboard.writeText($temp.val()).then(function() {
-        $.notify("Base URL copied to clipboard successfully!", "success");
+        $.notify("Base URL copied to clipboard!", "success");
     }, function() {
         $.notify("An error has occurred while copying the base URL!", "danger");
     });

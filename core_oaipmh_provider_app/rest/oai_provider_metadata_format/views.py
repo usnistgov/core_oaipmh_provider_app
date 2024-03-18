@@ -226,7 +226,7 @@ class MetadataFormatDetail(APIView):
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
-                "Metadata Format updated with success."
+                "Metadata Format updated."
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -339,9 +339,7 @@ class TemplateMetadataFormatXSLT(APIView):
             serializer.init_instance()
             # Save data
             serializer.save()
-            content = OaiPmhMessage.get_message_labelled(
-                "Mapping configured with success."
-            )
+            content = OaiPmhMessage.get_message_labelled("Mapping configured.")
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
