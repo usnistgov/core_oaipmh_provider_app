@@ -2,7 +2,8 @@
 """
 
 from datetime import datetime
-from unittest.mock import patch, Mock
+from unittest import TestCase
+from unittest.mock import patch, Mock, MagicMock, call
 
 from django.http.request import HttpRequest
 from rest_framework import status
@@ -42,8 +43,9 @@ from core_oaipmh_provider_app.components.oai_xsl_template import (
 from core_oaipmh_provider_app.components.oai_xsl_template.models import (
     OaiXslTemplate,
 )
+from core_oaipmh_provider_app.settings import RESULTS_PER_PAGE
 from core_oaipmh_provider_app.utils import request_checker
-from core_oaipmh_provider_app.views.user.views import OAIProviderView
+from core_oaipmh_provider_app.views.user import views as user_views
 from tests.utils.mocks import MockQuerySet
 from tests.utils.test_oai_pmh_suite import TestOaiPmhSuite
 
@@ -62,7 +64,7 @@ class TestServerGeneral(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=self.data
+            user_views.OAIProviderView.as_view(), None, data=self.data
         )
 
         # Assert
@@ -79,7 +81,7 @@ class TestServerGeneral(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=self.data
+            user_views.OAIProviderView.as_view(), None, data=self.data
         )
 
         # Assert
@@ -96,7 +98,7 @@ class TestServerGeneral(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=self.data
+            user_views.OAIProviderView.as_view(), None, data=self.data
         )
 
         # Assert
@@ -119,7 +121,7 @@ class TestServerGeneral(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_verb
+            user_views.OAIProviderView.as_view(), None, data=bad_verb
         )
 
         # Assert
@@ -146,7 +148,7 @@ class TestIdentify(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -175,7 +177,7 @@ class TestListSets(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -200,7 +202,7 @@ class TestListSets(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -221,7 +223,7 @@ class TestListSets(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -245,7 +247,7 @@ class TestListSets(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -273,7 +275,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -302,7 +304,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -331,7 +333,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -362,7 +364,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -379,7 +381,9 @@ class TestListIdentifiers(TestOaiPmhSuite):
     @patch.object(oai_provider_set_api, "get_by_set_spec")
     @patch.object(oai_xsl_template_api, "get_template_ids_by_metadata_format")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_identifiers_no_set_or_bad_set(
@@ -408,7 +412,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -422,9 +426,11 @@ class TestListIdentifiers(TestOaiPmhSuite):
         )
 
     @patch.object(oai_data_api, "get_all_by_template")
-    @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
+    @patch.object(user_views.OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_identifiers_no_xml_data(
@@ -453,7 +459,7 @@ class TestListIdentifiers(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -486,7 +492,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -515,7 +521,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -553,7 +559,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -594,7 +600,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -640,7 +646,7 @@ class TestListMetadataFormats(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -668,7 +674,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -693,7 +699,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -722,7 +728,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -757,7 +763,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -801,7 +807,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -870,7 +876,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
         output_xml_data = response.context_data["xml"]
 
@@ -954,7 +960,7 @@ class TestGetRecord(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
         output_xml_data = response.context_data["xml"]
 
@@ -980,7 +986,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -1009,7 +1015,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -1038,7 +1044,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -1069,7 +1075,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=bad_arg
+            user_views.OAIProviderView.as_view(), None, data=bad_arg
         )
 
         # Assert
@@ -1086,7 +1092,9 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(oai_provider_set_api, "get_by_set_spec")
     @patch.object(oai_xsl_template_api, "get_template_ids_by_metadata_format")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_records_no_set_or_bad_set(
@@ -1115,7 +1123,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -1129,9 +1137,11 @@ class TestListRecords(TestOaiPmhSuite):
         )
 
     @patch.object(oai_data_api, "get_all_by_template")
-    @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
+    @patch.object(user_views.OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_records_no_xml_data(
@@ -1160,7 +1170,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
 
         # Assert
@@ -1176,9 +1186,11 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(oai_provider_set_api, "get_all_by_template_ids")
     @patch.object(oai_data_api, "get_all_by_template_list")
     @patch.object(system_api, "get_template_by_id")
-    @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
+    @patch.object(user_views.OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_record_with_xml_decl_use_raw(
@@ -1232,7 +1244,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
         output_xml_data = response.context_data["items"][0]["xml"]
 
@@ -1247,10 +1259,12 @@ class TestListRecords(TestOaiPmhSuite):
     @patch.object(
         oai_xsl_template_api, "get_by_template_id_and_metadata_format_id"
     )
-    @patch.object(OAIProviderView, "_get_templates_id_by_set_spec")
+    @patch.object(user_views.OAIProviderView, "_get_templates_id_by_set_spec")
     @patch.object(oai_provider_metadata_format_api, "get_by_metadata_prefix")
     @patch.object(oai_xsl_template_api, "get_template_ids_by_metadata_format")
-    @patch.object(OAIProviderView, "_get_templates_id_by_metadata_prefix")
+    @patch.object(
+        user_views.OAIProviderView, "_get_templates_id_by_metadata_prefix"
+    )
     @patch.object(HttpRequest, "build_absolute_uri")
     @patch.object(oai_settings_api, "get")
     def test_list_record_with_xml_decl_not_raw(
@@ -1321,7 +1335,7 @@ class TestListRecords(TestOaiPmhSuite):
 
         # Act
         response = RequestMock.do_request_get(
-            OAIProviderView.as_view(), None, data=data
+            user_views.OAIProviderView.as_view(), None, data=data
         )
         output_xml_data = response.context_data["items"][0]["xml"]
 
@@ -1387,3 +1401,413 @@ def _set_oai_setting_fields(oai_settings):
     oai_settings.enable_harvesting = True
 
     return oai_settings
+
+
+class TestOAIProviderViewGetItems(TestCase):
+    """Unit tests for `_get_items` method."""
+
+    def setUp(self):
+        """setUp"""
+        self.mock_kwargs = {
+            "template_id_list": [MagicMock(), MagicMock()],
+            "metadata_format": MagicMock(),
+            "oai_set": MagicMock(),
+            "from_date": MagicMock(),
+            "until_date": MagicMock(),
+            "include_metadata": False,
+            "use_raw": True,
+            "page_nb": 1,
+            "request": MagicMock(),
+        }
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_request_page_api")
+    def test_get_template_by_id_called(
+        self, mock_oai_request_page_api, mock_system_api
+    ):
+        """test_get_template_by_id_called"""
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_system_api.get_template_by_id.assert_has_calls(
+            [
+                call(template_id)
+                for template_id in self.mock_kwargs["template_id_list"]
+            ]
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "oai_request_page_api")
+    def test_get_all_by_template_list_called(
+        self, mock_oai_request_page_api, mock_oai_data_api, mock_system_api
+    ):
+        """test_get_all_by_template_list_called"""
+        mock_template = MagicMock()
+        mock_system_api.get_template_by_id.return_value = mock_template
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_oai_data_api.get_all_by_template_list.assert_called_with(
+            [mock_template for _ in self.mock_kwargs["template_id_list"]],
+            from_date=self.mock_kwargs["from_date"],
+            until_date=self.mock_kwargs["until_date"],
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "oai_request_page_api")
+    def test_paginator_called(
+        self,
+        mock_oai_request_page_api,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_paginator_called"""
+        mock_oai_data = MagicMock()
+        mock_oai_data_api.get_all_by_template_list().order_by.return_value = (
+            mock_oai_data
+        )
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_paginator.assert_called_with(mock_oai_data, RESULTS_PER_PAGE)
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    def test_more_pages_datetime_to_utc_datetime_iso8601_called(
+        self,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_more_pages_datetime_to_utc_datetime_iso8601_called"""
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator.return_value = mock_paginator_obj
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.assert_called_with(
+            mock_datetime_utils.datetime_now()
+            + mock_datetime_utils.datetime_timedelta(days=7)
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    def test_more_pages_request_page_api_upsert_called(
+        self,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_more_pages_request_page_api_upsert_called"""
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_oai_request_page_api.upsert.assert_called_with(
+            mock_oai_request_page(
+                template_id_list=self.mock_kwargs["template_id_list"],
+                metadata_format=self.mock_kwargs[
+                    "metadata_format"
+                ].metadata_prefix,
+                oai_set=self.mock_kwargs["oai_set"],
+                from_date=self.mock_kwargs["from_date"],
+                until_date=self.mock_kwargs["until_date"],
+                expiration_date=mock_exp_date,
+                page_number=self.mock_kwargs["page_nb"] + 1,
+            )
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    def test_items_iterator_datetime_to_utc_datetime_iso8601_called(
+        self,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_items_iterator_datetime_to_utc_datetime_iso8601_called"""
+        mock_oai_paginator_items = [MagicMock(), MagicMock()]
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.has_calls(
+            [call(item.oai_date_stamp) for item in mock_oai_paginator_items]
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    @patch.object(user_views, "oai_provider_set_api")
+    def test_items_iterator_get_all_by_template_ids_called(
+        self,
+        mock_oai_provider_set_api,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_items_iterator_get_all_by_template_ids_called"""
+        mock_oai_paginator_items = [MagicMock(), MagicMock()]
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_oai_provider_set_api.get_all_by_template_ids.has_calls(
+            [
+                call([item.template.pk], request=self.mock_kwargs["request"])
+                for item in mock_oai_paginator_items
+            ]
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    @patch.object(user_views, "oai_provider_set_api")
+    @patch.object(user_views, "oai_xsl_template_api")
+    def test_additional_data_get_by_template_id_and_metadata_format_id_called(
+        self,
+        mock_oai_xsl_template_api,
+        mock_oai_provider_set_api,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_additional_data_get_by_template_id_and_metadata_format_id_called"""
+        self.mock_kwargs["include_metadata"] = True
+        self.mock_kwargs["use_raw"] = False
+
+        oai_item_1 = MagicMock()
+        oai_item_1.status = oai_status.ACTIVE
+
+        mock_oai_item_1_data = MagicMock()
+        mock_oai_item_1_data.xml_content = "mock_xml_content"
+        oai_item_1.data = mock_oai_item_1_data
+        mock_oai_paginator_items = [oai_item_1, MagicMock()]
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_oai_xsl_template_api.get_by_template_id_and_metadata_format_id.assert_called_with(
+            oai_item_1.data.template, self.mock_kwargs["metadata_format"]
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    @patch.object(user_views, "oai_provider_set_api")
+    @patch.object(user_views, "oai_xsl_template_api")
+    @patch.object(user_views, "xsl_transformation_api")
+    def test_additional_data_xsl_transform_called(
+        self,
+        mock_xsl_transformation_api,
+        mock_oai_xsl_template_api,
+        mock_oai_provider_set_api,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_additional_data_xsl_transform_called"""
+        self.mock_kwargs["include_metadata"] = True
+        self.mock_kwargs["use_raw"] = False
+
+        oai_item_1 = MagicMock()
+        oai_item_1.status = oai_status.ACTIVE
+
+        mock_oai_item_1_data = MagicMock()
+        mock_oai_item_1_data.xml_content = "mock_xml_content"
+        oai_item_1.data = mock_oai_item_1_data
+        mock_oai_paginator_items = [oai_item_1, MagicMock()]
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        mock_xslt = MagicMock()
+        mock_oai_xsl_template_api.get_by_template_id_and_metadata_format_id.return_value = (
+            mock_xslt
+        )
+
+        user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+        mock_xsl_transformation_api.xsl_transform.assert_called_with(
+            oai_item_1.data.xml_content, mock_xslt.xslt.name
+        )
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    @patch.object(user_views, "oai_provider_set_api")
+    @patch.object(user_views, "oai_xsl_template_api")
+    @patch.object(user_views, "xsl_transformation_api")
+    def test_no_items_raises_no_records_match(
+        self,
+        mock_xsl_transformation_api,
+        mock_oai_xsl_template_api,
+        mock_oai_provider_set_api,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_no_items_raises_no_records_match"""
+        self.mock_kwargs["include_metadata"] = True
+        self.mock_kwargs["use_raw"] = False
+
+        mock_oai_paginator_items = []
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        mock_xslt = MagicMock()
+        mock_oai_xsl_template_api.get_by_template_id_and_metadata_format_id.return_value = (
+            mock_xslt
+        )
+
+        with self.assertRaises(exceptions.NoRecordsMatch):
+            user_views.OAIProviderView._get_items(**self.mock_kwargs)
+
+    @patch.object(user_views, "system_api")
+    @patch.object(user_views, "oai_data_api")
+    @patch.object(user_views, "Paginator")
+    @patch.object(user_views, "datetime_utils")
+    @patch.object(user_views, "oai_request_page_api")
+    @patch.object(user_views, "OaiRequestPage")
+    @patch.object(user_views, "oai_provider_set_api")
+    @patch.object(user_views, "oai_xsl_template_api")
+    @patch.object(user_views, "xsl_transformation_api")
+    def test_returns_items_and_resumption_token(
+        self,
+        mock_xsl_transformation_api,
+        mock_oai_xsl_template_api,
+        mock_oai_provider_set_api,
+        mock_oai_request_page,
+        mock_oai_request_page_api,
+        mock_datetime_utils,
+        mock_paginator,
+        mock_oai_data_api,
+        mock_system_api,
+    ):
+        """test_returns_items_and_resumption_token"""
+        self.mock_kwargs["include_metadata"] = True
+        self.mock_kwargs["use_raw"] = False
+
+        mock_oai_paginator_items = [MagicMock(), MagicMock()]
+
+        mock_paginator_obj = MagicMock()
+        mock_paginator_obj.num_pages = 2
+        mock_paginator_obj.page.return_value = mock_oai_paginator_items
+        mock_paginator.return_value = mock_paginator_obj
+
+        mock_exp_date = MagicMock()
+        mock_datetime_utils.datetime_to_utc_datetime_iso8601.return_value = (
+            mock_exp_date
+        )
+
+        mock_xslt = MagicMock()
+        mock_oai_xsl_template_api.get_by_template_id_and_metadata_format_id.return_value = (
+            mock_xslt
+        )
+
+        results = user_views.OAIProviderView._get_items(**self.mock_kwargs)
+        self.assertEqual(len(results[0]), len(mock_oai_paginator_items))
+        self.assertIn("token", results[1])

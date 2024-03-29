@@ -24,11 +24,10 @@ from core_main_app.components.template_version_manager import (
 )
 from core_main_app.components.version_manager import api as version_manager_api
 from core_main_app.system import api as system_api
-from core_main_app.utils.datetime import datetime_now, datetime_timedelta
+from core_main_app.utils import datetime as datetime_utils
 from core_main_app.utils.xsd_flattener.xsd_flattener_database_url import (
     XSDFlattenerDatabaseOrURL,
 )
-from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.commons import status as oai_status
 from core_oaipmh_provider_app.components.oai_data import api as oai_data_api
@@ -89,8 +88,8 @@ class OAIProviderView(TemplateView):
         # Add common context data needed for all responses
         context.update(
             {
-                "now": UTCdatetime.datetime_to_utc_datetime_iso8601(
-                    datetime_now()
+                "now": datetime_utils.datetime_to_utc_datetime_iso8601(
+                    datetime_utils.datetime_now()
                 ),
                 "verb": self.oai_verb,
                 "identifier": self.identifier,
@@ -450,8 +449,9 @@ class OAIProviderView(TemplateView):
 
             # If there are more pages to display
             if oai_data_paginator.num_pages > page_nb:
-                exp_date = UTCdatetime.datetime_to_utc_datetime_iso8601(
-                    datetime_now() + datetime_timedelta(days=7)
+                exp_date = datetime_utils.datetime_to_utc_datetime_iso8601(
+                    datetime_utils.datetime_now()
+                    + datetime_utils.datetime_timedelta(days=7)
                 )
 
                 oai_request_page_object = oai_request_page_api.upsert(
@@ -487,7 +487,7 @@ class OAIProviderView(TemplateView):
                 )
                 item_info = {
                     "identifier": identifier,
-                    "last_modified": UTCdatetime.datetime_to_utc_datetime_iso8601(
+                    "last_modified": datetime_utils.datetime_to_utc_datetime_iso8601(
                         elt.oai_date_stamp
                     ),
                     "sets": oai_provider_set_api.get_all_by_template_ids(
@@ -570,7 +570,7 @@ class OAIProviderView(TemplateView):
 
             record_info = {
                 "identifier": self.identifier,
-                "last_modified": UTCdatetime.datetime_to_utc_datetime_iso8601(
+                "last_modified": datetime_utils.datetime_to_utc_datetime_iso8601(
                     oai_data.oai_date_stamp
                 ),
                 "sets": oai_provider_set_api.get_all_by_template_ids(
@@ -594,11 +594,13 @@ class OAIProviderView(TemplateView):
     @staticmethod
     def _get_earliest_date():
         try:
-            return UTCdatetime.datetime_to_utc_datetime_iso8601(
+            return datetime_utils.datetime_to_utc_datetime_iso8601(
                 oai_data_api.get_earliest_data_date()
             )
         except (exceptions.ModelError, Exception):
-            return UTCdatetime.datetime_to_utc_datetime_iso8601(datetime.min)
+            return datetime_utils.datetime_to_utc_datetime_iso8601(
+                datetime.min
+            )
 
     @staticmethod
     def _get_templates_id_by_metadata_prefix(metadata_prefix):

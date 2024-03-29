@@ -1,13 +1,10 @@
-"""
-Check OAI-PMH request utils.
-
+""" Check OAI-PMH request utils.
 """
 
 import re
 
 import core_oaipmh_provider_app.commons.exceptions as oai_provider_exceptions
-from core_main_app.utils.datetime import datetime_now
-from core_oaipmh_common_app.utils import UTCdatetime
+from core_main_app.utils import datetime as datetime_utils
 from core_oaipmh_provider_app import settings
 from core_oaipmh_provider_app.components.oai_request_page import (
     api as oai_request_page_api,
@@ -183,7 +180,7 @@ def _check_dates(date):
 
     """
     try:
-        return UTCdatetime.utc_datetime_iso8601_to_datetime(date)
+        return datetime_utils.utc_datetime_iso8601_to_datetime(date)
     except Exception as exception:
         raise exception
 
@@ -205,9 +202,11 @@ def check_resumption_token(resumption_token):
         )
 
         # Check if the resumption token is not expired
-        if UTCdatetime.datetime_to_utc_datetime_iso8601(
+        if datetime_utils.datetime_to_utc_datetime_iso8601(
             oai_request_page_object.expiration_date
-        ) < UTCdatetime.datetime_to_utc_datetime_iso8601(datetime_now()):
+        ) < datetime_utils.datetime_to_utc_datetime_iso8601(
+            datetime_utils.datetime_now()
+        ):
             raise Exception("Token expired")
 
         return oai_request_page_object
