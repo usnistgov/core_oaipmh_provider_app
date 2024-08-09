@@ -76,7 +76,7 @@ class TestAddSetViewSave(TestCase):
     ):
         """test_upsert_called_twice"""
         self.mock_view._save(**self.mock_kwargs)
-        self.assertEquals(mock_oai_provider_set_api.upsert.call_count, 2)
+        self.assertEqual(mock_oai_provider_set_api.upsert.call_count, 2)
 
 
 class TestAddSetViewGetFormKwargs(TestCase):
@@ -172,7 +172,7 @@ class TestEditSetViewSave(TestCase):
     ):
         """test_upsert_called_twice"""
         self.mock_view._save(**self.mock_kwargs)
-        self.assertEquals(mock_oai_provider_set_api.upsert.call_count, 2)
+        self.assertEqual(mock_oai_provider_set_api.upsert.call_count, 2)
 
 
 class TestEditSetViewGetInitial(TestCase):

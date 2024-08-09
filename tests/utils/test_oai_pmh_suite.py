@@ -52,4 +52,4 @@ class TestOaiPmhSuite(SimpleTestCase):
             text, ".//{http://www.openarchives.org/OAI/2.0/}" + check_tag
         ):
             count += 1
-        self.assertEquals(number, count)
+        self.assertEqual(number, count)

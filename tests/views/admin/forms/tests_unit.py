@@ -32,7 +32,7 @@ class TestTemplateMetadataFormatForm(TestCase):
         )
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["template"].widget.attrs["class"], "form-control"
         )
 
@@ -53,7 +53,7 @@ class TestTemplateMetadataFormatForm(TestCase):
         )
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["template"].widget.attrs["class"], "form-select"
         )
 
@@ -76,10 +76,10 @@ class TestMappingXSLTForm(TestCase):
         form = admin_forms.MappingXSLTForm(data, request=mock_request)
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["template"].widget.attrs["class"], "form-control"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["xslt"].widget.attrs["class"], "form-control"
         )
 
@@ -98,10 +98,10 @@ class TestMappingXSLTForm(TestCase):
         form = admin_forms.MappingXSLTForm(data, request=mock_request)
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["template"].widget.attrs["class"], "form-select"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["xslt"].widget.attrs["class"], "form-select"
         )
 
@@ -151,7 +151,7 @@ class TestGetTemplatesVersions(TestCase):
             "mock_template_version_manager_api_does_not_exist"
         )
 
-        self.assertEquals(
+        self.assertEqual(
             admin_forms._get_templates_versions(**self.mock_kwargs), []
         )
 
@@ -236,7 +236,7 @@ class TestGetTemplatesVersions(TestCase):
             "mock_template_api_get_by_id_does_not_exist"
         )
 
-        self.assertEquals(
+        self.assertEqual(
             admin_forms._get_templates_versions(**self.mock_kwargs), []
         )
 
@@ -263,7 +263,7 @@ class TestGetTemplatesVersions(TestCase):
         mock_template = MagicMock()
         mock_template_api.get_by_id.return_value = mock_template
 
-        self.assertEquals(
+        self.assertEqual(
             admin_forms._get_templates_versions(**self.mock_kwargs),
             [
                 (
