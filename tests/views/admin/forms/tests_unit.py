@@ -1,5 +1,6 @@
 """ Test forms from `views.admin.forms`.
 """
+
 from unittest.case import TestCase
 from unittest.mock import MagicMock, patch
 

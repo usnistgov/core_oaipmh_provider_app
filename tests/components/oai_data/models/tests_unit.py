@@ -1,5 +1,6 @@
 """ Unit tests for OaiData model.
 """
+
 import operator
 from unittest import TestCase
 from unittest.mock import patch

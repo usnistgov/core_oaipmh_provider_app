@@ -1,6 +1,7 @@
 """
 OaiProviderMetadataFormat API
 """
+
 from urllib.parse import urljoin
 
 from django.urls import reverse

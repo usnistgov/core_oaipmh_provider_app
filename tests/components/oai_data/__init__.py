@@ -1,5 +1,6 @@
 """ Test utils for OaiData
 """
+
 from unittest.mock import Mock
 
 from core_main_app.components.data.models import Data

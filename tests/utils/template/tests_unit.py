@@ -1,5 +1,6 @@
 """ Unit tests for `core_oaipmh_provider_app.utils.template` package.
 """
+
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 

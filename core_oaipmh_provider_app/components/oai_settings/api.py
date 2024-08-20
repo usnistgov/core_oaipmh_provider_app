@@ -2,7 +2,6 @@
 OaiSettings API
 """
 
-
 from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
 
 

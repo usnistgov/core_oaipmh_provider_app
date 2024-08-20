@@ -1,5 +1,6 @@
 """ Authentication tests for OAI Provider Metadata Format REST API
 """
+
 from unittest.mock import patch, Mock
 
 from django.http import HttpResponse

@@ -1,5 +1,6 @@
 """ discover settings for oai-pmh
 """
+
 import logging
 
 from core_main_app.commons.exceptions import CoreError

@@ -1,6 +1,7 @@
 """ Migration to remove previously created OAI data, making sure only public data are
 harvestable.
 """
+
 from django.db import migrations
 
 

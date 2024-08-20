@@ -1,5 +1,6 @@
 """ Unit Test Rest OaiSettings
 """
+
 from unittest.mock import patch
 
 import requests

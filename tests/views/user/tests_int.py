@@ -1,5 +1,6 @@
 """ Integrations tests for user views
 """
+
 from unittest.mock import patch, PropertyMock
 
 from rest_framework import status
