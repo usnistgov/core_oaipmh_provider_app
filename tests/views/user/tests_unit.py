@@ -1576,8 +1576,9 @@ class TestOAIProviderViewGetItems(TestCase):
         with self.assertRaises(exceptions.NoRecordsMatch):
             user_views.OAIProviderView._get_items(**self.mock_kwargs)
 
-        mock_datetime_utils.datetime_to_utc_datetime_iso8601.has_calls(
-            [call(item.oai_date_stamp) for item in mock_oai_paginator_items]
+        self.assertEqual(
+            mock_datetime_utils.datetime_to_utc_datetime_iso8601.call_count,
+            len(mock_oai_paginator_items),
         )
 
     @patch.object(user_views, "system_api")
@@ -1612,7 +1613,7 @@ class TestOAIProviderViewGetItems(TestCase):
 
         user_views.OAIProviderView._get_items(**self.mock_kwargs)
 
-        mock_oai_provider_set_api.get_all_by_template_ids.has_calls(
+        mock_oai_provider_set_api.get_all_by_template_ids.assert_has_calls(
             [
                 call([item.template.pk], request=self.mock_kwargs["request"])
                 for item in mock_oai_paginator_items

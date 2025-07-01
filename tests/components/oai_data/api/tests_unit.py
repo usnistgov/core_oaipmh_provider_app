@@ -226,7 +226,7 @@ class TestOaiDataUpsertFromData(TestCase):
         mock_upsert.return_value = None
         oai_data_api.upsert_from_data(mock_document)
 
-        self.assertTrue(mock_get_by_data.called_with(mock_document))
+        mock_get_by_data.assert_called_with(mock_document)
 
     @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
     @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
@@ -240,7 +240,7 @@ class TestOaiDataUpsertFromData(TestCase):
         mock_upsert.return_value = None
         oai_data_api.upsert_from_data(mock_document, force_update=True)
 
-        self.assertTrue(mock_upsert.called_with(mock_oai_data))
+        mock_upsert.assert_called_with(mock_oai_data)
 
     @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
     @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
