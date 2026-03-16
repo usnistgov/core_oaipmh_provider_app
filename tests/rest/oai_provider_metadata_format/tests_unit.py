@@ -1,5 +1,4 @@
-""" Unit Test Rest OaiProviderMetadataFormat
-"""
+"""Unit Test Rest OaiProviderMetadataFormat"""
 
 from random import randint
 from unittest.mock import patch, Mock

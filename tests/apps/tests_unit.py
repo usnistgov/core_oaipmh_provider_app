@@ -1,5 +1,4 @@
-"""Test Apps file
-"""
+"""Test Apps file"""
 
 from unittest.case import TestCase
 

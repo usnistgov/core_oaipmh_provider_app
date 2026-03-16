@@ -1,5 +1,4 @@
-""" OAI pmh provider admin form file
-"""
+"""OAI pmh provider admin form file"""
 
 import logging
 

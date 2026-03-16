@@ -1,5 +1,4 @@
-""" Int Test Rest OaiProviderSet
-"""
+"""Int Test Rest OaiProviderSet"""
 
 from rest_framework import status
 

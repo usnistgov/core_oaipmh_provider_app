@@ -1,5 +1,4 @@
-""" Setup core oaipmh provider_ app
-"""
+"""Setup core oaipmh provider_ app"""
 
 from os import chdir, pardir
 from os.path import join, exists, dirname, normpath, abspath

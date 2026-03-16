@@ -1,5 +1,4 @@
-""" Integration testing of OaiData model
-"""
+"""Integration testing of OaiData model"""
 
 from core_main_app.system import api as system_api
 from core_main_app.utils.integration_tests.integration_base_test_case import (

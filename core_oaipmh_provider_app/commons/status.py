@@ -1,5 +1,4 @@
-""" Status
-"""
+"""Status"""
 
 ACTIVE = "Active"
 DELETED = "Deleted"

@@ -1,5 +1,4 @@
-""" Tests unit
-"""
+"""Tests unit"""
 
 from random import randint
 from unittest.case import TestCase

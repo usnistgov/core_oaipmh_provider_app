@@ -1,5 +1,4 @@
-""" Unit tests for the `core_oaipmh_provider_app.utils.request_checker` package.
-"""
+"""Unit tests for the `core_oaipmh_provider_app.utils.request_checker` package."""
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch, call

@@ -1,5 +1,4 @@
-""" Fixtures files for OAI provider
-"""
+"""Fixtures files for OAI provider"""
 
 import json
 from os.path import join

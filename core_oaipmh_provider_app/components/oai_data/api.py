@@ -1,5 +1,4 @@
-""" OaiData API
-"""
+"""OaiData API"""
 
 import logging
 

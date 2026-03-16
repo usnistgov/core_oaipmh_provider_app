@@ -1,5 +1,4 @@
-""" Integrations testing of the OaiData API
-"""
+"""Integrations testing of the OaiData API"""
 
 from django.db.models import Q
 

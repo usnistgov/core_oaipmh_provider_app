@@ -1,5 +1,4 @@
-""" Utilities for OAI-PMH
-"""
+"""Utilities for OAI-PMH"""
 
 from django.test import SimpleTestCase
 

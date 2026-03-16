@@ -1,5 +1,4 @@
-""" Test utils for OaiData
-"""
+"""Test utils for OaiData"""
 
 from unittest.mock import Mock
 

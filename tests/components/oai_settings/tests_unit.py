@@ -1,5 +1,4 @@
-""" Tests unit
-"""
+"""Tests unit"""
 
 from unittest.case import TestCase
 from unittest.mock import Mock, patch

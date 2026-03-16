@@ -1,5 +1,4 @@
-""" Unit tests for OaiData model.
-"""
+"""Unit tests for OaiData model."""
 
 import operator
 from unittest import TestCase

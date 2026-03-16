@@ -1,5 +1,4 @@
-""" OAIRequestPage API calls
-"""
+"""OAIRequestPage API calls"""
 
 import logging
 import random

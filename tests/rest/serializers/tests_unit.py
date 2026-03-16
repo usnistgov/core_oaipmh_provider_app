@@ -1,5 +1,4 @@
-""" Unit tests for `core_oaipmh_provider_app.rest.serializers` package.
-"""
+"""Unit tests for `core_oaipmh_provider_app.rest.serializers` package."""
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch

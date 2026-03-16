@@ -1,5 +1,4 @@
-""" Check OAI-PMH request utils.
-"""
+"""Check OAI-PMH request utils."""
 
 import re
 

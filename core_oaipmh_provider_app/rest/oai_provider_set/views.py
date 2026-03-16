@@ -1,5 +1,4 @@
-""" OaiProviderSet rest api
-"""
+"""OaiProviderSet rest api"""
 
 from django.utils.decorators import method_decorator
 from drf_spectacular.types import OpenApiTypes

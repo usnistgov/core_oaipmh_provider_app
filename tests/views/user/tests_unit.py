@@ -1,5 +1,4 @@
-""" Unit Test Rest OaiRegistry
-"""
+"""Unit Test Rest OaiRegistry"""
 
 from datetime import datetime
 from unittest import TestCase
@@ -850,16 +849,13 @@ class TestGetRecord(TestOaiPmhSuite):
         mock_oai_data = Mock(spec=OaiData)
         mock_oai_data.status = oai_status.ACTIVE
         mock_oai_data.template = mock_oai_template
-        mock_oai_data.data.xml_content = (
-            """
+        mock_oai_data.data.xml_content = """
             %s
             <body>
                 <tag01>value_a</tag01>
                 <tag02>value_b</tag02>
             </body>
-        """
-            % xml_decl
-        )
+        """ % xml_decl
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
         mock_get.return_value = _create_mock_oai_settings()
@@ -1217,16 +1213,13 @@ class TestListRecords(TestOaiPmhSuite):
 
         mock_oai_data = Mock(spec=OaiData)
         mock_oai_data.status = oai_status.ACTIVE
-        mock_oai_data.data.xml_content = (
-            """
+        mock_oai_data.data.xml_content = """
             %s
             <body>
                 <tag01>value_a</tag01>
                 <tag02>value_b</tag02>
             </body>
-        """
-            % xml_decl
-        )
+        """ % xml_decl
         mock_oai_data.oai_date_stamp = datetime(2019, 4, 1)
 
         mock_oai_data_qs = MockQuerySet()

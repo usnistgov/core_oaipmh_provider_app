@@ -1,5 +1,4 @@
-""" User views
-"""
+"""User views"""
 
 import logging
 import re
@@ -396,7 +395,7 @@ class OAIProviderView(TemplateView):
             )
             set(template_id_list).intersection(templates_id_from_set)
 
-            (items, resumption_token) = self._get_items(
+            items, resumption_token = self._get_items(
                 template_id_list=template_id_list,
                 metadata_format=metadata_format,
                 oai_set=self.set,

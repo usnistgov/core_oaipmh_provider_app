@@ -1,5 +1,4 @@
-""" Unit Test OaiXslTemplate
-"""
+"""Unit Test OaiXslTemplate"""
 
 from unittest.case import TestCase
 from unittest.mock import Mock, patch

@@ -1,5 +1,4 @@
-""" Authentication tests for OAI Provider Metadata Format REST API
-"""
+"""Authentication tests for OAI Provider Metadata Format REST API"""
 
 from unittest.mock import patch, Mock
 

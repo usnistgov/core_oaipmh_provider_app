@@ -1,9 +1,7 @@
-""" Test settings
-"""
+"""Test settings"""
 
 import os
 from os.path import dirname, realpath, join
-
 
 SECRET_KEY = "fake-key"
 

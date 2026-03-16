@@ -1,4 +1,4 @@
-""" Unit tests for `core_oaipmh_provider_app.components.oai_provider_metadata_format.api`
+"""Unit tests for `core_oaipmh_provider_app.components.oai_provider_metadata_format.api`
 package.
 """
 

@@ -1,5 +1,4 @@
-""" Authentication tests for OAIProviderSet REST API
-"""
+"""Authentication tests for OAIProviderSet REST API"""
 
 from unittest.mock import patch, Mock
 

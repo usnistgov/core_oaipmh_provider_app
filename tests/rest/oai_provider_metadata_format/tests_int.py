@@ -1,5 +1,4 @@
-""" Int Test Rest OaiProviderMetadataFormat
-"""
+"""Int Test Rest OaiProviderMetadataFormat"""
 
 from unittest.mock import Mock, patch
 

@@ -1,5 +1,4 @@
-""" Unit tests for OaiData signals
-"""
+"""Unit tests for OaiData signals"""
 
 from unittest.case import TestCase
 from unittest.mock import patch, Mock

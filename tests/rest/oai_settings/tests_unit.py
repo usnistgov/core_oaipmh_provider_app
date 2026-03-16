@@ -1,5 +1,4 @@
-""" Unit Test Rest OaiSettings
-"""
+"""Unit Test Rest OaiSettings"""
 
 from unittest.mock import patch
 

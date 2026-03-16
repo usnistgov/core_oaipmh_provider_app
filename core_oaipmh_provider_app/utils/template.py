@@ -1,5 +1,4 @@
-""" Utilities for managing templates.
-"""
+"""Utilities for managing templates."""
 
 from core_main_app.commons.exceptions import CoreError
 from core_main_app.components.template.models import Template

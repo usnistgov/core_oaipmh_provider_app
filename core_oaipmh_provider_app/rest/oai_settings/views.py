@@ -1,5 +1,4 @@
-""" OaiSettings rest api
-"""
+"""OaiSettings rest api"""
 
 from django.urls import reverse
 from django.utils.decorators import method_decorator

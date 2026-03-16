@@ -1,5 +1,4 @@
-""" discover settings for oai-pmh
-"""
+"""discover settings for oai-pmh"""
 
 import logging
 from os.path import join
