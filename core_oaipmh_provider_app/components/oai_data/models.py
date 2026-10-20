@@ -18,7 +18,7 @@ class OaiData(models.Model):
     """Represents a data for Oai-Pmh Provider"""
 
     data = models.ForeignKey(
-        Data, blank=False, null=True, on_delete=models.SET_NULL
+        Data, blank=False, null=True, on_delete=models.SET_NULL, unique=True
     )
     oai_date_stamp = models.DateTimeField(blank=False, null=True, default=None)
     status = models.CharField(blank=False, max_length=200)

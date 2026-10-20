@@ -2,6 +2,8 @@
 
 import logging
 
+from django.db import IntegrityError
+
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.utils.datetime import datetime_now
@@ -154,11 +156,17 @@ def upsert_from_data(document, force_update=False):
 
     """
     try:
-        oai_data = get_by_data(document)
-        if force_update:
-            oai_data.oai_date_stamp = datetime_now()
-            upsert(oai_data)
-    except exceptions.DoesNotExist:
+        try:  # Test if the data already exists
+            oai_data = get_by_data(document)
+        except exceptions.DoesNotExist:
+            oai_data = None
+
+        if oai_data is not None:
+            if force_update:
+                oai_data.oai_date_stamp = datetime_now()
+                upsert(oai_data)
+            return
+
         # Create only if the record is published and the workspace is public.
         if not document.workspace or not document.workspace.is_public:
             return
@@ -167,12 +175,24 @@ def upsert_from_data(document, force_update=False):
         if document.template.format != Template.XSD:
             return
 
-        oai_data = OaiData()
-        oai_data.status = status.ACTIVE
-        oai_data.data = document
-        oai_data.template = document.template
-        oai_data.oai_date_stamp = datetime_now()
-        upsert(oai_data)
+        defaults = {
+            "status": status.ACTIVE,
+            "template": document.template,
+            "oai_date_stamp": datetime_now(),
+        }
+
+        try:
+            oai_data, created = OaiData.objects.get_or_create(
+                data=document, defaults=defaults
+            )
+        except IntegrityError:
+            # Race condition fallback: another process created the row concurrently
+            oai_data = get_by_data(document)
+            created = False
+
+        if not created and force_update:
+            oai_data.oai_date_stamp = datetime_now()
+            upsert(oai_data)
     except Exception as exception:
         logger.warning(
             "upsert_from_data threw an exception: %s", str(exception)

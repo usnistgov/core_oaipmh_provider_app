@@ -27,6 +27,12 @@ OAI_ADMINS = ["admin@example.com"]
 
 ALLOWED_HOSTS = ["testserver"]
 
+SERVER_URI = "http://127.0.0.1:8000"
+
+HTTP_ALLOWED_URL_SCHEMES = ("http", "https")
+BLOCK_URL_LINK_LOCAL = True
+BLOCKED_IP_LIST = []
+
 # IN-MEMORY TEST DATABASE
 DATABASES = {
     "default": {

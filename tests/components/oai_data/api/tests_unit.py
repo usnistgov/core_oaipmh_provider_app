@@ -275,7 +275,7 @@ class TestOaiDataUpsertFromData(TestCase):
     @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
     @patch("core_oaipmh_provider_app.components.oai_data.api.OaiData")
     def test_upsert_if_no_data_and_workspace(
-        self, _, mock_upsert, mock_get_by_data
+        self, mock_oai_data, mock_upsert, mock_get_by_data
     ):
         mock_document = Mock()
         mock_document.workspace = Mock()
@@ -286,9 +286,12 @@ class TestOaiDataUpsertFromData(TestCase):
             "mock_get_by_data_does_not_exist"
         )
         mock_upsert.return_value = None
+        mock_oai_data.objects.get_or_create.return_value = (Mock(), True)
+
         oai_data_api.upsert_from_data(mock_document, force_update=False)
 
-        self.assertTrue(mock_upsert.called)
+        self.assertFalse(mock_upsert.called)
+        mock_oai_data.objects.get_or_create.assert_called_once()
 
     @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
     @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
@@ -308,3 +311,58 @@ class TestOaiDataUpsertFromData(TestCase):
         oai_data_api.upsert_from_data(mock_document, force_update=False)
 
         self.assertFalse(mock_upsert.called)
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.OaiData")
+    def test_upsert_called_on_force_update_when_get_or_create_returns_existing(
+        self, mock_oai_data, mock_upsert, mock_get_by_data
+    ):
+        mock_document = Mock()
+        mock_document.workspace = Mock()
+        mock_document.workspace.is_public = True
+        mock_document.template.format = "XSD"
+
+        mock_get_by_data.side_effect = DoesNotExist(
+            "mock_get_by_data_does_not_exist"
+        )
+        mock_upsert.return_value = None
+        mock_oai_data_obj = Mock()
+        mock_oai_data.objects.get_or_create.return_value = (
+            mock_oai_data_obj,
+            False,
+        )
+
+        oai_data_api.upsert_from_data(mock_document, force_update=True)
+
+        self.assertTrue(mock_upsert.called)
+        mock_upsert.assert_called_once_with(mock_oai_data_obj)
+
+    @patch("core_oaipmh_provider_app.components.oai_data.api.get_by_data")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.upsert")
+    @patch("core_oaipmh_provider_app.components.oai_data.api.OaiData")
+    def test_integrity_error_fallback_calls_get_by_data_and_upsert(
+        self, mock_oai_data, mock_upsert, mock_get_by_data
+    ):
+        from django.db import IntegrityError
+
+        mock_document = Mock()
+        mock_document.workspace = Mock()
+        mock_document.workspace.is_public = True
+        mock_document.template.format = "XSD"
+
+        mock_get_by_data.side_effect = DoesNotExist(
+            "mock_get_by_data_does_not_exist"
+        )
+        mock_upsert.return_value = None
+        mock_oai_data.objects.get_or_create.side_effect = IntegrityError(
+            "duplicate"
+        )
+        mock_oai_data_obj = Mock()
+        # Second call to get_by_data after IntegrityError should succeed
+        mock_get_by_data.side_effect = [DoesNotExist("x"), mock_oai_data_obj]
+
+        oai_data_api.upsert_from_data(mock_document, force_update=True)
+
+        self.assertTrue(mock_upsert.called)
+        mock_upsert.assert_called_once_with(mock_oai_data_obj)
