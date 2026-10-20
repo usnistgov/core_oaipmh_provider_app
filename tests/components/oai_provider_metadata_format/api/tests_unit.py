@@ -6,14 +6,19 @@ from random import randint
 from unittest.case import TestCase
 from unittest.mock import Mock, patch, MagicMock
 
+from django.core.exceptions import ValidationError
 from rest_framework import status
 
-import core_oaipmh_provider_app.components.oai_provider_metadata_format.api as provider_metadata_format_api
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as provider_metadata_format_api,
+)
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
-from core_oaipmh_common_app.commons.exceptions import OAIAPILabelledException
+from core_oaipmh_common_app.commons.exceptions import (
+    OAIAPILabelledException,
+)
 from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
     OaiProviderMetadataFormat,
 )
@@ -778,3 +783,49 @@ def _set_oai_provider_metadata_format_fields(
     oai_provider_metadata_format.template = None
 
     return oai_provider_metadata_format
+
+
+class TestAddMetadataFormatValidation(TestCase):
+    """Unit tests for `add_metadata_format` function"""
+
+    @patch.object(provider_metadata_format_api, "send_get_request")
+    @patch.object(provider_metadata_format_api, "upsert")
+    @patch.object(provider_metadata_format_api, "_get_target_namespace")
+    def test_add_metadata_format_validates_url_and_does_not_forward_cookies(
+        self,
+        mock_get_target_namespace,
+        mock_upsert,
+        mock_send_get,
+    ):
+        """test_add_metadata_format_validates_url_and_does_not_forward_cookies"""
+        mock_response = Mock()
+        mock_response.status_code = status.HTTP_200_OK
+        mock_response.text = "<schema/>"
+        mock_send_get.return_value = mock_response
+        mock_get_target_namespace.return_value = "http://example.com/ns"
+
+        mock_request = create_mock_request()
+        provider_metadata_format_api.add_metadata_format(
+            "oai_dc", "https://example.com/schema.xsd", mock_request
+        )
+
+        # send_get_request must be called without cookies kwarg
+        mock_send_get.assert_called_once_with("https://example.com/schema.xsd")
+        args, kwargs = mock_send_get.call_args
+        self.assertEqual(kwargs, {})
+
+    @patch.object(provider_metadata_format_api, "send_get_request")
+    def test_add_metadata_format_rejects_invalid_url(self, mock_send_get):
+        """test_add_metadata_format_rejects_invalid_url"""
+        mock_send_get.side_effect = ValidationError("mock_validation_error")
+        mock_request = create_mock_request()
+
+        with self.assertRaises(OAIAPILabelledException) as ctx:
+            provider_metadata_format_api.add_metadata_format(
+                "oai_dc",
+                "http://example.com/schema.xsd",
+                mock_request,
+            )
+        self.assertEqual(
+            ctx.exception.status_code, status.HTTP_400_BAD_REQUEST
+        )

@@ -1,8 +1,10 @@
 """Admin AJAX views"""
 
 import json
+import logging
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ValidationError
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.html import escape
@@ -50,6 +52,8 @@ from core_oaipmh_provider_app.views.admin.forms import (
     MappingXSLTForm,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @staff_member_required
 def check_registry(request):
@@ -61,7 +65,19 @@ def check_registry(request):
 
     """
     try:
-        http_response = send_get_request(request.GET["url"])
+        url = request.GET.get("url", "")
+        try:
+            http_response = send_get_request(url)
+        except ValidationError as ve:
+            message = "; ".join(ve.messages)
+            logger.warning(
+                "URL validation failed while checking registry availability for url=%s: %s",
+                url,
+                message,
+            )
+            return HttpResponseBadRequest(
+                escape(message), content_type="application/javascript"
+            )
         is_available = http_response.status_code == status.HTTP_200_OK
     except ConnectionError:
         return HttpResponseBadRequest(

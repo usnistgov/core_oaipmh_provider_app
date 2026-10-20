@@ -2,8 +2,10 @@
 OaiProviderMetadataFormat API
 """
 
+import logging
 from urllib.parse import urljoin
 
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
@@ -22,6 +24,8 @@ from core_oaipmh_provider_app.components.oai_provider_metadata_format.models imp
 )
 from xml_utils.commons import exceptions
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+
+logger = logging.getLogger(__name__)
 
 
 def upsert(oai_provider_metadata_format, request):
@@ -166,14 +170,20 @@ def add_metadata_format(metadata_prefix, schema_url, request):
 
     """
     try:
-        # TODO: refactor send request with cookies (same code in other apps)
         try:
-            session_id = request.session.session_key
-        except Exception:
-            session_id = None
-        http_response = send_get_request(
-            schema_url, cookies={"sessionid": session_id}
-        )
+            http_response = send_get_request(schema_url)
+        except ValidationError as ve:
+            message = "; ".join(ve.messages)
+            logger.warning(
+                "add_metadata_format URL validation failed for schema_url=%s: %s",
+                schema_url,
+                message,
+            )
+            raise oai_pmh_exceptions.OAIAPILabelledException(
+                message="Unable to add the new metadata format. Invalid schema URL: %s"
+                % message,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
         if http_response.status_code != status.HTTP_200_OK:
             raise oai_pmh_exceptions.OAIAPILabelledException(
                 message="Unable to add the new metadata format. Impossible"

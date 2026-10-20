@@ -228,3 +228,57 @@ class TestEditSetViewGetFormKwargs(TestCase):
         mock_kwargs["request"] = self.mock_request
 
         self.assertEqual(self.mock_serializer.get_form_kwargs(), mock_kwargs)
+
+
+class TestCheckRegistry(TestCase):
+    """Unit tests for `check_registry` view."""
+
+    def setUp(self):
+        """setUp"""
+        self.mock_request = MagicMock()
+        self.mock_request.GET = {}
+
+    @patch.object(admin_ajax, "send_get_request")
+    def test_check_registry_validates_url_and_returns_available(
+        self, mock_send_get
+    ):
+        """test_check_registry_validates_url_and_returns_available"""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_send_get.return_value = mock_response
+        self.mock_request.GET = {"url": "https://example.com/oai"}
+
+        response = admin_ajax.check_registry(self.mock_request)
+
+        mock_send_get.assert_called_once_with("https://example.com/oai")
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(admin_ajax, "send_get_request")
+    def test_check_registry_rejects_invalid_scheme(self, mock_send_get):
+        """test_check_registry_rejects_invalid_scheme"""
+        from django.core.exceptions import ValidationError
+
+        mock_send_get.side_effect = ValidationError("Invalid scheme")
+        self.mock_request.GET = {"url": "ftp://example.com"}
+
+        response = admin_ajax.check_registry(self.mock_request)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.get("Content-Type"), "application/javascript"
+        )
+
+    @patch.object(admin_ajax, "send_get_request")
+    def test_check_registry_does_not_forward_cookies(self, mock_send_get):
+        """test_check_registry_does_not_forward_cookies"""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_send_get.return_value = mock_response
+        self.mock_request.GET = {"url": "https://example.com"}
+
+        admin_ajax.check_registry(self.mock_request)
+
+        # ensure send_get_request called with only url positional arg, no cookies
+        mock_send_get.assert_called_once_with("https://example.com")
+        args, kwargs = mock_send_get.call_args
+        self.assertEqual(kwargs, {})
