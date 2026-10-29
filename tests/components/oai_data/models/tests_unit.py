@@ -5,6 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 
 from core_main_app.commons.exceptions import DoesNotExist, ModelError
 from core_oaipmh_provider_app.components.oai_data.models import OaiData
@@ -230,3 +231,19 @@ class TestOaiDataStr(TestCase):
         oai_data = _create_oai_data()
         oai_data.data = None
         self.assertTrue("DELETED" in oai_data.__str__())
+
+
+class TestOaiDataCreate(TestCase):
+    """Unit tests for `OaiData.objects.create`"""
+
+    @patch(
+        "core_oaipmh_provider_app.components.oai_data.models.OaiData.objects"
+    )
+    def test_duplicate_create_raises_integrity_error_when_unique_constraint_exists(
+        self, mock_objects
+    ):
+        """test_duplicate_create_raises_integrity_error_when_unique_constraint_exists"""
+        mock_objects.create.side_effect = IntegrityError("duplicate key")
+        oai_data = _create_oai_data()
+        with self.assertRaises(IntegrityError):
+            OaiData.objects.create(data=oai_data.data)

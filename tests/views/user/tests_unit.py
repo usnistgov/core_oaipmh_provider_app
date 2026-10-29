@@ -1805,3 +1805,41 @@ class TestOAIProviderViewGetItems(TestCase):
         results = user_views.OAIProviderView._get_items(**self.mock_kwargs)
         self.assertEqual(len(results[0]), len(mock_oai_paginator_items))
         self.assertIn("token", results[1])
+
+
+class TestOAIProviderViewRenderToResponse(TestCase):
+    """Unit tests for `OAIProviderView.render_to_response`"""
+
+    @patch(
+        "core_oaipmh_provider_app.views.user.views.TemplateView.render_to_response"
+    )
+    def test_security_headers_are_present(self, mock_super_render):
+        """test_security_headers_are_present"""
+        mock_request = MagicMock()
+        mock_request.build_absolute_uri = Mock(
+            return_value="http://example.com"
+        )
+        mock_request.path = "/"
+        mock_response = MagicMock()
+        mock_super_render.return_value = mock_response
+
+        view = user_views.OAIProviderView()
+        view.request = mock_request
+        view.render_to_response(context={}, response_kwargs={})
+
+        # Verify headers were set via __setitem__
+        self.assertEqual(
+            mock_response.__setitem__.call_args_list[0][0][0],
+            "X-Content-Type-Options",
+        )
+        self.assertEqual(
+            mock_response.__setitem__.call_args_list[0][0][1], "nosniff"
+        )
+        self.assertEqual(
+            mock_response.__setitem__.call_args_list[1][0][0],
+            "Content-Security-Policy",
+        )
+        self.assertEqual(
+            mock_response.__setitem__.call_args_list[1][0][1],
+            "default-src 'none'; script-src 'none'",
+        )

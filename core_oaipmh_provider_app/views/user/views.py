@@ -101,7 +101,12 @@ class OAIProviderView(TemplateView):
         )
 
         # Render the template with the context information
-        return super().render_to_response(context, **response_kwargs)
+        response = super().render_to_response(context, **response_kwargs)
+        response["X-Content-Type-Options"] = "nosniff"
+        response["Content-Security-Policy"] = (
+            "default-src 'none'; script-src 'none'"
+        )
+        return response
 
     def error(self, error):
         """error
