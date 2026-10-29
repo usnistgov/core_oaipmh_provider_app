@@ -127,6 +127,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+tests_media/
 .tox/
 .coverage
 .coverage.*
@@ -210,11 +211,6 @@ apache
 
 # mongodb
 conf/my-mongodb.conf
-
-# tests
-curate/tests/data/parser/schema/namespace/results*
-curate/tests/data/parser/extension/explicit-implicit/results*
-xml_schemas
 
 # redis server
 *.rdb
